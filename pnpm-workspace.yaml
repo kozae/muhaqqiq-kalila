@@ -1,0 +1,5 @@
+packages:
+  - "apps/*"
+  - "config/*"
+  - "lib/client-components/*"
+  - "lib/infrastructure/*"

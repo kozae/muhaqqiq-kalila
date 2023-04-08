@@ -1,0 +1,15 @@
+{
+  "providers": ["awscloudformation"],
+  "projectName": "MuhaqqiqKalila",
+  "version": "3.1",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "react",
+    "config": {
+      "SourceDir": "lib/infrastructure/aws-backend/src",
+      "DistributionDir": "apps/host/dist",
+      "BuildCommand": "pnpm run build",
+      "StartCommand": "pnpm run dev"
+    }
+  }
+}

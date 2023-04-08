@@ -1,0 +1,23 @@
+{
+  "name": "aws-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-amplify/datastore": "^4.1.7"
+  },
+  "devDependencies": {
+    "eslint": "8.35.0",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  }
+}

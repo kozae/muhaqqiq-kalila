@@ -1,0 +1,35 @@
+{
+  "name": "pages-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite  --port 5001 --strictPort",
+    "build": "tsc && vite build",
+    "preview": "vite preview  --port 5001 --strictPort"
+  },
+  "dependencies": {
+    "@fontsource/amiri": "^4.5.11",
+    "@fontsource/material-icons": "^4.5.4",
+    "@fontsource/noto-naskh-arabic": "^4.5.12",
+    "@fontsource/noto-sans-display": "^4.5.14",
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.16",
+    "animate.css": "^4.1.1",
+    "aws-amplify": "^5.0.25",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@originjs/vite-plugin-federation": "^1.2.2",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^3.1.0",
+    "eslint": "8.35.0",
+    "eslint-config-custom": "workspace:*",
+    "tailwind-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
+  }
+}

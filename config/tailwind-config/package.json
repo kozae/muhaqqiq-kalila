@@ -1,0 +1,14 @@
+{
+  "name": "tailwind-config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "postcss.config.js",
+    "tailwind.config"
+  ],
+  "devDependencies": {
+    "@headlessui/tailwindcss": "^0.1.2",
+    "@tailwindcss/forms": "^0.5.3"
+  }
+}
