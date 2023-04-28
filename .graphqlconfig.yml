@@ -1,0 +1,16 @@
+projects:
+  muhaqqiqkalila:
+    schemaPath: lib/infrastructure/aws-backend/src/graphql/schema.json
+    includes:
+      - lib/infrastructure/aws-backend/src/*.ts
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: lib/infrastructure/aws-backend/src/API.ts
+        docsFilePath: lib/infrastructure/aws-backend/src
+        maxDepth: 4
+extensions:
+  amplify:
+    version: 3

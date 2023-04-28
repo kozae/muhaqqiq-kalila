@@ -1,5 +1,9 @@
 module.exports = {
-  content: ["../../lib/client-components/**/*.tsx", "./**/*.tsx"],
+  content: [
+    "../../lib/client-components/**/*.tsx",
+    "./**/*.tsx",
+    "./**/*.html",
+  ],
   theme: {
     extend: {
       fontFamily: {

@@ -1,0 +1,12 @@
+{
+  "resourceName": "muhaqiqkalilastorage",
+  "policyUUID": "eba8dae6",
+  "bucketName": "muhaqqiqkalilabucket",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

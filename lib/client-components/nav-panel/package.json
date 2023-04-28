@@ -1,11 +1,11 @@
 {
   "name": "nav-panel",
   "version": "0.0.0",
-  "main": "./index.tsx",
-  "types": "./index.tsx",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint *.ts*"
+    "lint": "eslint \"**/*.ts\""
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
@@ -22,6 +22,7 @@
     "@heroicons/react": "^2.0.16",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tsconfig": "workspace:*"
   }
 }

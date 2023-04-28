@@ -1,15 +1,26 @@
 {
-  "staging": {
+  "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-muhaqqiqkalila-staging-131502-authRole",
-      "UnauthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-staging-131502-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-staging-131502-authRole",
+      "AuthRoleName": "amplify-muhaqqiqkalila-dev-90843-authRole",
+      "UnauthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-dev-90843-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-dev-90843-authRole",
       "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-muhaqqiqkalila-staging-131502-deployment",
-      "UnauthRoleName": "amplify-muhaqqiqkalila-staging-131502-unauthRole",
-      "StackName": "amplify-muhaqqiqkalila-staging-131502",
-      "StackId": "arn:aws:cloudformation:eu-central-1:557976691964:stack/amplify-muhaqqiqkalila-staging-131502/8b70e9a0-d221-11ed-bde4-0a4713086cca",
-      "AmplifyAppId": "d2ppxvmq9rm66u"
+      "DeploymentBucketName": "amplify-muhaqqiqkalila-dev-90843-deployment",
+      "UnauthRoleName": "amplify-muhaqqiqkalila-dev-90843-unauthRole",
+      "StackName": "amplify-muhaqqiqkalila-dev-90843",
+      "StackId": "arn:aws:cloudformation:eu-central-1:557976691964:stack/amplify-muhaqqiqkalila-dev-90843/8643bbc0-dc25-11ed-b73b-0241486a7d2a",
+      "AmplifyAppId": "d3fe0b69zl2twy"
+    },
+    "categories": {
+      "api": {
+        "muhaqqiqkalila": {}
+      },
+      "auth": {
+        "muhaqqiqkalila245312f6": {}
+      },
+      "storage": {
+        "muhaqiqkalilastorage": {}
+      }
     }
   }
 }

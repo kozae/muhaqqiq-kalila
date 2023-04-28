@@ -1,0 +1,12 @@
+{
+    "extends": "tsconfig/react-client-library.json",
+    "include": [
+        ".",
+        "../../../apps/web/components/client/util/LinkPaginator.tsx"
+    ],
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
+}
