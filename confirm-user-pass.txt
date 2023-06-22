@@ -1,0 +1,8 @@
+prod:
+aws cognito-idp admin-set-user-password \
+  --user-pool-id eu-central-1_j0aM5S7Kk \
+  --username <user> \
+  --password <pass> \
+  --permanent
+dev:
+aws cognito-idp admin-set-user-password --user-pool-id eu-central-1_SX4aJcI9D --username  mkdev --password gC@s@D8yRaLH6Fc --permanent

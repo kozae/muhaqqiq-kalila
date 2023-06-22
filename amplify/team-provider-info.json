@@ -25,5 +25,32 @@
         "S3AndCloudFront": {}
       }
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-muhaqqiqkalila-prod-100035-authRole",
+      "UnauthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-prod-100035-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::557976691964:role/amplify-muhaqqiqkalila-prod-100035-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-muhaqqiqkalila-prod-100035-deployment",
+      "UnauthRoleName": "amplify-muhaqqiqkalila-prod-100035-unauthRole",
+      "StackName": "amplify-muhaqqiqkalila-prod-100035",
+      "StackId": "arn:aws:cloudformation:eu-central-1:557976691964:stack/amplify-muhaqqiqkalila-prod-100035/de6e9630-10d2-11ee-8326-0a588db65f3e",
+      "AmplifyAppId": "d3fe0b69zl2twy"
+    },
+    "categories": {
+      "auth": {
+        "muhaqqiqkalila245312f6": {}
+      },
+      "api": {
+        "muhaqqiqkalila": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      },
+      "storage": {
+        "muhaqiqkalilastorage": {}
+      }
+    }
   }
 }
