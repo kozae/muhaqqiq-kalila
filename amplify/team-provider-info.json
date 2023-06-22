@@ -20,6 +20,9 @@
       },
       "storage": {
         "muhaqiqkalilastorage": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
       }
     }
   }

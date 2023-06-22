@@ -8,9 +8,6 @@
     "host#build": {
       "dependsOn": ["^build"]
     },
-    "pages-app#build": {
-      "dependsOn": ["host#build"]
-    },
     "lint": {
       "outputs": []
     },

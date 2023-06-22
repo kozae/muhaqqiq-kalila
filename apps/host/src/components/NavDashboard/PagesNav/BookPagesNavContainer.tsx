@@ -1,7 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import Loading from "../../Loading";
 import { ReactNode, useState } from "react";
-import { useDebouncedValue } from "@lib/use-debounced-value";
 import { API } from "aws-amplify";
 import { GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import { listBooks, ListBooksQuery } from "aws-backend";
@@ -10,6 +9,7 @@ import BookMediaFilter from "./BookMediaFilter";
 import InfoAlert from "@components/InfoAlert";
 import { NavPanelContainer } from "nav-panel";
 import { ReactivePaginator } from "paginator";
+import { useDebouncedValue } from "util";
 
 export default function BookPagesNavContainer({
   filter$,

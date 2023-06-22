@@ -1,9 +1,6 @@
 import GuestNav from "@layout/GuestNav";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import UserControls from "@components/UserControls";
 import useSession from "@lib/use-session";
-import PageWrapper from "@layout/PageWrapper";
-import BaseNav from "@layout/BaseNav";
 import { GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
 import { API } from "aws-amplify";
 import { GetMediumQuery } from "aws-backend";
@@ -75,49 +72,6 @@ export default function Layout() {
 
   return (
     <>
-      {/* <nav className="h-[65px] w-full">
-        {session ? (
-          <BaseNav>
-            <div className="ml-5 flex flex-grow items-center justify-between">
-              <h2 className="text-primary-900 text-md font-bold leading-7 sm:text-2xl">
-                Editing {data.medium}
-                {currentPage && ` (p.${currentPage.number})`}
-              </h2>
-              <Link
-                to={`/pages/${mediumId}`}
-                className="hover:bg-secondary-200 text-primary-500 focus-visible:outline-primary-600 ml-1 hidden items-center  gap-x-1.5 rounded-md px-2.5 py-1.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:inline-flex"
-              >
-                <ArrowLeftCircleIcon
-                  className="-ml-0.5 h-5 w-5"
-                  aria-hidden="true"
-                />
-                Summary
-              </Link>
-              <button
-                type="button"
-                onClick={() => setGoToOpen(true)}
-                className="hover:bg-secondary-200 text-primary-500 focus-visible:outline-primary-600 ml-1 hidden items-center  gap-x-1.5 rounded-md px-2.5 py-1.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:inline-flex"
-              >
-                <LinkIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                Go to ...
-              </button>
-              {data.pages && (
-                <LinkPaginator
-                  pages={data.pages.length}
-                  current={currentPageIndex}
-                  baseHref={`/pages/${mediumId}/`}
-                  hrefSuffix={tool}
-                  ids={ids}
-                />
-              )}
-            </div>
-
-            <UserControls session={session} />
-          </BaseNav>
-        ) : (
-          <GuestNav />
-        )}
-      </nav> */}
       <nav className="bg-secondary-50 fixed left-0 top-0 z-10 flex h-full w-[80px] flex-col items-center">
         <Link to="/">
           <img className="h-auto w-[70px] p-1" src="/logo_512.png" alt="" />

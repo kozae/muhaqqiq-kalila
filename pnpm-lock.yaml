@@ -52,6 +52,9 @@ importers:
       modal: workspace:*
       nav-panel: workspace:*
       pages-tool-facsimile: workspace:*
+      pages-tool-facsimile-zoom: workspace:*
+      pages-tool-layout-panel: workspace:*
+      pages-tool-lines-panel: workspace:*
       pages-tool-store: workspace:*
       paginator: workspace:*
       react: ^18.2.0
@@ -63,8 +66,11 @@ importers:
       tailwind-config: workspace:*
       tsconfig: workspace:*
       typescript: ^4.9.3
+      util: workspace:*
       uuid: ^9.0.0
       vite: ^4.2.0
+      vite-plugin-top-level-await: ^1.3.1
+      vite-plugin-wasm: ^3.2.2
       vite-tsconfig-paths: ^4.1.0
     dependencies:
       '@aws-amplify/api': 5.0.25
@@ -85,6 +91,9 @@ importers:
       modal: link:../../lib/client-components/modal
       nav-panel: link:../../lib/client-components/nav-panel
       pages-tool-facsimile: link:../../lib/client-components/pages-tool-facsimile
+      pages-tool-facsimile-zoom: link:../../lib/client-components/pages-tool-facsimile-zoom
+      pages-tool-layout-panel: link:../../lib/client-components/pages-tool-layout-panel
+      pages-tool-lines-panel: link:../../lib/client-components/pages-tool-lines-panel
       pages-tool-store: link:../../lib/client-components/pages-tool-store
       paginator: link:../../lib/client-components/paginator
       react: 18.2.0
@@ -93,6 +102,7 @@ importers:
       rxjs: 7.8.0
       sort-by: 1.2.0
       swr: 2.1.3_react@18.2.0
+      util: link:../../lib/client-components/util
       uuid: 9.0.0
       vite-tsconfig-paths: 4.1.0_27d6rnnqnnz33bvg4pqy2xno6y
     devDependencies:
@@ -108,6 +118,8 @@ importers:
       tsconfig: link:../../config/tsconfig
       typescript: 4.9.5
       vite: 4.2.1
+      vite-plugin-top-level-await: 1.3.1_vite@4.2.1
+      vite-plugin-wasm: 3.2.2_vite@4.2.1
 
   config/eslint-config-custom:
     specifiers:
@@ -203,11 +215,13 @@ importers:
     specifiers:
       '@headlessui/react': ^1.7.13
       '@heroicons/react': ^2.0.16
+      '@types/d3-delaunay': ^6.0.1
       '@types/lodash': ^4.14.194
       '@types/react': ^18.0.28
       '@types/react-dom': ^18.0.11
       class-variance-authority: ^0.4.0
       clsx: ^1.2.1
+      d3-delaunay: ^6.0.4
       eslint: ^8.36.0
       eslint-config-custom: workspace:*
       konva: ^9.0.1
@@ -225,6 +239,7 @@ importers:
       '@heroicons/react': 2.0.17_react@18.2.0
       class-variance-authority: 0.4.0_typescript@4.9.5
       clsx: 1.2.1
+      d3-delaunay: 6.0.4
       konva: 9.0.1
       lodash: 4.17.21
       pages-tool-store: link:../pages-tool-store
@@ -232,11 +247,133 @@ importers:
       rxjs: 7.8.0
       use-image: 1.1.0_react@18.2.0
     devDependencies:
+      '@types/d3-delaunay': 6.0.1
       '@types/lodash': 4.14.194
       '@types/react': 18.0.33
       '@types/react-dom': 18.0.11
       eslint: 8.37.0
       eslint-config-custom: link:../../../config/eslint-config-custom
+      react: 18.2.0
+      tailwind-config: link:../../../config/tailwind-config
+      tsconfig: link:../../../config/tsconfig
+      typescript: 4.9.5
+
+  lib/client-components/pages-tool-facsimile-zoom:
+    specifiers:
+      '@heroicons/react': ^2.0.17
+      '@muhaqiq/facsimile': ^0.0.2
+      '@types/lodash': ^4.14.194
+      '@types/react': ^18.0.28
+      '@types/react-dom': ^18.0.11
+      '@types/react-modal': ^3.16.0
+      '@types/react-resizable': ^3.0.4
+      eslint: ^8.36.0
+      eslint-config-custom: workspace:*
+      pages-tool-store: workspace:*
+      react: ^18.2.0
+      react-draggable: ^4.4.5
+      react-modal: ^3.16.1
+      react-resizable: ^3.0.5
+      react-rnd: ^10.4.1
+      tailwind-config: workspace:*
+      tsconfig: workspace:*
+      typescript: ^4.9.5
+    dependencies:
+      '@heroicons/react': 2.0.17_react@18.2.0
+      '@muhaqiq/facsimile': 0.0.2
+      '@types/react-resizable': 3.0.4
+      pages-tool-store: link:../pages-tool-store
+      react-draggable: 4.4.5_react@18.2.0
+      react-modal: 3.16.1_react@18.2.0
+      react-resizable: 3.0.5_react@18.2.0
+      react-rnd: 10.4.1_react@18.2.0
+    devDependencies:
+      '@types/lodash': 4.14.194
+      '@types/react': 18.0.33
+      '@types/react-dom': 18.0.11
+      '@types/react-modal': 3.16.0
+      eslint: 8.37.0
+      eslint-config-custom: link:../../../config/eslint-config-custom
+      react: 18.2.0
+      tailwind-config: link:../../../config/tailwind-config
+      tsconfig: link:../../../config/tsconfig
+      typescript: 4.9.5
+
+  lib/client-components/pages-tool-layout-panel:
+    specifiers:
+      '@headlessui/react': ^1.7.13
+      '@heroicons/react': ^2.0.16
+      '@muhaqiq/facsimile': ^0.0.2
+      '@types/lodash': ^4.14.194
+      '@types/react': ^18.0.28
+      '@types/react-dom': ^18.0.11
+      aws-backend: workspace:*
+      class-variance-authority: ^0.4.0
+      clsx: ^1.2.1
+      eslint: ^8.36.0
+      eslint-config-custom: workspace:*
+      lodash: ^4.17.21
+      pages-tool-store: workspace:*
+      react: ^18.2.0
+      rxjs: ^7.8.0
+      tailwind-config: workspace:*
+      tsconfig: workspace:*
+      typescript: ^4.9.5
+      util: workspace:*
+    dependencies:
+      '@headlessui/react': 1.7.13_react@18.2.0
+      '@heroicons/react': 2.0.17_react@18.2.0
+      '@muhaqiq/facsimile': 0.0.2
+      '@types/lodash': 4.14.194
+      aws-backend: link:../../infrastructure/aws-backend
+      class-variance-authority: 0.4.0_typescript@4.9.5
+      clsx: 1.2.1
+      lodash: 4.17.21
+      rxjs: 7.8.0
+    devDependencies:
+      '@types/react': 18.0.33
+      '@types/react-dom': 18.0.11
+      eslint: 8.37.0
+      eslint-config-custom: link:../../../config/eslint-config-custom
+      pages-tool-store: link:../pages-tool-store
+      react: 18.2.0
+      tailwind-config: link:../../../config/tailwind-config
+      tsconfig: link:../../../config/tsconfig
+      typescript: 4.9.5
+      util: link:../util
+
+  lib/client-components/pages-tool-lines-panel:
+    specifiers:
+      '@headlessui/react': ^1.7.13
+      '@heroicons/react': ^2.0.16
+      '@types/lodash': ^4.14.194
+      '@types/react': ^18.0.28
+      '@types/react-dom': ^18.0.11
+      aws-backend: workspace:*
+      class-variance-authority: ^0.4.0
+      clsx: ^1.2.1
+      eslint: ^8.36.0
+      eslint-config-custom: workspace:*
+      lodash: ^4.17.21
+      pages-tool-store: workspace:*
+      react: ^18.2.0
+      tailwind-config: workspace:*
+      tsconfig: workspace:*
+      typescript: ^4.9.5
+    dependencies:
+      '@headlessui/react': 1.7.13_react@18.2.0
+      '@heroicons/react': 2.0.17_react@18.2.0
+      '@types/lodash': 4.14.194
+      aws-backend: link:../../infrastructure/aws-backend
+      class-variance-authority: 0.4.0_typescript@4.9.5
+      clsx: 1.2.1
+      lodash: 4.17.21
+    devDependencies:
+      '@types/react': 18.0.33
+      '@types/react-dom': 18.0.11
+      eslint: 8.37.0
+      eslint-config-custom: link:../../../config/eslint-config-custom
+      pages-tool-store: link:../pages-tool-store
       react: 18.2.0
       tailwind-config: link:../../../config/tailwind-config
       tsconfig: link:../../../config/tsconfig
@@ -306,6 +443,37 @@ importers:
       tsconfig: link:../../../config/tsconfig
       typescript: 4.9.5
 
+  lib/client-components/util:
+    specifiers:
+      '@headlessui/react': ^1.7.13
+      '@heroicons/react': ^2.0.16
+      '@types/react': ^18.0.28
+      '@types/react-dom': ^18.0.11
+      class-variance-authority: ^0.4.0
+      clsx: ^1.2.1
+      eslint: ^8.36.0
+      eslint-config-custom: workspace:*
+      react: ^18.2.0
+      rxjs: ^7.8.0
+      tailwind-config: workspace:*
+      tsconfig: workspace:*
+      typescript: ^4.9.5
+    dependencies:
+      '@headlessui/react': 1.7.13_react@18.2.0
+      '@heroicons/react': 2.0.17_react@18.2.0
+      class-variance-authority: 0.4.0_typescript@4.9.5
+      clsx: 1.2.1
+      rxjs: 7.8.0
+    devDependencies:
+      '@types/react': 18.0.33
+      '@types/react-dom': 18.0.11
+      eslint: 8.37.0
+      eslint-config-custom: link:../../../config/eslint-config-custom
+      react: 18.2.0
+      tailwind-config: link:../../../config/tailwind-config
+      tsconfig: link:../../../config/tsconfig
+      typescript: 4.9.5
+
   lib/infrastructure/aws-backend:
     specifiers:
       '@aws-amplify/datastore': ^4.1.7
@@ -330,7 +498,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.9
+      '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
   /@aws-amplify/analytics/6.0.25:
@@ -3140,11 +3308,6 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /@jridgewell/resolve-uri/3.1.1:
-    resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
-    engines: {node: '>=6.0.0'}
-    dev: true
-
   /@jridgewell/set-array/1.1.2:
     resolution: {integrity: sha512-xnkseuNADM0gt2bs+BvhO0p78Mk762YnZdsuzFV018NoG1Sj1SCQvpSqa7XUaTam5vAGasABV9qXASMKnFMwMw==}
     engines: {node: '>=6.0.0'}
@@ -3163,13 +3326,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
-    dev: true
-
-  /@jridgewell/trace-mapping/0.3.9:
-    resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-    dependencies:
-      '@jridgewell/resolve-uri': 3.1.1
-      '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
   /@mapbox/extent/0.4.0:
@@ -3299,6 +3455,10 @@ packages:
       subtag: 0.5.0
       suggestions-list: 0.0.2
       xtend: 4.0.2
+    dev: false
+
+  /@muhaqiq/facsimile/0.0.2:
+    resolution: {integrity: sha512-RSmDv5KGO7KzFWQ/MyOHkZdKD2io8qGSsxKyKCMbqsTBL0DEaCpSeD0mWEqVy/kkwtyIWTBOVmjJ9hgbcKQopg==}
     dev: false
 
   /@next/eslint-plugin-next/13.2.3:
@@ -3757,9 +3917,131 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
+  /@rollup/plugin-virtual/3.0.1:
+    resolution: {integrity: sha512-fK8O0IL5+q+GrsMLuACVNk2x21g3yaw+sG2qn16SnUd3IlBsQyvWxLMGHmCmXRMecPjGRSZ/1LmZB4rjQm68og==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dev: true
+
   /@rushstack/eslint-patch/1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
     dev: false
+
+  /@swc/core-darwin-arm64/1.3.63:
+    resolution: {integrity: sha512-lNR0BgG0/6dGpGP+AyFZoZ3YBhZN5GzvgAUzwy4skqn5sKZ7duQD02CNq1lIy7Im5BzgMUcJ+/Z7z/YUlqBK+Q==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-darwin-x64/1.3.63:
+    resolution: {integrity: sha512-1lydnc+LgSD0gwD1axW3+Y1htKZZRn33aJF4ITd6hsA9Y2eIhdMVxgx6peXp8wWzoRBXy5GEMTnd7704oya4zw==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-linux-arm-gnueabihf/1.3.63:
+    resolution: {integrity: sha512-cJT+XJ6f25QeAcz2ONy1i8WKP6olqOIbU5fHZKsoPqEZmLkK5NCTnmIolT0HZpH1SNkE/hHkPYGn620Domvn8g==}
+    engines: {node: '>=10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-linux-arm64-gnu/1.3.63:
+    resolution: {integrity: sha512-xtuk0v/86i0UR6G+5X6l3bgP1I1iWlEI23ad44L0FNrZ8wLLEvVzYuVoI6U5fKbp91LAsVpdWyyvSAo1sT7BWQ==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-linux-arm64-musl/1.3.63:
+    resolution: {integrity: sha512-AIRqE/3659zt5hfZzj3i/xtJbJl1iz9FcYEGUsIqqrxouqZWNbFujQpIguX4qFI7uoM+m6p6pqLjMmArwErRxQ==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-linux-x64-gnu/1.3.63:
+    resolution: {integrity: sha512-EAB5gkgDvStJofvdQU40hqEqjtSvtPs3PR0WupZtbLKWWCTWg76uTXQZEKNYx9r60Pt7sx1BAa3XnqgXjmcjDg==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-linux-x64-musl/1.3.63:
+    resolution: {integrity: sha512-8ScbtDPd8Hr1VkpzCseI5H770YgxxjTFsxinH9UtJWJBFIkdu2rEwjgz4t+lDjsc/R3JWaKt1q8Dkgzqmj+77g==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-win32-arm64-msvc/1.3.63:
+    resolution: {integrity: sha512-+41tEugXJjpK04KIb2+Xlpb1NArhIne4u0NQo+cHb6ekJoqQmgIj3uNJhQ0v+0DDMjFqbA07l0KYNMgYLBls/A==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-win32-ia32-msvc/1.3.63:
+    resolution: {integrity: sha512-W6nPOD5k++rSmoAb0Jg0h7gyfjly8b5ld7cSnmrWKXfmjgxOqxcoqP2LlzNkamg320eqkGaD9n+UnPJDteLTBw==}
+    engines: {node: '>=10'}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core-win32-x64-msvc/1.3.63:
+    resolution: {integrity: sha512-MHNCF3GWtlKZL3vNhMiCrtM4gBHqAv0Iw38bLoJRagh1Q/UDNVjNzWhgngCno9NUQodMtCo6G7iTQilW7YaAQQ==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@swc/core/1.3.63:
+    resolution: {integrity: sha512-mNRMr0xcqkvnC1a/H7rpMtbIjq7KKy4XaW/+zj3+w9cH5g72eMo3ADNHE03zHoqPn+Ov3szzFOMHT6rgJlRxow==}
+    engines: {node: '>=10'}
+    requiresBuild: true
+    peerDependencies:
+      '@swc/helpers': ^0.5.0
+    peerDependenciesMeta:
+      '@swc/helpers':
+        optional: true
+    optionalDependencies:
+      '@swc/core-darwin-arm64': 1.3.63
+      '@swc/core-darwin-x64': 1.3.63
+      '@swc/core-linux-arm-gnueabihf': 1.3.63
+      '@swc/core-linux-arm64-gnu': 1.3.63
+      '@swc/core-linux-arm64-musl': 1.3.63
+      '@swc/core-linux-x64-gnu': 1.3.63
+      '@swc/core-linux-x64-musl': 1.3.63
+      '@swc/core-win32-arm64-msvc': 1.3.63
+      '@swc/core-win32-ia32-msvc': 1.3.63
+      '@swc/core-win32-x64-msvc': 1.3.63
+    dev: true
 
   /@tailwindcss/forms/0.5.3:
     resolution: {integrity: sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==}
@@ -3896,6 +4178,10 @@ packages:
     resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
     dev: false
 
+  /@types/d3-delaunay/6.0.1:
+    resolution: {integrity: sha512-tLxQ2sfT0p6sxdG75c6f/ekqxjyYR0+LwPrsO1mbC9YDBzPJhs2HbJJRrn8Ez1DBoHRo2yx7YEATI+8V1nGMnQ==}
+    dev: true
+
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: true
@@ -3914,7 +4200,6 @@ packages:
 
   /@types/lodash/4.14.194:
     resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
-    dev: true
 
   /@types/mapbox-gl/2.7.10:
     resolution: {integrity: sha512-nMVEcu9bAcenvx6oPWubQSPevsekByjOfKjlkr+8P91vawtkxTnopDoXXq1Qn/f4cg3zt0Z2W9DVsVsKRNXJTw==}
@@ -3947,8 +4232,20 @@ packages:
       '@types/react': 18.0.33
     dev: true
 
+  /@types/react-modal/3.16.0:
+    resolution: {integrity: sha512-iphdqXAyUfByLbxJn5j6d+yh93dbMgshqGP0IuBeaKbZXx0aO+OXsvEkt6QctRdxjeM9/bR+Gp3h9F9djVWTQQ==}
+    dependencies:
+      '@types/react': 18.0.33
+    dev: true
+
   /@types/react-reconciler/0.28.2:
     resolution: {integrity: sha512-8tu6lHzEgYPlfDf/J6GOQdIc+gs+S2yAqlby3zTsB3SP2svlqTYe5fwZNtZyfactP74ShooP2vvi1BOp9ZemWw==}
+    dependencies:
+      '@types/react': 18.0.33
+    dev: false
+
+  /@types/react-resizable/3.0.4:
+    resolution: {integrity: sha512-+QguN9CDfC1lthq+4noG1fkxh8cqkV2Fv/Mu3mdknCCBiwwNLecnBdk1MmNNN7uJpT23Nx/aVkYsbt5NuWouFw==}
     dependencies:
       '@types/react': 18.0.33
     dev: false
@@ -4539,6 +4836,13 @@ packages:
   /csstype/3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
 
+  /d3-delaunay/6.0.4:
+    resolution: {integrity: sha512-mdjtIZ1XLAM8bm/hx3WwjfHt6Sggek7qH043O8KEjDXN40xi3vx/6pYSVTwLjEgiXQTbvaouWKynLBiUZ6SK6A==}
+    engines: {node: '>=12'}
+    dependencies:
+      delaunator: 5.0.0
+    dev: false
+
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: false
@@ -4615,6 +4919,12 @@ packages:
     dependencies:
       has-property-descriptors: 1.0.0
       object-keys: 1.1.1
+    dev: false
+
+  /delaunator/5.0.0:
+    resolution: {integrity: sha512-AyLvtyJdbv/U1GkiS6gUUzclRoAY4Gs75qkMygJJhU75LW4DNuSF2RMzpxs9jw9Oz1BobHjTdkG3zdP55VxAqw==}
+    dependencies:
+      robust-predicates: 3.0.1
     dev: false
 
   /detect-node-es/1.1.0:
@@ -5181,6 +5491,10 @@ packages:
     engines: {node: '>=0.8.x'}
     dev: false
 
+  /exenv/1.2.2:
+    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
+    dev: false
+
   /fast-base64-decode/1.0.0:
     resolution: {integrity: sha512-qwaScUgUGBYeDNRnbc/KyllVU88Jk1pRHPStuF/lO7B0/RTRLj7U0lkdTAutlBblY08rwZDff6tNU9cjv6j//Q==}
     dev: false
@@ -5203,6 +5517,10 @@ packages:
 
   /fast-levenshtein/2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  /fast-memoize/2.5.2:
+    resolution: {integrity: sha512-Ue0LwpDYErFbmNnZSF0UH6eImUwDmogUO1jyE+JbN2gsQz/jICm1Ve7t9QT0rNSsfJt+Hs4/S3GnsDVjL4HVrw==}
+    dev: false
 
   /fast-xml-parser/4.1.3:
     resolution: {integrity: sha512-LsNDahCiCcJPe8NO7HijcnukHB24tKbfDDA5IILx9dmW3Frb52lhbeX6MPNUSvyGNfav2VTYpJ/OqkRoVLrh2Q==}
@@ -6565,6 +6883,16 @@ packages:
       quickselect: 2.0.0
     dev: false
 
+  /re-resizable/6.9.6_react@18.2.0:
+    resolution: {integrity: sha512-0xYKS5+Z0zk+vICQlcZW+g54CcJTTmHluA7JUUgvERDxnKAnytylcyPsA+BSFi759s5hPlHmBRegFrwXs2FuBQ==}
+    peerDependencies:
+      react: ^16.13.1 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      fast-memoize: 2.5.2
+      react: 18.2.0
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -6573,6 +6901,17 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-draggable/4.4.5_react@18.2.0:
+    resolution: {integrity: sha512-OMHzJdyJbYTZo4uQE393fHcqqPYsEtkjfMgvCHr6rejT+Ezn4OZbNyGH50vv+SunC1RMvwOTSWkEODQLzw1M9g==}
+    peerDependencies:
+      react: '>= 16.3.0'
+      react-dom: '>= 16.3.0'
+    dependencies:
+      clsx: 1.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
     dev: false
 
   /react-generate-context/1.0.1_react@18.2.0:
@@ -6603,6 +6942,10 @@ packages:
       scheduler: 0.23.0
     dev: false
 
+  /react-lifecycles-compat/3.0.4:
+    resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
+    dev: false
+
   /react-map-gl/7.0.15_kspcdbwlxrmop34skwxyxe67ce:
     resolution: {integrity: sha512-l7x8lBhIEcHTreSgrc7hsKv5HsMY1wQg2PVXuKAPmQtgRZc9C3NGwurVJFe24gOlAwzta5UavAHWDiZdU1ZNCw==}
     peerDependencies:
@@ -6612,6 +6955,20 @@ packages:
       '@types/mapbox-gl': 2.7.10
       mapbox-gl: 1.13.1
       react: 18.2.0
+    dev: false
+
+  /react-modal/3.16.1_react@18.2.0:
+    resolution: {integrity: sha512-VStHgI3BVcGo7OXczvnJN7yT2TWHJPDXZWyI/a0ssFNhGZWsPmB8cF0z33ewDXq4VfYMO1vXgiv/g8Nj9NDyWg==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+      react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+    dependencies:
+      exenv: 1.2.2
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-lifecycles-compat: 3.0.4
+      warning: 4.0.3
     dev: false
 
   /react-native-get-random-values/1.8.0:
@@ -6671,6 +7028,30 @@ packages:
       tslib: 2.5.0
       use-callback-ref: 1.3.0_pofolu2o2erjq4lhyzl3hqovzq
       use-sidecar: 1.1.2_pofolu2o2erjq4lhyzl3hqovzq
+    dev: false
+
+  /react-resizable/3.0.5_react@18.2.0:
+    resolution: {integrity: sha512-vKpeHhI5OZvYn82kXOs1bC8aOXktGU5AmKAgaZS4F5JPburCtbmDPqE7Pzp+1kN4+Wb81LlF33VpGwWwtXem+w==}
+    peerDependencies:
+      react: '>= 16.3'
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-draggable: 4.4.5_react@18.2.0
+    transitivePeerDependencies:
+      - react-dom
+    dev: false
+
+  /react-rnd/10.4.1_react@18.2.0:
+    resolution: {integrity: sha512-0m887AjQZr6p2ADLNnipquqsDq4XJu/uqVqI3zuoGD19tRm6uB83HmZWydtkilNp5EWsOHbLGF4IjWMdd5du8Q==}
+    peerDependencies:
+      react: '>=16.3.0'
+      react-dom: '>=16.3.0'
+    dependencies:
+      re-resizable: 6.9.6_react@18.2.0
+      react: 18.2.0
+      react-draggable: 4.4.5_react@18.2.0
+      tslib: 2.3.1
     dev: false
 
   /react-router-dom/6.10.0_biqbaboplfbrettd7655fr4n2y:
@@ -6799,6 +7180,10 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.3
+
+  /robust-predicates/3.0.1:
+    resolution: {integrity: sha512-ndEIpszUHiG4HtDsQLeIuMvRsDnn8c8rYStabochtUeCvfuvNptb5TUbVD68LRAILPX7p9nqQGh4xJgn3EHS/g==}
+    dev: false
 
   /rollup/3.20.2:
     resolution: {integrity: sha512-3zwkBQl7Ai7MFYQE0y1MeQ15+9jsi7XxfrqwTb/9EK8D9C9+//EBR4M+CuA1KODRaNbFez/lWxA5vhEGZp4MUg==}
@@ -7182,6 +7567,10 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: false
 
+  /tslib/2.3.1:
+    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+    dev: false
+
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
     dev: false
@@ -7427,7 +7816,28 @@ packages:
   /uuid/9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
     hasBin: true
-    dev: false
+
+  /vite-plugin-top-level-await/1.3.1_vite@4.2.1:
+    resolution: {integrity: sha512-55M1h4NAwkrpxPNOJIBzKZFihqLUzIgnElLSmPNPMR2Fn9+JHKaNg3sVX1Fq+VgvuBksQYxiD3OnwQAUu7kaPQ==}
+    peerDependencies:
+      vite: '>=2.8'
+    dependencies:
+      '@rollup/plugin-virtual': 3.0.1
+      '@swc/core': 1.3.63
+      uuid: 9.0.0
+      vite: 4.2.1
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - rollup
+    dev: true
+
+  /vite-plugin-wasm/3.2.2_vite@4.2.1:
+    resolution: {integrity: sha512-cdbBUNR850AEoMd5nvLmnyeq63CSfoP1ctD/L2vLk/5+wsgAPlAVAzUK5nGKWO/jtehNlrSSHLteN+gFQw7VOA==}
+    peerDependencies:
+      vite: ^2 || ^3 || ^4
+    dependencies:
+      vite: 4.2.1
+    dev: true
 
   /vite-tsconfig-paths/4.1.0_27d6rnnqnnz33bvg4pqy2xno6y:
     resolution: {integrity: sha512-Ps275He1fF6Wpm/3tvyokIfXd3lcmk4KsdCG4yduSTRVt+htaxIoEor88M1h3soOeXg5fn77ZiupVRwGeB/XNQ==}
@@ -7484,6 +7894,12 @@ packages:
       '@mapbox/point-geometry': 0.1.0
       '@mapbox/vector-tile': 1.3.1
       pbf: 3.2.1
+    dev: false
+
+  /warning/4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: false
 
   /webidl-conversions/3.0.1:

@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
 import { BehaviorSubject } from "rxjs";
-import { useDebouncedValue } from "../../../lib/use-debounced-value";
+import { useDebouncedValue } from "util";
 import InfoAlert from "../../InfoAlert";
 import Loading from "../../Loading";
 import { ReactivePaginator } from "paginator";

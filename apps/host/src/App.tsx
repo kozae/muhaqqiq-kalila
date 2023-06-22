@@ -10,6 +10,8 @@ import SignInPage from "@pages/SignIn";
 import Home from "@pages/Home";
 import NotFound from "@pages/NotFound";
 import PageToolLayout from "@pages/PagesEditor/ToolLayout";
+import { LayoutPanel } from "pages-tool-layout-panel";
+import { LinesPanel } from "pages-tool-lines-panel";
 
 function HomeLayout() {
   const session = useSession();
@@ -71,11 +73,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "layout",
-            element: <h1> layout </h1>,
+            element: <LayoutPanel />,
           },
           {
             path: "lines",
-            element: <h1> lines </h1>,
+            element: <LinesPanel />,
           },
           {
             path: "segmentation",

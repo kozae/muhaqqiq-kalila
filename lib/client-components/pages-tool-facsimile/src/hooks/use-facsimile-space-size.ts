@@ -1,6 +1,6 @@
-import { useWindowSize } from "./use-window-size";
+import useWindowSize from "./use-window-size";
 
-export function useFacsimileSpaceSize(
+export default function useFacsimileSpaceSize(
   imSize: [number | undefined, number | undefined],
   widthPercentage: number,
   navBarHeight: number,

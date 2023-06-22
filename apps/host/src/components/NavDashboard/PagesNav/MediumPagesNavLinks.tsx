@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BehaviorSubject } from "rxjs";
-import { useDebouncedValue } from "../../../lib/use-debounced-value";
+import { useDebouncedValue } from "util";
 import InfoAlert from "../../InfoAlert";
 import Loading from "../../Loading";
 import { ReactivePaginator } from "paginator";
@@ -127,13 +127,16 @@ export function PageLink({
   return (
     <li className="col-span-1 flex rounded-md shadow-sm">
       <Link
-        key="pageHome"
+        key={`pageHome${pageNumber}`}
         to={baseHref}
         className={`${bgColor} flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-lg font-medium text-white`}
       >
         {pageNumber}
       </Link>
-      <span key="tools" className="inline-flex rounded-md shadow-sm">
+      <span
+        key={`tools${pageNumber}`}
+        className="inline-flex rounded-md shadow-sm"
+      >
         <Link
           key="layout"
           to={`${baseHref}/layout`}

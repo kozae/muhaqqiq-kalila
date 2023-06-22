@@ -1,1 +1,1 @@
-export { FacsimileSpace } from "./src/FacsimileSpace";
+export { default as FacsimileSpace } from "./src/components/FacsimileSpace";
