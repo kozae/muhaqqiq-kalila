@@ -30,6 +30,9 @@ const awsmobile = {
     passwordPolicyCharacters: [],
   },
   aws_cognito_verification_mechanisms: ["EMAIL"],
+  aws_content_delivery_bucket: "muhaqqiq-kalila-frontend-dev",
+  aws_content_delivery_bucket_region: "eu-central-1",
+  aws_content_delivery_url: "https://dl6yk0c5pkxzs.cloudfront.net",
   aws_user_files_s3_bucket: "muhaqqiqkalilabucket90843-dev",
   aws_user_files_s3_bucket_region: "eu-central-1",
 };

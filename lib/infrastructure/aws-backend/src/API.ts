@@ -4705,6 +4705,14 @@ export type DeleteChapterCollationMutation = {
   } | null,
 };
 
+export type MyCustomQueryQueryVariables = {
+  args?: string | null,
+};
+
+export type MyCustomQueryQuery = {
+  myCustomQuery?: string | null,
+};
+
 export type GetBookQueryVariables = {
   id: string,
 };

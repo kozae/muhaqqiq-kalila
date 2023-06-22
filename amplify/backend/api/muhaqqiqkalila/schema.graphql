@@ -116,3 +116,7 @@ type ChapterCollation @model @auth(rules: [{ allow: private }]) {
   chapter: String
   media: [Medium] @hasMany
 }
+
+type Query {
+  myCustomQuery(args: String): String @function(name: "rustMuhaqiqHandlerDEV")
+}
