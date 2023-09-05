@@ -1,6 +1,5 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import LinksNav from "@layout/LinksNav";
-import DataUpload from "@pages/DataUpload";
 import PagesLayout from "@pages/PagesEditor/Layout";
 import UserControls from "@components/UserControls";
 
@@ -12,9 +11,24 @@ import NotFound from "@pages/NotFound";
 import PageToolLayout from "@pages/PagesEditor/ToolLayout";
 import { LayoutPanel } from "pages-tool-layout-panel";
 import { LinesPanel } from "pages-tool-lines-panel";
+import { InfoPanel } from "pages-tool-info-panel";
+import { TranscriptionPanel } from "pages-tool-transcription-panel";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 function HomeLayout() {
   const session = useSession();
+
+  const intervalMS = 60 * 60 * 1000;
+
+  const updateServiceWorker = useRegisterSW({
+    onRegistered(r) {
+      r &&
+        setInterval(() => {
+          r.update();
+        }, intervalMS);
+    },
+  });
+
   return (
     <>
       <nav className="h-[65px] w-full">
@@ -45,10 +59,6 @@ export const router = createBrowserRouter([
         element: <SignInPage />,
       },
       {
-        path: "/upload",
-        element: <DataUpload />,
-      },
-      {
         path: "*",
         element: <NotFound />,
       },
@@ -69,7 +79,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "transcription",
-            element: <h1> transcription </h1>,
+            element: <TranscriptionPanel />,
+          },
+          {
+            index: true,
+            element: <InfoPanel />,
           },
           {
             path: "layout",

@@ -1,0 +1,226 @@
+import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import {
+  AppsyncFunction,
+  BaseDataSource,
+  GraphqlApi,
+  SchemaFile,
+  AuthorizationType,
+  Code,
+  FunctionRuntime,
+  FunctionRuntimeFamily,
+  DynamoDbDataSource,
+} from "aws-cdk-lib/aws-appsync";
+
+import * as path from "path";
+import { ITable, Table } from "aws-cdk-lib/aws-dynamodb";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { IUserPool, UserPool } from "aws-cdk-lib/aws-cognito";
+import {
+  IKalilaTableInfo,
+  KalilaTableConstructs,
+  createSchemaFileWithoutSourceDirective,
+  extractFieldsWithSource,
+} from "./utils";
+import {
+  Code as LambdaCode,
+  Architecture,
+  Runtime,
+  Function as LambdaFunction,
+} from "aws-cdk-lib/aws-lambda";
+
+interface IKalilaApiStackProps extends StackProps {
+  readonly tableArns: IKalilaTableInfo;
+  readonly tableNames: IKalilaTableInfo;
+  readonly userPoolId: string;
+}
+
+type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
+type KalilaLamdas = Record<"mutationHandler", LambdaFunction>;
+
+export class KalilaApiStack extends Stack {
+  private readonly schemaPath: string;
+  private readonly kalilaGraphQLApi: GraphqlApi;
+  private readonly tables: KalilaTableConstructs;
+  private readonly dataSources: KalilaDataSources;
+  private readonly lambdas: KalilaLamdas;
+
+  constructor(scope: Construct, id: string, props: IKalilaApiStackProps) {
+    super(scope, id, props);
+    this.schemaPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "kalila-graphql",
+      "schema.graphql"
+    );
+
+    this.kalilaGraphQLApi = this.createApi(
+      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId)
+    );
+    this.tables = this.createTableConstructs(props.tableArns);
+    this.dataSources = this.createDataSources();
+    this.lambdas = this.createLambdas(props.tableNames);
+
+    for (const { parent, name, source } of extractFieldsWithSource(
+      this.schemaPath
+    )) {
+      if (source.includes("lambda")) {
+        const lamda = this.lambdas.mutationHandler;
+        this.createLambdaResolver(parent, name, lamda);
+      } else {
+        this.createResolver(parent, name, this.dataSources[source]);
+      }
+    }
+
+    new CfnOutput(this, "ApiUrl", {
+      value: this.kalilaGraphQLApi.graphqlUrl,
+    });
+  }
+
+  private createApi(userPool: IUserPool) {
+    createSchemaFileWithoutSourceDirective(this.schemaPath, "schema.graphql");
+    return new GraphqlApi(this, "KalilaApi", {
+      name: "kalila-api",
+      schema: SchemaFile.fromAsset("schema.graphql"),
+      authorizationConfig: {
+        defaultAuthorization: {
+          authorizationType: AuthorizationType.USER_POOL,
+          userPoolConfig: {
+            userPool,
+          },
+        },
+      },
+      xrayEnabled: true,
+    });
+  }
+
+  private createTableConstructs(names: IKalilaTableInfo) {
+    return Object.entries(names).reduce(
+      (acc, [key, tableName]: [string, string]) => {
+        acc[key as keyof IKalilaTableInfo] = Table.fromTableArn(
+          this,
+          `${key}Table__API_Construct`,
+          tableName
+        );
+        return acc;
+      },
+      {} as KalilaTableConstructs
+    );
+  }
+
+  private createLambdas(names: IKalilaTableInfo) {
+    const mutationHandler = new LambdaFunction(this, "KalilaMutationHandler", {
+      code: LambdaCode.fromAsset(
+        "/root/Kalila/kalila_rs/target/lambda/mutation_handler"
+      ),
+      architecture: Architecture.ARM_64,
+      runtime: Runtime.PROVIDED_AL2,
+      handler: "does_not_matter",
+
+      functionName: "kalila-api-mutation-handler",
+      environment: {
+        PAGES: names.pages,
+        LINES: names.lines,
+        TEXT: names.textElements,
+        IMAGES: names.images,
+      },
+    });
+    for (const table of Object.values(this.tables)) {
+      mutationHandler.grantPrincipal.addToPrincipalPolicy(
+        new PolicyStatement({
+          actions: ["dynamodb:*"],
+          resources: [table.tableArn, `${table.tableArn}/index/*`],
+          effect: Effect.ALLOW,
+        })
+      );
+    }
+
+    return { mutationHandler };
+  }
+
+  private createDataSources() {
+    return Object.entries(this.tables).reduce((acc, [key, table]) => {
+      const dataSource = this.kalilaGraphQLApi.addDynamoDbDataSource(
+        `${key}DataSource`,
+        table
+      );
+
+      dataSource.grantPrincipal.addToPrincipalPolicy(
+        new PolicyStatement({
+          actions: ["dynamodb:*"],
+          resources: [`${table.tableArn}/index/*`],
+          effect: Effect.ALLOW,
+        })
+      );
+      acc[key as keyof IKalilaTableInfo] = dataSource;
+      return acc;
+    }, {} as KalilaDataSources);
+  }
+
+  private createLambdaResolver(
+    typeName: string,
+    fieldName: string,
+    lambdaFn: LambdaFunction
+  ) {
+    // todo, refactor
+    const dataSource = this.kalilaGraphQLApi.addLambdaDataSource(
+      "MutationHandler",
+      lambdaFn
+    );
+    this.kalilaGraphQLApi.createResolver(`${typeName}_${fieldName}ResolverFn`, {
+      typeName,
+      fieldName,
+      dataSource,
+    });
+  }
+
+  private createResolver(
+    typeName: string,
+    fieldName: string,
+    dataSource: BaseDataSource
+  ) {
+    const func = new AppsyncFunction(
+      this,
+      `${typeName}_${fieldName}ResolverFunc`,
+      {
+        name: `${typeName}_${fieldName}_resolver`,
+        api: this.kalilaGraphQLApi,
+        dataSource,
+        code: Code.fromAsset(
+          path.join(
+            __dirname,
+            "..",
+            "..",
+            "kalila-appsync-code",
+            "dist",
+            typeName,
+            `${fieldName}.mjs`
+          )
+        ),
+        runtime: FunctionRuntime.JS_1_0_0,
+      }
+    );
+
+    this.kalilaGraphQLApi.createResolver(
+      `${typeName}_${fieldName}ResolverPipeline`,
+      {
+        typeName,
+        fieldName,
+        code: Code.fromAsset(
+          path.join(
+            __dirname,
+            "..",
+            "..",
+            "kalila-appsync-code",
+            "dist",
+            "base",
+            "pipeline.mjs"
+          )
+        ),
+        runtime: new FunctionRuntime(FunctionRuntimeFamily.JS, "1.0.0"),
+        pipelineConfig: [func],
+      }
+    );
+  }
+}

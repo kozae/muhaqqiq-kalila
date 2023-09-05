@@ -2,7 +2,7 @@
   "extends": "tsconfig/base.json",
   "include": [
     "src",
-    "../../lib/client-components/util/src/use-debounced-value.ts"
+    "../../lib/client-components/frontend-util/src/use-debounced-value.ts"
   ],
   "references": [
     {
@@ -10,6 +10,9 @@
     }
   ],
   "compilerOptions": {
+    "types": [
+      "vite-plugin-pwa/client"
+    ],
     "paths": {
       "@layout/*": [
         "./src/layout/*"
@@ -22,6 +25,9 @@
       ],
       "@pages/*": [
         "./src/pages/*"
+      ],
+      "@workers/*": [
+        "./src/workers/*"
       ]
     }
   }

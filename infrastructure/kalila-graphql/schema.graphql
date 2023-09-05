@@ -1,0 +1,334 @@
+# base
+directive @source(value: Sources) on FIELD_DEFINITION
+# directive @aws_subscribe(mutations: [String]) on FIELD_DEFINITION
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  # Count
+  getItemCount(table: Sources!): ItemCount @source(value: itemCounts)
+
+  # Book
+  getBook(id: ID!): Book @source(value: books)
+  listBooks: [Book] @source(value: books)
+
+  # Medium
+  getMedium(id: ID!): Medium @source(value: media)
+  listBookMedia(
+    id: ID!
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+  ): MediumList @source(value: media)
+
+  # Unit
+  getUnit(id: ID!): Unit @source(value: units)
+  listUnits(
+    parentId: ID!
+    limit: Int
+    orderGt: Int
+    orderLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): UnitList @source(value: units)
+
+  # Page
+  getPage(id: ID!): Page @source(value: pages)
+  listMediumPages(
+    id: ID!
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList @source(value: pages)
+
+  # Segment
+  getSegment(id: ID!): Segment @source(value: segments)
+  listMediumSegments(
+    id: ID!
+    limit: Int
+    startPageGt: Int
+    startPageLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): SegmentList @source(value: segments)
+
+  # Chapter Collation
+  getChapterCollation(id: ID!): ChapterCollation
+    @source(value: chapterCollations)
+  listChapterCollations: [ChapterCollation] @source(value: chapterCollations)
+
+  # Line Detection Job
+  listLineDetectionJobs: [LineDetectionJob] @source(value: lineDetectionJobs)
+  getLineDetectionJob(manuscriptId: ID!, state: Int!): LineDetectionJob
+    @source(value: lineDetectionJobs)
+}
+
+type Mutation {
+  createBook(input: CreateBookInput!): Book @source(value: books)
+  createMedium(input: CreateMediumInput!): Medium @source(value: media)
+
+  createLineDetectionJob(input: LineDetectionJobInput!): LineDetectionJob
+    @source(value: lineDetectionJobs)
+
+  updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
+    @source(value: mutation_lambda)
+}
+
+type Subscription {
+  onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
+  onCreateMedium(bookId: String!): Medium
+    @aws_subscribe(mutations: ["createMedium"])
+}
+
+# Main Types
+type ItemCount {
+  table: String!
+  count: Int!
+}
+
+type Book {
+  id: ID!
+  siglum: String!
+  title: String
+  author: String
+  authorDeathYear: Int
+  media(limit: Int, nextToken: String, sort: SortDirection): MediumList
+    @source(value: media)
+  editor: String
+  version: Int
+}
+
+type Medium {
+  id: ID!
+  bookId: ID!
+  siglum: String!
+  format: MediaFormat
+  pages(
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList @source(value: pages)
+  segments(
+    limit: Int
+    nextToken: String
+    startPageGt: Int
+    startPageLt: Int
+    sort: SortDirection
+  ): SegmentList @source(value: segments)
+  editor: String
+  version: Int
+}
+type ChapterCollation {
+  id: ID!
+  chapter: String!
+  name: String
+  mediumIds: [String]
+  editor: String
+  version: Int
+}
+type Unit {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  images: [Image] @source(value: images)
+  children(
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+    orderGt: Int
+    orderLt: Int
+  ): UnitList @source(value: units)
+  segments: [Segment] @source(value: segments)
+  version: Int
+}
+
+type Segment {
+  id: ID!
+  mediumId: ID!
+  unitId: ID!
+  unit: SegmentUnitConnection @source(value: units)
+  startPage: Int!
+  startLine: Int!
+  startToken: Int!
+  endPage: Int
+  endLine: Int
+  endToken: Int
+  lacuna: Boolean
+  tags: [String]
+  type: String
+  version: Int
+}
+
+type SegmentUnitConnection {
+  bookId: ID!
+  id: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+type Page {
+  id: ID!
+  mediumId: ID!
+  number: Int!
+  image: String
+  commentary: [String]
+  foliation: String
+  pagination: Int
+  tags: [String]
+  images: [Image] @source(value: images)
+  text: [TextElement] @source(value: textElements)
+  segments: [Segment] @source(value: segments)
+  editor: String
+  version: Int
+}
+
+type TextElement {
+  id: ID!
+  pageId: ID!
+  order: Int!
+  position: String
+  region: [Int]
+  lines: [Line] @source(value: lines)
+  version: Int
+}
+
+type Line {
+  id: ID!
+  elementId: ID!
+  order: Int!
+  region: [Int]
+  states: [String]
+  tokens: [String]
+  version: Int
+}
+
+type Image {
+  id: ID!
+  pageId: ID!
+  unitId: ID
+  legendId: ID
+  legend: TextElement @source(value: textElements)
+  location: [Int]
+  motifs: [String]
+  order: Int!
+  position: String
+  region: [Int]
+  style: [String]
+  version: Int
+}
+
+type LineDetectionJob {
+  id: ID!
+  manuscriptId: String!
+  state: Int!
+  pages: [Int]
+  finishedOn: Int
+  parameters: AWSJSON
+}
+
+# list types
+
+type MediumList {
+  items: [Medium]!
+  nextToken: String
+}
+
+type UnitList {
+  items: [Unit]!
+  nextToken: String
+}
+
+type PageList {
+  items: [Page]!
+  nextToken: String
+}
+
+type SegmentList {
+  items: [Segment]!
+  nextToken: String
+}
+
+# enums
+
+enum Sources {
+  books
+  media
+  itemCounts
+  units
+  pages
+  segments
+  images
+  textElements
+  lines
+  chapterCollations
+  lineDetectionJobs
+  mutation_lambda
+}
+enum MediaFormat {
+  DIGITAL
+  MANUSCRIPT
+  PRINT
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+# input types
+
+input CreateBookInput {
+  author: String
+  authorDeathYear: Int
+  editor: String
+  id: ID
+  siglum: String!
+  title: String
+}
+
+input CreateMediumInput {
+  bookId: ID!
+  editor: String
+  format: MediaFormat
+  id: ID
+  siglum: String!
+}
+
+input LineDetectionJobInput {
+  id: ID!
+  manuscriptId: ID!
+  pages: [Int!]!
+  notifications: [String!]
+  parameters: AWSJSON
+}
+
+input PageInfoUpdateInput {
+  foliation: String
+  pagination: Int
+  tags: [String]
+  commentary: [String]
+  image: String
+}

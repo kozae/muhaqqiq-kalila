@@ -3,13 +3,13 @@ import Loading from "../../Loading";
 import { ReactNode, useState } from "react";
 import { API } from "aws-amplify";
 import { GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
-import { listBooks, ListBooksQuery } from "aws-backend";
+import { listBooks, ListBooksQuery } from "kalila-graphql";
 import useSWR from "swr";
 import BookMediaFilter from "./BookMediaFilter";
 import InfoAlert from "@components/InfoAlert";
 import { NavPanelContainer } from "nav-panel";
 import { ReactivePaginator } from "paginator";
-import { useDebouncedValue } from "util";
+import { useDebouncedValue } from "frontend-util";
 
 export default function BookPagesNavContainer({
   filter$,
@@ -23,7 +23,7 @@ export default function BookPagesNavContainer({
       query: listBooks,
       authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
     });
-    return response.data?.listBooks?.items;
+    return response.data?.listBooks;
   });
 
   if (isLoading) {

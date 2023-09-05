@@ -7,13 +7,13 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BehaviorSubject } from "rxjs";
-import { useDebouncedValue } from "util";
+import { useDebouncedValue } from "frontend-util";
 import InfoAlert from "../../InfoAlert";
 import Loading from "../../Loading";
 import { ReactivePaginator } from "paginator";
 import useSWR from "swr";
 import { API, GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
-import { GetMediumQuery } from "aws-backend";
+import { GetMediumQuery } from "kalila-graphql";
 import { chain } from "lodash";
 import { NavPanelLink } from "nav-panel";
 
@@ -97,6 +97,7 @@ export default function MediumPagesNavLinks({
         <NavPanelLink
           initials={<TableCellsIcon className="h-5 w-5" aria-hidden="true" />}
           bgColor="bg-secondary-900"
+          key="summary-apge-link"
         >
           <Link to={`/pages/${mediumId}`}>Medium Page Summary</Link>
         </NavPanelLink>
@@ -139,7 +140,7 @@ export function PageLink({
       >
         <Link
           key="layout"
-          to={`${baseHref}/layout`}
+          to={`${baseHref}layout`}
           className="relative inline-flex items-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
         >
           <RectangleGroupIcon
@@ -150,7 +151,7 @@ export function PageLink({
         </Link>
         <Link
           key="transcription"
-          to={`${baseHref}/transcription`}
+          to={`${baseHref}transcription`}
           className="relative inline-flex items-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
         >
           <DocumentTextIcon
@@ -161,7 +162,7 @@ export function PageLink({
         </Link>
         <Link
           key="segmentation"
-          to={`${baseHref}/segmentation`}
+          to={`${baseHref}segmentation`}
           className="relative inline-flex items-center gap-x-1.5 rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
         >
           <SquaresPlusIcon

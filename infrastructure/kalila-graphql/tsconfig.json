@@ -1,0 +1,9 @@
+{
+  "extends": "tsconfig/react-client-library.json",
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,12 +1,12 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect } from "react";
 import { BehaviorSubject } from "rxjs";
-import { useDebouncedValue } from "util";
+import { useDebouncedValue } from "frontend-util";
 import InfoAlert from "../../InfoAlert";
 import Loading from "../../Loading";
 import { ReactivePaginator } from "paginator";
 import useSWR from "swr";
 import { API, GRAPHQL_AUTH_MODE, GraphQLQuery } from "@aws-amplify/api";
-import { GetBookQuery } from "aws-backend";
+import { GetBookQuery } from "kalila-graphql";
 import { chain } from "lodash";
 import MediumPagesFilter from "./MediumPagesFilter";
 import { NavPanelContainer } from "nav-panel";
@@ -20,10 +20,6 @@ export const getBook = /* GraphQL */ `
           editor
           siglum
           format
-          createdAt
-          updatedAt
-          bookMediaId
-          chapterCollationMediaId
         }
       }
     }

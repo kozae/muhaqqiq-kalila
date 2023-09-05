@@ -1,0 +1,20 @@
+{
+  "name": "pages-tool-store-worker",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "dexie": "^3.2.4",
+    "kalila-graphql": "workspace:*"
+  }
+}

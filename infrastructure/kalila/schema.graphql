@@ -1,0 +1,334 @@
+# base
+
+# directive @aws_subscribe(mutations: [String]) on FIELD_DEFINITION
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  # Count
+  getItemCount(table: Sources!): ItemCount 
+
+  # Book
+  getBook(id: ID!): Book 
+  listBooks: [Book] 
+
+  # Medium
+  getMedium(id: ID!): Medium 
+  listBookMedia(
+    id: ID!
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+  ): MediumList 
+
+  # Unit
+  getUnit(id: ID!): Unit 
+  listUnits(
+    parentId: ID!
+    limit: Int
+    orderGt: Int
+    orderLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): UnitList 
+
+  # Page
+  getPage(id: ID!): Page 
+  listMediumPages(
+    id: ID!
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList 
+
+  # Segment
+  getSegment(id: ID!): Segment 
+  listMediumSegments(
+    id: ID!
+    limit: Int
+    startPageGt: Int
+    startPageLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): SegmentList 
+
+  # Chapter Collation
+  getChapterCollation(id: ID!): ChapterCollation
+    
+  listChapterCollations: [ChapterCollation] 
+
+  # Line Detection Job
+  listLineDetectionJobs: [LineDetectionJob] 
+  getLineDetectionJob(manuscriptId: ID!, state: Int!): LineDetectionJob
+    
+}
+
+type Mutation {
+  createBook(input: CreateBookInput!): Book 
+  createMedium(input: CreateMediumInput!): Medium 
+
+  createLineDetectionJob(input: LineDetectionJobInput!): LineDetectionJob
+    
+
+  updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
+    
+}
+
+type Subscription {
+  onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
+  onCreateMedium(bookId: String!): Medium
+    @aws_subscribe(mutations: ["createMedium"])
+}
+
+# Main Types
+type ItemCount {
+  table: String!
+  count: Int!
+}
+
+type Book {
+  id: ID!
+  siglum: String!
+  title: String
+  author: String
+  authorDeathYear: Int
+  media(limit: Int, nextToken: String, sort: SortDirection): MediumList
+    
+  editor: String
+  version: Int
+}
+
+type Medium {
+  id: ID!
+  bookId: ID!
+  siglum: String!
+  format: MediaFormat
+  pages(
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList 
+  segments(
+    limit: Int
+    nextToken: String
+    startPageGt: Int
+    startPageLt: Int
+    sort: SortDirection
+  ): SegmentList 
+  editor: String
+  version: Int
+}
+type ChapterCollation {
+  id: ID!
+  chapter: String!
+  name: String
+  mediumIds: [String]
+  editor: String
+  version: Int
+}
+type Unit {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  images: [Image] 
+  children(
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+    orderGt: Int
+    orderLt: Int
+  ): UnitList 
+  segments: [Segment] 
+  version: Int
+}
+
+type Segment {
+  id: ID!
+  mediumId: ID!
+  unitId: ID!
+  unit: SegmentUnitConnection 
+  startPage: Int!
+  startLine: Int!
+  startToken: Int!
+  endPage: Int
+  endLine: Int
+  endToken: Int
+  lacuna: Boolean
+  tags: [String]
+  type: String
+  version: Int
+}
+
+type SegmentUnitConnection {
+  bookId: ID!
+  id: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+type Page {
+  id: ID!
+  mediumId: ID!
+  number: Int!
+  image: String
+  commentary: [String]
+  foliation: String
+  pagination: Int
+  tags: [String]
+  images: [Image] 
+  text: [TextElement] 
+  segments: [Segment] 
+  editor: String
+  version: Int
+}
+
+type TextElement {
+  id: ID!
+  pageId: ID!
+  order: Int!
+  position: String
+  region: [Int]
+  lines: [Line] 
+  version: Int
+}
+
+type Line {
+  id: ID!
+  elementId: ID!
+  order: Int!
+  region: [Int]
+  states: [String]
+  tokens: [String]
+  version: Int
+}
+
+type Image {
+  id: ID!
+  pageId: ID!
+  unitId: ID
+  legendId: ID
+  legend: TextElement 
+  location: [Int]
+  motifs: [String]
+  order: Int!
+  position: String
+  region: [Int]
+  style: [String]
+  version: Int
+}
+
+type LineDetectionJob {
+  id: ID!
+  manuscriptId: String!
+  state: Int!
+  pages: [Int]
+  finishedOn: Int
+  parameters: AWSJSON
+}
+
+# list types
+
+type MediumList {
+  items: [Medium]!
+  nextToken: String
+}
+
+type UnitList {
+  items: [Unit]!
+  nextToken: String
+}
+
+type PageList {
+  items: [Page]!
+  nextToken: String
+}
+
+type SegmentList {
+  items: [Segment]!
+  nextToken: String
+}
+
+# enums
+
+enum Sources {
+  books
+  media
+  itemCounts
+  units
+  pages
+  segments
+  images
+  textElements
+  lines
+  chapterCollations
+  lineDetectionJobs
+  mutation_lambda
+}
+enum MediaFormat {
+  DIGITAL
+  MANUSCRIPT
+  PRINT
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+# input types
+
+input CreateBookInput {
+  author: String
+  authorDeathYear: Int
+  editor: String
+  id: ID
+  siglum: String!
+  title: String
+}
+
+input CreateMediumInput {
+  bookId: ID!
+  editor: String
+  format: MediaFormat
+  id: ID
+  siglum: String!
+}
+
+input LineDetectionJobInput {
+  id: ID!
+  manuscriptId: ID!
+  pages: [Int!]!
+  notifications: [String!]
+  parameters: AWSJSON
+}
+
+input PageInfoUpdateInput {
+  foliation: String
+  pagination: Int
+  tags: [String]
+  commentary: [String]
+  image: String
+}

@@ -1,0 +1,35 @@
+{
+  "name": "pages-tool-lines-panel",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "eslint": "^8.47.0",
+    "eslint-config-custom": "workspace:*",
+    "kalila-graphql": "workspace:*",
+    "pages-tool-shared-ui": "workspace:*",
+    "react": "^18.2.0",
+    "tailwind-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@types/lodash": "^4.14.197",
+    "class-variance-authority": "^0.4.0",
+    "clsx": "^1.2.1",
+    "common-components": "workspace:*",
+    "lodash": "^4.17.21",
+    "pages-tool-facsimile-worker": "workspace:*",
+    "pages-tool-store": "workspace:*",
+    "react-hook-form": "^7.45.4",
+    "react-icons": "^4.10.1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "grunt.autoDetect": "off",
+    "gulp.autoDetect": "off",
+    "jake.autoDetect": "off",
+    "npm.autoDetect": "off",
+    "typescript.tsc.autoDetect": "off",
+    "tasks": [
+        {
+            "label": "Use Node 18",
+            "type": "shell",
+            "command": "nvm use 18.16.0",
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}

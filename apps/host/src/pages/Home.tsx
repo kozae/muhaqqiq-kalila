@@ -1,9 +1,11 @@
-import NavDashboard from "@components/NavDashboard";
 import PageWrapper from "@layout/PageWrapper";
 import useSession from "@lib/use-session";
 
+import NavDashboard from "@components/NavDashboard";
+
 export default function Home() {
   const session = useSession();
+
   return (
     <PageWrapper>
       <div className="flex h-full flex-col lg:flex-row">
