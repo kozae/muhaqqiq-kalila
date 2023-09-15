@@ -1,6 +1,6 @@
 packages:
   - "apps/*"
   - "config/*"
-  - "lib/client-components/common/*"
-  - "lib/client-components/pages-tool/*"
+  - "lib/common/*"
+  - "lib/pages-tool/*"
   - "infrastructure/*"

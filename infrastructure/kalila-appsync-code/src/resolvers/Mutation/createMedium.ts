@@ -3,7 +3,7 @@ import { CreateMediumInput } from "kalila-graphql";
 import { getTime } from "../../util";
 
 export function request(
-  ctx: Context<{ input: CreateMediumInput }>
+  ctx: Context<{ input: CreateMediumInput }>,
 ): DynamoDBPutItemRequest {
   const { id = util.autoId(), ...attributes } = {
     ...ctx.args.input,

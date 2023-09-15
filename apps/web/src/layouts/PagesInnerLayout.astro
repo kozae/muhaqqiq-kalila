@@ -1,0 +1,32 @@
+---
+import ToolNav from "@components/PagesLayoutComponents/ToolNav.astro";
+import PagesOuterLayout from "./PagesOuterLayout.astro";
+import StateControls from "@client/pages/StateControls";
+import FacsimileSpace from "@client/pages/Facsimile";
+interface Props {
+  mediumId: string;
+  pageId?: string;
+  tool?: string;
+}
+
+const { mediumId, pageId, tool = "" } = Astro.props;
+---
+
+<PagesOuterLayout mediumId={mediumId} pageId={pageId} tool={tool} transitions>
+  <div
+    transition:persist={pageId}
+    transition:animate="fade"
+    class="flex w-1/2 flex-col items-center"
+  >
+    <div class="h-[80px] w-full">
+      <StateControls client:only />
+    </div>
+    <div class="w-full h-[calc(100vh-90px)] flex justify-center">
+      <FacsimileSpace id={pageId} client:only />
+    </div>
+  </div>
+  <div class="ml-0 w-1/2">
+    <ToolNav tool={tool} mediumId={mediumId} pageId={pageId ?? ""} />
+    <slot />
+  </div>
+</PagesOuterLayout>

@@ -1,0 +1,11 @@
+---
+import Layout from "@layouts/PagesOuterLayout.astro";
+
+const { mediumId } = Astro.params;
+---
+
+<Layout mediumId={mediumId!}>
+  <h1>Manuscript</h1>
+
+  <p>{mediumId}</p>
+</Layout>

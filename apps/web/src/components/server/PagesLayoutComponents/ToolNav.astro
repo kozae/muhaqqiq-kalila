@@ -1,0 +1,76 @@
+---
+import InformationCircleIcon from "@icons/InformationCircleIcon.svelte";
+import RectangleGroupIcon from "@icons/RectangleGroupIcon.svelte";
+import ListBulletIcon from "@icons/ListBulletIcon.svelte";
+import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
+import SquaresPlusIcon from "@icons/SquaresPlusIcon.svelte";
+import PhotoIcon from "@icons/PhotoIcon.svelte";
+import { classes } from "frontend-util";
+
+interface Props {
+  mediumId: string;
+  pageId: string;
+  tool: string;
+}
+
+type Tab = {
+  name: string;
+  href: string;
+  icon: any;
+  current?: boolean;
+};
+
+const tabs: Tab[] = [
+  { name: "Info", href: "info", icon: InformationCircleIcon },
+  { name: "Layout", href: "layout", icon: RectangleGroupIcon },
+  { name: "Lines", href: "lines", icon: ListBulletIcon },
+  {
+    name: "Transcription",
+    href: "transcription",
+    icon: DocumentTextIcon,
+    current: false,
+  },
+  { name: "Segments", href: "segmentation", icon: SquaresPlusIcon },
+  { name: "Images", href: "images", icon: PhotoIcon },
+];
+const { mediumId, pageId, tool } = Astro.props;
+---
+
+<div class="relative flex h-20 w-full items-center justify-center rounded">
+  <div
+    class="relative flex h-20 max-w-full w-fit items-center justify-start overflow-auto rounded"
+  >
+    <div class="h-fit w-fit border-b border-gray-200">
+      <nav
+        class="-mb-px flex h-fit w-fit justify-center space-x-8"
+        aria-label="Tabs"
+      >
+        {
+          tabs.map((tab) => (
+            <a
+              href={`/pages/${mediumId}/${pageId}/${tab.href}`}
+              class={classes(
+                tab.href === tool
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                "group inline-flex h-fit w-fit items-center border-b-2 px-1 py-4 text-sm font-medium",
+              )}
+              aria-current={tab.current ? "page" : undefined}
+            >
+              <tab.icon
+                className={classes(
+                  tab.href === tool
+                    ? "text-primary-500"
+                    : "text-gray-400 group-hover:text-gray-500",
+                  "h-5 w-5",
+                )}
+              />
+
+              <span>{tab.name}</span>
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</div>

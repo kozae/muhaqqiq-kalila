@@ -11,7 +11,7 @@ import {
 } from "kalila-graphql";
 
 export function request(
-  ctx: Context<ListMediumSegmentsQueryVariables>
+  ctx: Context<ListMediumSegmentsQueryVariables>,
 ): DynamoDBQueryRequest {
   const {
     startPageGt = undefined,
@@ -25,7 +25,7 @@ export function request(
 
   let expression = "mediumId = :id";
   let expressionValues: ExpressionAttributeValueMap = util.dynamodb.toMapValues(
-    { ":id": id }
+    { ":id": id },
   );
 
   if (startPageGt !== undefined && startPageLt === undefined) {

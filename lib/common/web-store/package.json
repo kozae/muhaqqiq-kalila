@@ -1,0 +1,22 @@
+{
+  "name": "web-store",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*"
+  },
+  "devDependencies": {
+    "eslint": "^8.49.0",
+    "eslint-config-custom": "workspace:*",
+    "tailwind-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "nanostores": "^0.9.3"
+  }
+}

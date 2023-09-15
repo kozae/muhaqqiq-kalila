@@ -2,7 +2,7 @@ import { Context, DynamoDBQueryRequest, util } from "@aws-appsync/utils";
 import { ListBookMediaQueryVariables, SortDirection } from "kalila-graphql";
 
 export function request(
-  ctx: Context<ListBookMediaQueryVariables>
+  ctx: Context<ListBookMediaQueryVariables>,
 ): DynamoDBQueryRequest {
   const {
     id,

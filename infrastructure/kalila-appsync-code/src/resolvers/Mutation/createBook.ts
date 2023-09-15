@@ -3,7 +3,7 @@ import { CreateBookInput } from "kalila-graphql";
 import { getTime } from "../../util";
 
 export function request(
-  ctx: Context<{ input: CreateBookInput }>
+  ctx: Context<{ input: CreateBookInput }>,
 ): DynamoDBPutItemRequest {
   const { id = util.autoId(), ...attributes } = {
     ...ctx.args.input,

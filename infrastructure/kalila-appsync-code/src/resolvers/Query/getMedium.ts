@@ -2,7 +2,7 @@ import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 import { GetMediumQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetMediumQueryVariables>
+  ctx: Context<GetMediumQueryVariables>,
 ): DynamoDBGetItemRequest {
   const { id } = ctx.args;
   return {

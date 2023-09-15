@@ -8,7 +8,7 @@ import {
 import { ListMediumPagesQueryVariables, SortDirection } from "kalila-graphql";
 
 export function request(
-  ctx: Context<ListMediumPagesQueryVariables>
+  ctx: Context<ListMediumPagesQueryVariables>,
 ): DynamoDBQueryRequest {
   const {
     id,
@@ -21,7 +21,7 @@ export function request(
 
   let expression = "mediumId = :id";
   let expressionValues: ExpressionAttributeValueMap = util.dynamodb.toMapValues(
-    { ":id": id }
+    { ":id": id },
   );
 
   if (numberGt !== undefined && numberLt === undefined) {

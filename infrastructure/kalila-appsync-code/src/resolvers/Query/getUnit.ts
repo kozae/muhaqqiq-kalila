@@ -2,7 +2,7 @@ import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 import { GetUnitQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetUnitQueryVariables>
+  ctx: Context<GetUnitQueryVariables>,
 ): DynamoDBGetItemRequest {
   const { id } = ctx.args;
   return {

@@ -2,7 +2,7 @@ import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 import { GetChapterCollationQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetChapterCollationQueryVariables>
+  ctx: Context<GetChapterCollationQueryVariables>,
 ): DynamoDBGetItemRequest {
   const { id } = ctx.args;
   return {

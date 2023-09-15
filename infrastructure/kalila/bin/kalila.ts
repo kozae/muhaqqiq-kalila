@@ -6,7 +6,6 @@ import { KalilaDataManagementStack } from "../lib/kalila-data-management-stack";
 import { KalilaApiStack } from "../lib/kalila-api-stack";
 import { KalilaAuthStack } from "../lib/kalila-auth-stack";
 import { KalilaDataStorageStack } from "../lib/kalila-data-storage-stack";
-import { KalilaFrontendStack } from "../lib/kalila-frontened-stack";
 import { KalilaDataAggregationStack } from "../lib/kalila-data-aggregation-stack";
 import { KalilaLineDetectionStack } from "../lib/kalila-line-detection-stack";
 
@@ -19,7 +18,7 @@ const authStack = new KalilaAuthStack(app, "KalilaAuthStack", { env });
 const dataStack = new KalilaDataManagementStack(
   app,
   "KalilaDataManagementStack",
-  { env }
+  { env },
 );
 
 new KalilaApiStack(app, "KalilaApiStack", {
@@ -40,7 +39,6 @@ new KalilaDataAggregationStack(app, "KalilaDataAggregationStack", {
   env,
 });
 
-new KalilaFrontendStack(app, "KalilaFrontendStack", { env });
 new KalilaLineDetectionStack(app, "KalilaLineDetectionStack", {
   tableArns: dataStack.tableArns,
   tableStreamArns: dataStack.tableStreamArns,

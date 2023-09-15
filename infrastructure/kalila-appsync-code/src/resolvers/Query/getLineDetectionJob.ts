@@ -2,7 +2,7 @@ import { Context, DynamoDBScanRequest } from "@aws-appsync/utils";
 import { GetLineDetectionJobQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetLineDetectionJobQueryVariables>
+  ctx: Context<GetLineDetectionJobQueryVariables>,
 ): DynamoDBScanRequest {
   const { state, manuscriptId } = ctx.args;
   return {

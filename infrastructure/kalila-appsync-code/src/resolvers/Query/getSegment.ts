@@ -2,7 +2,7 @@ import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 import { GetSegmentQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetSegmentQueryVariables>
+  ctx: Context<GetSegmentQueryVariables>,
 ): DynamoDBGetItemRequest {
   const { id } = ctx.args;
   return {

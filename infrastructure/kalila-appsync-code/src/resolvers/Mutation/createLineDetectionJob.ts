@@ -3,7 +3,7 @@ import { getTime } from "../../util";
 import { CreateLineDetectionJobMutationVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<CreateLineDetectionJobMutationVariables>
+  ctx: Context<CreateLineDetectionJobMutationVariables>,
 ): DynamoDBPutItemRequest {
   const { id = util.autoId(), ...attributes } = {
     ...ctx.args.input,

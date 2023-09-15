@@ -8,7 +8,7 @@ import {
 import { ListUnitsQueryVariables, SortDirection } from "kalila-graphql";
 
 export function request(
-  ctx: Context<ListUnitsQueryVariables>
+  ctx: Context<ListUnitsQueryVariables>,
 ): DynamoDBQueryRequest {
   const {
     parentId,
@@ -21,7 +21,7 @@ export function request(
 
   let expression = "parentId = :id";
   let expressionValues: ExpressionAttributeValueMap = util.dynamodb.toMapValues(
-    { ":id": parentId }
+    { ":id": parentId },
   );
 
   if (orderGt !== undefined && orderLt === undefined) {

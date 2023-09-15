@@ -4,10 +4,7 @@
     "module": "esnext",
     "noEmit": true,
     "moduleResolution": "node",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -22,11 +19,7 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-  ]
+  "exclude": ["node_modules"]
 }

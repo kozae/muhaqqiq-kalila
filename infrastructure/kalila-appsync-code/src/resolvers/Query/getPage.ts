@@ -2,7 +2,7 @@ import { Context, DynamoDBGetItemRequest, util } from "@aws-appsync/utils";
 import { GetPageQueryVariables } from "kalila-graphql";
 
 export function request(
-  ctx: Context<GetPageQueryVariables>
+  ctx: Context<GetPageQueryVariables>,
 ): DynamoDBGetItemRequest {
   const { id } = ctx.args;
   return {
