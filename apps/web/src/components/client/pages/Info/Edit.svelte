@@ -1,8 +1,7 @@
 <script lang="ts">
   import PanelContainer from "@client/pages/common/PanelContainer.svelte";
   import { createForm } from "felte";
-  import { postToWorker } from "@client/pages/store";
-  import { StoreBrowserEvent } from "pages-tool-store-worker";
+  import { requestAction } from "@client/pages/store";
 
   type PageInfo = {
     commentary?: string | null;
@@ -17,7 +16,7 @@
   const { form } = createForm<PageInfo>({
     initialValues: initialValues,
     onSubmit: (values) => {
-      postToWorker({ event: StoreBrowserEvent.UPDATE_INFO, payload: values });
+      requestAction("updatePageInfo", values);
       mode = "view";
     },
   });

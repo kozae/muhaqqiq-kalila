@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ready$, requestState } from "@client/pages/store";
+  import { derived, requestState } from "@client/pages/store";
   import imageData from "./data/image-data";
   import Loading from "@client/reusable/Loading.svelte";
   import AppStage from "./AppStage.svelte";
@@ -7,7 +7,8 @@
   import ViewModeRegions from "./View/ViewModeRegions.svelte";
 
   export let id: string;
-  $: $ready$ === id && requestState("imageDataUrl");
+  const ready = derived.ready;
+  $: $ready === id && requestState("selectImageDataUrl");
 
   let mode: "view" | "edit" | "create" = "view";
 </script>

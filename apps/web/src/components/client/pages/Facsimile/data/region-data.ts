@@ -1,10 +1,14 @@
 import activeTool$ from "@client/pages/active-tool";
 import imageData$ from "./image-data";
-import { layout$ } from "@client/pages/store";
-import { combineLatest, filter, map, withLatestFrom } from "rxjs";
+import { source } from "@client/pages/store";
+import { combineLatest, map } from "rxjs";
 import { getScale } from "../helpers/scale";
 
-const regions$ = combineLatest([layout$, activeTool$, imageData$]).pipe(
+const regions$ = combineLatest([
+  source.selectLayout,
+  activeTool$,
+  imageData$,
+]).pipe(
   map(([data, tool, imageData]) => {
     if (!imageData) return [];
     const scale = getScale(imageData.scaleRatio);

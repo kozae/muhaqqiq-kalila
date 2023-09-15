@@ -8,20 +8,4 @@
         "build",
         "node_modules"
     ],
-    "compilerOptions": {
-        "paths": {
-            "@components/*": [
-                "./src/components/*"
-            ],
-            "@hooks/*": [
-                "./src/hooks/*"
-            ],
-            "@state/*": [
-                "./src/state/*"
-            ],
-            "@helpers/*": [
-                "./src/helpers/*"
-            ]
-        }
-    }
 }

@@ -2,7 +2,7 @@
   import SmallButton from "@client/reusable/SmallButton.svelte";
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import PanelContainer from "../common/PanelContainer.svelte";
-  import { requestAggregation, summary$ } from "../store";
+  import { requestState, source } from "@client/pages/store";
   import DetailListItem from "./Display/DetailListItem.svelte";
   import Header from "./Display/Header.svelte";
   import ImageAttachment from "./Display/ImageAttachment.svelte";
@@ -12,7 +12,8 @@
   const onEdit = () => {
     mode = "edit";
   };
-  requestAggregation("summary");
+  requestState("selectSummary");
+  const summary$ = source.selectSummary;
 </script>
 
 {#if $summary$}

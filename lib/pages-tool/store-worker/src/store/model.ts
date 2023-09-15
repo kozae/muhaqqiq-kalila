@@ -22,25 +22,38 @@ export type PageState = Omit<
 >;
 
 export type TextEntity = Omit<TextElement, "lines"> & IColoredRegion;
-export type TextState = Map<string, TextEntity>;
+export type TextState = Array<TextEntity>;
 
 export type LineEntity = Line & IColoredRegion & { position?: string };
 
-export type LinesState = Map<string, LineEntity>;
+export type LinesState = Array<LineEntity>;
 
 export type ImageEntity = Image & IColoredRegion;
-export type ImagesState = Map<string, ImageEntity>;
+export type ImagesState = Array<ImageEntity>;
 
 export type SegmentEntity = Segment;
-export type SegmentsState = Map<string, SegmentEntity>;
+export type SegmentsState = Array<SegmentEntity>;
 
-export interface PagesToolState {
-  page?: PageState;
+export interface FetchedState {
+  info?: PageState;
   siglum?: string;
   imageDataUrl?: string;
   text: TextState;
   lines: LinesState;
   images: ImagesState;
   segments: SegmentsState;
-  hasChanges: boolean;
+}
+
+export type PageInfoUpdate = {
+  commentary?: string | null;
+  foliation?: string | null;
+  pagination?: number | null;
+  tags?: string | null;
+};
+
+export interface ILayoutElement {
+  id: string;
+  region: Array<number>;
+  color: string;
+  order: number;
 }

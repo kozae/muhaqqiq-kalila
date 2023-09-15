@@ -7,7 +7,7 @@ import {
   of,
   startWith,
 } from "rxjs";
-import { imageDataUrl$ } from "@client/pages/store";
+import { source } from "@client/pages/store";
 
 function createSizeObservable(
   imSize: [number, number],
@@ -61,7 +61,7 @@ function createImageElement(url: string) {
   });
 }
 
-const data = imageDataUrl$.pipe(
+const data = source.selectImageDataUrl.pipe(
   mergeMap((url) => (url ? createImageElement(url) : of(undefined))),
   mergeMap((img) =>
     img

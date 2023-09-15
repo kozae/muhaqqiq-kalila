@@ -1,19 +1,21 @@
 import {
-  StoreBrowserEvent,
-  type PagesToolState,
-  type StoreBrowserMessageData,
-  type StateAggregations,
+  type RequestActionName,
+  type RequestActionPayload,
+  type SelectorName,
+  type SelectorPayload,
 } from "pages-tool-store-worker";
 import storeWorker from "@client/pages/store-worker";
 
-export function postToWorker(message: StoreBrowserMessageData) {
-  storeWorker.postMessage(message);
+export function requestState<T extends SelectorName>(
+  name: T,
+  payload?: SelectorPayload<T>,
+) {
+  storeWorker.postMessage({ name, payload });
 }
 
-export function requestState(key: keyof PagesToolState) {
-  postToWorker({ event: StoreBrowserEvent.REQUEST_STATE, payload: key });
-}
-
-export function requestAggregation(key: StateAggregations) {
-  postToWorker({ event: StoreBrowserEvent.REQUEST_AGGREGATION, payload: key });
+export function requestAction<T extends RequestActionName>(
+  name: T,
+  payload: RequestActionPayload<T>,
+) {
+  storeWorker.postMessage({ name, payload });
 }

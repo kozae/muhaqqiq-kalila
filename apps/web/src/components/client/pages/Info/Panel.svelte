@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { info$, requestState } from "@client/pages/store";
+  import { source, requestState } from "@client/pages/store";
   import Display from "./Display.svelte";
   import Edit from "./Edit.svelte";
   import { map } from "rxjs";
-  requestState("page");
+  requestState("selectPageInfo");
+
   let mode: "view" | "edit" = "view";
-  const editableValues$ = info$.pipe(
+  const editableValues$ = source.selectPageInfo.pipe(
     map((info) => {
       if (!info) return undefined;
       const { commentary, foliation, pagination, tags } = info;

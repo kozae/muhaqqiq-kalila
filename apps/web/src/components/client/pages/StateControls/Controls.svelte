@@ -1,19 +1,21 @@
 <script lang="ts">
   import Loading from "@client/reusable/Loading.svelte";
-  import {
-    title$,
-    hasChanges$,
-    ready$,
-    postToWorker,
-  } from "@client/pages/store";
+  import { requestAction, source } from "@client/pages/store";
   import ReceiptRefundIcon from "@icons/ReceiptRefundIcon.svelte";
   import BigButton from "@client/reusable/BigButton.svelte";
   import CloudArrowUpIcon from "@icons/CloudArrowUpIcon.svelte";
-  import { StoreBrowserEvent } from "pages-tool-store-worker";
+  import { map } from "rxjs";
+
   const canSave = true;
+  const title$ = source.selectBasicInfo.pipe(
+    map((info) => info?.title ?? undefined),
+  );
+  const hasChanges$ = source.selectBasicInfo.pipe(
+    map((info) => info?.hasChanges ?? false),
+  );
   const handleDiscard = () => {
-    ready$.next("");
-    postToWorker({ event: StoreBrowserEvent.DISCARD_CHANGES });
+    source.selectBasicInfo.next(undefined);
+    requestAction("discardUpdates", {});
   };
 </script>
 
