@@ -22,7 +22,7 @@ const { mediumId, pageId, tool = "" } = Astro.props;
       <StateControls client:only />
     </div>
     <div class="w-full h-[calc(100vh-90px)] flex justify-center">
-      <FacsimileSpace id={pageId} client:only />
+      <FacsimileSpace id={pageId!} client:only />
     </div>
   </div>
   <div class="ml-0 w-1/2">

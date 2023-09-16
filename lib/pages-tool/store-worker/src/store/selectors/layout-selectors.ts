@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { rootSelector, type ILayoutElement } from "..";
 import { imagesAdapter, linesAdapter, textAdapter } from "../slice";
+import lodash from "lodash";
 
 export const selectLayout = createSelector(rootSelector, (state) => {
   const lineList = linesAdapter.getSelectors().selectAll(state.lines);
@@ -32,4 +33,12 @@ export const selectLayout = createSelector(rootSelector, (state) => {
     lines: lines as ILayoutElement[],
     elements: [...text, ...images] as ILayoutElement[],
   };
+});
+
+export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
+  const textList = textAdapter.getSelectors().selectAll(state.text);
+
+  const imageList = imagesAdapter.getSelectors().selectAll(state.images);
+
+  return lodash.orderBy([...textList, ...imageList], "order");
 });

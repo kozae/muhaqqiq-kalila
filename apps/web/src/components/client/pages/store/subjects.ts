@@ -18,6 +18,7 @@ export const source = {
   selectPageInfo: create<"selectPageInfo">(),
   selectBasicInfo: create<"selectBasicInfo">(),
   selectLayout: create<"selectLayout">(),
+  selectLayoutPanelData: create<"selectLayoutPanelData">(),
 };
 
 export const derived = {
