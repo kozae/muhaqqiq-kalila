@@ -30,6 +30,7 @@ const initialState = {
   segments: segmentsAdapter.getInitialState(),
   fetched: undefined as FetchedState | undefined,
   changed: [] as string[],
+  stateId: Date.now(),
 };
 
 export const slice = createSlice({
@@ -50,6 +51,7 @@ export const slice = createSlice({
       if (state.changed.indexOf("info") === -1) {
         state.changed.push("info");
       }
+      state.stateId = Date.now();
     },
   },
   extraReducers: (builder) => {
@@ -65,6 +67,7 @@ export const slice = createSlice({
       state.segments = segmentsAdapter.setAll(state.segments, segments);
       state.fetched = action.payload.fetched;
       state.changed = action.payload.changed;
+      state.stateId = Date.now();
     });
 
     builder.addMatcher(isFulfilled(discardUpdates), (state, action) => {
@@ -78,6 +81,7 @@ export const slice = createSlice({
       state.lines = linesAdapter.setAll(state.lines, lines);
       state.segments = segmentsAdapter.setAll(state.segments, segments);
       state.changed = [];
+      state.stateId = Date.now();
     });
   },
 });

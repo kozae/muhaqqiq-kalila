@@ -1,3 +1,4 @@
+import { Subject, distinctUntilChanged } from "rxjs";
 import { updatesDB } from "./src/db";
 import {
   type RequestActionName,
@@ -32,7 +33,15 @@ self.onmessage = <E extends RequestActionName, T extends SelectorName>(
   }
 };
 
+const stateListner = new Subject<number>();
+
 store.subscribe(async () => {
+  const data = store.getState();
+  stateListner.next(data.stateId);
+  if (!data.info) return;
+});
+
+stateListner.pipe(distinctUntilChanged()).subscribe(() => {
   const data = store.getState();
   if (!data.info) return;
   self.postMessage({
