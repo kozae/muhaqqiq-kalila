@@ -17,6 +17,7 @@
   import { first, map } from "rxjs";
   import Moveable from "svelte-moveable";
   import RegionPreview from "./RegionPreview.svelte";
+  import { hoveredRegion$ } from "@client/pages/facsimile-events";
 
   export let el: TextEntity | ImageEntity | LineEntity | undefined;
   export let canDelete: boolean = false;
@@ -31,6 +32,7 @@
   const startDragRotate = 0;
   const throttleDragRotate = 0;
 
+  const regionIshovered = hoveredRegion$.pipe(map((v) => v === el?.id));
   const url = regionUrl.pipe(
     first((v) => v.id === el?.id),
     map((v) => v.region),
@@ -39,7 +41,7 @@
   const dispatch = createEventDispatcher();
 
   function toggleHighlightedRegion(id?: string) {
-    dispatch("toggleHighlightedRegion", id);
+    hoveredRegion$.next(id);
   }
 
   function toggleZoomedRegion(id: string | undefined) {
@@ -87,10 +89,15 @@
 
   <div class="{idle ? 'h-24' : 'h-12'} grow mx-2 flex justify-center relative">
     <div
-      class="h-full w-1/2 rounded"
+      class={$regionIshovered
+        ? "h-full w-full rounded"
+        : "h-full w-1/2 rounded"}
       style={`background-image: url(${$url}); background-position: top right; background-repeat: no-repeat;`}
     >
-      <div class="h-full w-full" style="background-image: {imageMask}"></div>
+      <div
+        class="h-full w-full"
+        style={!$regionIshovered ? `background-image: ${imageMask}` : undefined}
+      ></div>
     </div>
   </div>
 

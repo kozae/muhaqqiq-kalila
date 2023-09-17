@@ -3,6 +3,7 @@ import ToolLayout from "@layouts/PagesInnerLayout.astro";
 import Info from "@client/pages/Info";
 import Layout from "@client/pages/Layout";
 import Lines from "@client/pages/Lines";
+import TranscriptionPanel from "@client/pages/Transcription";
 
 const { pageId, mediumId, tool } = Astro.params;
 ---
@@ -12,6 +13,11 @@ const { pageId, mediumId, tool } = Astro.params;
     {tool === "info" && <Info pageId={pageId!} client:only />}
     {tool === "layout" && <Layout pageId={pageId!} client:only />}
     {tool === "lines" && <Lines pageId={pageId!} client:only />}
-    {!["info", "layout", "lines"].includes(tool!) && tool}
+    {
+      tool === "transcription" && (
+        <TranscriptionPanel pageId={pageId!} client:only />
+      )
+    }
+    {!["info", "layout", "lines", "transcription"].includes(tool!) && tool}
   </div>
 </ToolLayout>
