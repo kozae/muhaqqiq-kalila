@@ -1,5 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { rootSelector, type ILayoutElement } from "..";
+import {
+  rootSelector,
+  type ILayoutElement,
+  type LineEntity,
+  type TextEntity,
+} from "..";
 import { imagesAdapter, linesAdapter, textAdapter } from "../slice";
 import lodash from "lodash";
 
@@ -41,4 +46,28 @@ export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
   const imageList = imagesAdapter.getSelectors().selectAll(state.images);
 
   return lodash.orderBy([...textList, ...imageList], "order");
+});
+
+export const selectLinePanelData = createSelector(rootSelector, (state) => {
+  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
+  const textList = textAdapter.getSelectors().selectAll(state.text);
+  const groupedLines = lodash.groupBy([...lineList], "elementId");
+  const elements: (LineEntity | TextEntity)[] = [];
+  for (const el of textList.filter((el) => el!.position!.includes("main"))) {
+    elements.push(el);
+    const lines = lodash.orderBy(groupedLines[el!.id], "order");
+    for (const line of lines) {
+      elements.push(line);
+    }
+  }
+
+  for (const el of textList.filter((el) => !el!.position!.includes("main"))) {
+    elements.push(el);
+    const lines = lodash.orderBy(groupedLines[el!.id], "order");
+    for (const line of lines) {
+      elements.push(line);
+    }
+  }
+
+  return elements;
 });

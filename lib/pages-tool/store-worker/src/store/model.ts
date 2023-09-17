@@ -57,3 +57,11 @@ export interface ILayoutElement {
   color: string;
   order: number;
 }
+
+export interface IChangeTracker {
+  info: boolean;
+  text: boolean;
+  images: boolean;
+  lines: boolean;
+  segments: boolean;
+}

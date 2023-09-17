@@ -2,6 +2,7 @@
 import ToolLayout from "@layouts/PagesInnerLayout.astro";
 import Info from "@client/pages/Info";
 import Layout from "@client/pages/Layout";
+import Lines from "@client/pages/Lines";
 
 const { pageId, mediumId, tool } = Astro.params;
 ---
@@ -10,6 +11,7 @@ const { pageId, mediumId, tool } = Astro.params;
   <div class="animate-fade-in w-full grow scale-90 rounded bg-white opacity-0">
     {tool === "info" && <Info pageId={pageId!} client:only />}
     {tool === "layout" && <Layout pageId={pageId!} client:only />}
-    {!["info", "layout"].includes(tool!) && tool}
+    {tool === "lines" && <Lines pageId={pageId!} client:only />}
+    {!["info", "layout", "lines"].includes(tool!) && tool}
   </div>
 </ToolLayout>

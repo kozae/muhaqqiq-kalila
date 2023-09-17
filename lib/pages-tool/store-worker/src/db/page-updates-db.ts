@@ -1,11 +1,11 @@
 import Dexie, { type Table } from "dexie";
-import {
-  type Image,
-  type Line,
-  type Page,
-  type Segment,
-  type TextElement,
-} from "kalila-graphql";
+import type {
+  ImageEntity,
+  LineEntity,
+  PageState,
+  SegmentEntity,
+  TextEntity,
+} from "../store";
 
 export interface StoredUpdate<T = any> {
   id: string; // pageId
@@ -14,19 +14,19 @@ export interface StoredUpdate<T = any> {
 }
 
 export interface IStoredPageUpdates {
-  text?: Partial<TextElement>[];
-  images?: Partial<Image>[];
-  lines?: Partial<Line>[];
-  segments?: Partial<Segment>[];
-  info?: Partial<Page>;
+  text?: Partial<TextEntity>[];
+  images?: Partial<ImageEntity>[];
+  lines?: Partial<LineEntity>[];
+  segments?: Partial<SegmentEntity>[];
+  info?: Partial<PageState>;
 }
 
 export class PageUpdatesDexie extends Dexie {
-  text!: Table<StoredUpdate<TextElement>>;
-  images!: Table<StoredUpdate<Image>>;
-  lines!: Table<StoredUpdate<Line>>;
-  segments!: Table<StoredUpdate<Segment>>;
-  info!: Table<{ id: string; version: number; data: Partial<Page> }>;
+  text!: Table<StoredUpdate<TextEntity>>;
+  images!: Table<StoredUpdate<ImageEntity>>;
+  lines!: Table<StoredUpdate<LineEntity>>;
+  segments!: Table<StoredUpdate<SegmentEntity>>;
+  info!: Table<{ id: string; version: number; data: Partial<PageState> }>;
 
   constructor() {
     super("PageUpdatesDB");

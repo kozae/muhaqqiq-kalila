@@ -1,6 +1,6 @@
 <script>
   export let classes = "";
-  export let panelHasCommandBar = false;
+  export let panelHasCommandBar = true;
 
   let height =
     panelHasCommandBar !== false

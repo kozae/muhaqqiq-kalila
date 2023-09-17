@@ -11,7 +11,6 @@
   };
   export let initialValues: PageInfo;
   export let mode: "view" | "edit";
-  console.log(initialValues);
   // TODO - add validation
   const { form } = createForm<PageInfo>({
     initialValues: initialValues,

@@ -12,8 +12,9 @@ import type {
   PageState,
   FetchedState,
   PageInfoUpdate,
+  IChangeTracker,
 } from "./model";
-import { loadState, discardUpdates } from "./thunks";
+import { loadState } from "./thunks";
 
 export const textAdapter = createEntityAdapter<TextEntity>();
 export const imagesAdapter = createEntityAdapter<ImageEntity>();
@@ -29,8 +30,14 @@ const initialState = {
   lines: linesAdapter.getInitialState(),
   segments: segmentsAdapter.getInitialState(),
   fetched: undefined as FetchedState | undefined,
-  changed: [] as string[],
-  stateId: Date.now(),
+  changed: {
+    info: false,
+    text: false,
+    images: false,
+    lines: false,
+    segments: false,
+  } as IChangeTracker,
+  stateId: -1,
 };
 
 export const slice = createSlice({
@@ -48,9 +55,38 @@ export const slice = createSlice({
       state.info.foliation = foliation;
       state.info.pagination = pagination;
       state.info.tags = tags ? tags.split(", ") : state.info.tags;
-      if (state.changed.indexOf("info") === -1) {
-        state.changed.push("info");
+      state.changed.info = true;
+      state.stateId = Date.now();
+    },
+    updateLines: (
+      state,
+      action: PayloadAction<(LineEntity | TextEntity)[]>,
+    ) => {
+      const elements = action.payload;
+      let elementId = elements[0].id;
+      const lines: LineEntity[] = [];
+      for (let i = 1; i < elements.length; i++) {
+        if (elements[i].position !== "line") {
+          elementId = elements[i].id;
+        } else {
+          lines.push({ ...elements[i], elementId } as LineEntity);
+        }
       }
+      state.lines = linesAdapter.setAll(state.lines, lines);
+      state.changed.lines = true;
+      state.stateId = Date.now();
+    },
+    discardUpdates: (state) => {
+      const { text, images, lines, segments, siglum, imageDataUrl, info } =
+        state.fetched!;
+      state.info = info;
+      state.siglum = siglum!;
+      state.imageDataUrl = imageDataUrl;
+      state.text = textAdapter.setAll(state.text, text);
+      state.images = imagesAdapter.setAll(state.images, images);
+      state.lines = linesAdapter.setAll(state.lines, lines);
+      state.segments = segmentsAdapter.setAll(state.segments, segments);
+      state.changed = { ...initialState.changed };
       state.stateId = Date.now();
     },
   },
@@ -67,21 +103,7 @@ export const slice = createSlice({
       state.segments = segmentsAdapter.setAll(state.segments, segments);
       state.fetched = action.payload.fetched;
       state.changed = action.payload.changed;
-      state.stateId = Date.now();
-    });
-
-    builder.addMatcher(isFulfilled(discardUpdates), (state, action) => {
-      const { text, images, lines, segments, siglum, imageDataUrl, info } =
-        action.payload;
-      state.info = info;
-      state.siglum = siglum!;
-      state.imageDataUrl = imageDataUrl;
-      state.text = textAdapter.setAll(state.text, text);
-      state.images = imagesAdapter.setAll(state.images, images);
-      state.lines = linesAdapter.setAll(state.lines, lines);
-      state.segments = segmentsAdapter.setAll(state.segments, segments);
-      state.changed = [];
-      state.stateId = Date.now();
+      state.stateId = 0;
     });
   },
 });

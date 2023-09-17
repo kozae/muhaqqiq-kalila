@@ -1,52 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { ThunkApi } from "..";
-import type { Line, Page, TextElement } from "kalila-graphql";
+import type { Line, Page } from "kalila-graphql";
 import { highlightColors } from "../util";
-import { loadStoredUpdates } from "../../db";
+import { loadStoredUpdates, type IStoredPageUpdates } from "../../db";
 import type {
   TextEntity,
   LineEntity,
   ImageEntity,
   FetchedState,
+  IChangeTracker,
 } from "../model";
 
-function merge(
-  data: Page & { imageDataUrl: string; siglum: string },
-  stored: any,
-) {
-  const firstMerge = {
-    ...data,
-    ...(stored.info ?? {}),
+function merge(fetched: FetchedState, stored: IStoredPageUpdates) {
+  return {
+    ...fetched,
     ...Object.fromEntries(
-      Object.entries(stored ?? {}).filter(
-        ([key, value]) => key !== "info" && value !== undefined,
-      ),
+      Object.entries(stored ?? {}).filter(([_, value]) => value !== undefined),
     ),
-  } as Page & { imageDataUrl: string; siglum: string };
-
-  if (stored.text) {
-    const text: TextElement[] = [];
-    if (stored.lines) {
-      for (const el of stored.text) {
-        const lines = stored.lines.filter((l: Line) => l.elementId === el.id);
-        text.push({ ...el, lines });
-      }
-    } else {
-      for (const el of data!.text!) {
-        const storedEl = stored.text.find(
-          (item: TextElement) => item.id === el!.id,
-        );
-        text.push({ ...storedEl, lines: el?.lines });
-      }
-    }
-
-    return { ...firstMerge, text } as Page & {
-      imageDataUrl: string;
-      siglum: string;
-    };
-  }
-
-  return firstMerge;
+  };
 }
 
 function prepareInitialState(
@@ -63,7 +34,7 @@ function prepareInitialState(
         const { lines, ...rest } = element;
         if (lines) {
           lines.forEach((l) => {
-            allLines.push({ ...l, elementID: element.id } as Line);
+            allLines.push({ ...l, elementId: element.id } as Line);
           });
         }
 
@@ -107,19 +78,25 @@ type Payload = Page & { imageDataUrl: string; siglum: string };
 export type LoadedState = {
   fetched: FetchedState;
   load: FetchedState;
-  changed: string[];
+  changed: IChangeTracker;
 };
 
 export const loadState = createAsyncThunk<LoadedState, Payload, ThunkApi>(
   "loadState",
   async (data) => {
     const stored = await loadStoredUpdates(data.id, data.version!);
-    const changed = Object.entries(stored)
-      .filter(([_, el]) => !!el)
-      .map(([key, _]) => key);
+
+    const changed = {
+      info: stored.info !== undefined,
+      text: stored.text !== undefined,
+      images: stored.images !== undefined,
+      lines: stored.lines !== undefined,
+      segments: stored.segments !== undefined,
+    };
 
     const fetchedState = prepareInitialState(data);
-    const toolState = prepareInitialState(merge(data, stored));
+    const toolState = merge(fetchedState, stored);
+
     return {
       fetched: fetchedState,
       changed,
