@@ -3,6 +3,7 @@ import { filter, mergeMap, tap, distinctUntilChanged } from "rxjs";
 import { getPageData } from "./queries";
 import { source } from "./subjects";
 import { requestAction } from ".";
+import facsimileWorker from "../facsimile-worker";
 
 route
   .pipe(
@@ -19,6 +20,6 @@ route
   )
   .subscribe(({ siglum, page, imageDataUrl }) => {
     const data = page!;
-
+    facsimileWorker.postMessage({ type: 1, payload: imageDataUrl });
     requestAction("loadState", { ...data, imageDataUrl, siglum: siglum! });
   });

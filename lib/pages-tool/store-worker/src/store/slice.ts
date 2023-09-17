@@ -103,7 +103,7 @@ export const slice = createSlice({
       state.segments = segmentsAdapter.setAll(state.segments, segments);
       state.fetched = action.payload.fetched;
       state.changed = action.payload.changed;
-      state.stateId = 0;
+      state.stateId = info?.number!;
     });
   },
 });

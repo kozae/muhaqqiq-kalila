@@ -1,11 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { slide } from "svelte/transition";
+  import { onMount } from "svelte";
 
   export let items: string[] = [];
   export let buttonText: string = "";
 
   let showMenu = false;
+
+  const id = `menu_${Math.floor(Math.random() * 100)}`;
 
   const dispatch = createEventDispatcher();
 
@@ -17,9 +20,21 @@
     dispatch("itemClick", item);
     showMenu = false;
   }
+
+  onMount(() => {
+    const handleClickOutside = (event: any) => {
+      if (!event.target.closest(`.${id}`)) {
+        showMenu = false;
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  });
 </script>
 
-<div class="relative inline-block text-left menu">
+<div class="relative inline-block text-left {id}">
   <button
     on:click={toggleMenu}
     class="text-primary-900 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-secondary-100"

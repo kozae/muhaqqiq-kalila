@@ -1,5 +1,6 @@
 <script lang="ts">
   import type {
+    ILayoutElement,
     ImageEntity,
     LineEntity,
     TextEntity,
@@ -12,10 +13,28 @@
   import HighlightIcon from "@icons/HighlightIcon.svelte";
   import HideImageIcon from "@icons/HideImageIcon.svelte";
   import Tooltip from "@client/reusable/Tooltip.svelte";
+  import { regionUrl, requestRegion } from "../facsimile-worker";
+  import { first, map } from "rxjs";
+  import Moveable from "svelte-moveable";
+  import RegionPreview from "./RegionPreview.svelte";
 
   export let el: TextEntity | ImageEntity | LineEntity | undefined;
   export let canDelete: boolean = false;
   export let idle: boolean = false;
+
+  requestRegion(el! as ILayoutElement);
+
+  let showPreview = false;
+  let previewTraget: HTMLElement | null = null;
+  const throttleDrag = 1;
+  const edgeDraggable = false;
+  const startDragRotate = 0;
+  const throttleDragRotate = 0;
+
+  const url = regionUrl.pipe(
+    first((v) => v.id === el?.id),
+    map((v) => v.region),
+  );
 
   const dispatch = createEventDispatcher();
 
@@ -25,6 +44,7 @@
 
   function toggleZoomedRegion(id: string | undefined) {
     dispatch("toggleZoomedRegion", id);
+    showPreview = !showPreview;
   }
 
   function editRegion(id?: string) {
@@ -34,9 +54,14 @@
   function deleteElement(id?: string) {
     dispatch("deleteElement", id);
   }
-  const twCLass = "m-1 flex items-center justify-between rounded p-4";
+  const twCLass = "m-1 flex items-center  rounded p-1";
   const borderColor = `rgba(${el?.color ?? "240,239,60"}, 0.6)`;
   const backgroundColor = `rgba(${el?.color ?? "240,239,60"}, 0.3)`;
+  const imageMask = idle
+    ? `linear-gradient(to bottom left, rgba(255,255,255, 0.3), rgba(255,255,255, 1))`
+    : `linear-gradient(to left, rgba(${el?.color ?? "240,239,60"}, 0), rgba(${
+        el?.color ?? "240,239,60"
+      }, 0.4))`;
   const style = idle
     ? "border: thick solid black"
     : `border: solid 3px ${borderColor}; background-color: ${backgroundColor}`;
@@ -56,8 +81,17 @@
       <DocumentTextIcon className="text-primary-500 t mr-2 h-8 w-8 rounded " />
     {/if}
     <h1 class="text-xl">
-      {(el?.order ?? 0) + 1}. &nbsp; {el?.position}
+      {(el?.order ?? 0) + 1}. {el?.position}
     </h1>
+  </div>
+
+  <div class="{idle ? 'h-24' : 'h-12'} grow mx-2 flex justify-center relative">
+    <div
+      class="h-full w-1/2 rounded"
+      style={`background-image: url(${$url}); background-position: top right; background-repeat: no-repeat;`}
+    >
+      <div class="h-full w-full" style="background-image: {imageMask}"></div>
+    </div>
   </div>
 
   <div class="flex items-center">
@@ -82,6 +116,32 @@
           className="text-primary-500 hover:text-secondary-700 mr-2 h-8 w-8 rounded"
         />
       </button>
+      {#if showPreview}
+        <div
+          bind:this={previewTraget}
+          class="fixed top-0 left-0 z-50 h-fit w-fit"
+          style="border: none;"
+        >
+          <RegionPreview
+            element={el}
+            image={$url}
+            on:close={() => (showPreview = false)}
+          />
+        </div>
+        <Moveable
+          target={previewTraget}
+          origin={false}
+          edge={false}
+          draggable={true}
+          {throttleDrag}
+          {edgeDraggable}
+          {startDragRotate}
+          {throttleDragRotate}
+          on:drag={({ detail: e }) => {
+            e.target.style.transform = e.transform;
+          }}
+        ></Moveable>
+      {/if}
     {/if}
     {#if !idle}
       <button on:click={() => editRegion(el?.id)}>

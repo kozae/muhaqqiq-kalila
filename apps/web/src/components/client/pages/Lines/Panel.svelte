@@ -9,8 +9,12 @@
 </script>
 
 {#if mode === "view"}
-  <CommandBar />
   {#if $data}
+    <CommandBar
+      presentElements={$data
+        .filter((el) => el.position !== "line")
+        .map((el) => `${(el.order ?? 0) + 1}.  ${el.position}`)}
+    />
     <SortableElements
       items={$data}
       draggables={["line"]}

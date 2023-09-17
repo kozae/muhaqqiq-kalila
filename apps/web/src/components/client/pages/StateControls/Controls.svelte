@@ -15,7 +15,7 @@
   );
   const handleDiscard = () => {
     source.selectBasicInfo.next(undefined);
-    requestAction("discardUpdates", {});
+    requestAction("discardUpdates", undefined);
   };
 </script>
 

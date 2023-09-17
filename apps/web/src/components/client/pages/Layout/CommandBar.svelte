@@ -1,6 +1,5 @@
 <script lang="ts">
   import CommandBarContainer from "@client/pages/common/CommandBarContainer.svelte";
-  import { onMount } from "svelte";
   import Menu from "@client/reusable/Menu.svelte";
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import PhotoIcon from "@icons/PhotoIcon.svelte";
@@ -17,32 +16,6 @@
     "stamp",
   ];
   const imageElementTypes: string[] = ["image in main body", "image in margin"];
-
-  let showTextMenu = false;
-  let showImageMenu = false;
-
-  function toggleTextMenu() {
-    showTextMenu = !showTextMenu;
-    showImageMenu = false;
-  }
-
-  function toggleImageMenu() {
-    showImageMenu = !showImageMenu;
-    showTextMenu = false;
-  }
-
-  onMount(() => {
-    const handleClickOutside = (event: any) => {
-      if (!event.target.closest(".menu")) {
-        showTextMenu = false;
-        showImageMenu = false;
-      }
-    };
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  });
 </script>
 
 <CommandBarContainer>
