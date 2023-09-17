@@ -20,6 +20,7 @@ export const source = {
   selectLayout: create<"selectLayout">(),
   selectLayoutPanelData: create<"selectLayoutPanelData">(),
   selectLinePanelData: create<"selectLinePanelData">(),
+  selectTranscriptionPanelData: create<"selectTranscriptionPanelData">(),
 };
 
 export const derived = {

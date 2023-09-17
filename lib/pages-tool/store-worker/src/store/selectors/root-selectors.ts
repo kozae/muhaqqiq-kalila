@@ -3,9 +3,8 @@ import { rootSelector } from "../config";
 import { linesAdapter, segmentsAdapter } from "../slice";
 import lodash from "lodash";
 
-export const selectHasChanges = createSelector(
-  rootSelector,
-  (state) => state.changed.length > 0,
+export const selectHasChanges = createSelector(rootSelector, (state) =>
+  Object.values(state.changed).some((v) => v),
 );
 
 export const selectBasicInfo = createSelector(
@@ -14,7 +13,7 @@ export const selectBasicInfo = createSelector(
     state.info && {
       id: state.info!.id,
       title: `${state.siglum} (p.${state.info!.number})`,
-      hasChanges: state.changed.length > 0,
+      hasChanges: Object.values(state.changed).some((v) => v),
     },
 );
 
