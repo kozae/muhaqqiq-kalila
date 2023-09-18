@@ -10,7 +10,7 @@ export default defineConfig({
   adapter: aws(),
   integrations: [svelte(), tailwindcss()],
   vite: {
-    plugins: [wasm(), topLevelAwait()],
+    plugins: [wasm()],
     worker: {
       format: "es",
       plugins: [wasm(), topLevelAwait()],
