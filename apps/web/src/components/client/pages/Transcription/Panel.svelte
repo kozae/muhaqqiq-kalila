@@ -6,4 +6,5 @@
 </script>
 
 <CommandBar />
+
 <Editor />

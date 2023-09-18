@@ -18,6 +18,7 @@ const { pageId, mediumId, tool } = Astro.params;
         <TranscriptionPanel pageId={pageId!} client:only />
       )
     }
+
     {!["info", "layout", "lines", "transcription"].includes(tool!) && tool}
   </div>
 </ToolLayout>

@@ -7,8 +7,6 @@
   const data = source.selectTranscriptionPanelData.pipe(
     map((data) => data.bodyLines.join("\n")),
   );
-
-  $: doc = $data;
 </script>
 
 <PanelContainer>

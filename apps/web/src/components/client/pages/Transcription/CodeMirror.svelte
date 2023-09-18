@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   import { EditorView } from "@codemirror/view";
   import { EditorState, type Extension } from "@codemirror/state";
@@ -13,14 +13,26 @@
 
   let view: EditorView;
 
+  const theme = EditorView.theme({
+    ".cm-content, .cm-gutter": {
+      minHeight: "200px",
+      height: "100%",
+    },
+  });
+
   onMount(() => {
     view = new EditorView({
       state: EditorState.create({
         doc,
-        extensions: extensions ?? basicSetup,
+        extensions: extensions ?? [basicSetup, theme],
       }),
       parent,
+      root: document,
     });
+  });
+
+  onDestroy(() => {
+    view.destroy();
   });
 </script>
 
@@ -29,7 +41,6 @@
 <style>
   .editor {
     direction: rtl;
-    height: 100%;
   }
 
   .editor * {

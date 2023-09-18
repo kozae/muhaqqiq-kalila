@@ -63,6 +63,7 @@ export const basicSetup: Extension = (() => [
 ])();
 
 export const minimalSetup: Extension = (() => [
+  lineNumbers(),
   highlightSpecialChars(),
   history(),
   drawSelection(),
