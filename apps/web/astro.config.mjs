@@ -9,8 +9,17 @@ export default defineConfig({
   output: "server",
   adapter: aws(),
   integrations: [svelte(), tailwindcss()],
+  build: {
+    inlineStylesheets: "always",
+  },
   vite: {
     plugins: [wasm()],
+    optimizeDeps: {
+      exclude: ["codemirror"],
+    },
+    ssr: {
+      external: ["codemirror"],
+    },
     worker: {
       format: "es",
       plugins: [wasm(), topLevelAwait()],

@@ -3,6 +3,7 @@
   import Codemirror from "./CodeMirror.svelte";
   import { source } from "@client/pages/store";
   import { map } from "rxjs";
+  import { onMount } from "svelte";
 
   const data = source.selectTranscriptionPanelData.pipe(
     map((data) => data.bodyLines.join("\n")),

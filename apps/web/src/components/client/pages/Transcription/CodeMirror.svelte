@@ -13,18 +13,11 @@
 
   let view: EditorView;
 
-  const theme = EditorView.theme({
-    ".cm-content, .cm-gutter": {
-      minHeight: "200px",
-      height: "100%",
-    },
-  });
-
   onMount(() => {
     view = new EditorView({
       state: EditorState.create({
         doc,
-        extensions: extensions ?? [basicSetup, theme],
+        extensions: extensions ?? [basicSetup],
       }),
       parent,
       root: document,
@@ -39,6 +32,8 @@
 <div bind:this={parent} class={`editor ${klass}`} />
 
 <style>
+  @import "./styles.css";
+
   .editor {
     direction: rtl;
   }
@@ -46,6 +41,17 @@
   .editor * {
     direction: rtl;
   }
+  /* 
+  :global(.cm-scroller) {
+    display: flex !important;
+    align-items: flex-start !important;
+    font-family: monospace;
+    line-height: 1.4;
+    height: 100%;
+    overflow-x: auto;
+    position: relative;
+    z-index: 0;
+  } */
 
   :global(.cm-line) {
     font-family: "Noto Naskh Arabic", serif !important;
