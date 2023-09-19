@@ -1,5 +1,5 @@
 {
-    "extends": "tsconfig/react-client-library.json",
+    "extends": "tsconfig/astro-svelte-client-library.json",
     "include": [
         "."
     ],
@@ -7,21 +7,5 @@
         "dist",
         "build",
         "node_modules"
-    ],
-    "compilerOptions": {
-        "paths": {
-            "@components/*": [
-                "./src/components/*"
-            ],
-            "@hooks/*": [
-                "./src/hooks/*"
-            ],
-            "@state/*": [
-                "./src/state/*"
-            ],
-            "@helpers/*": [
-                "./src/helpers/*"
-            ]
-        }
-    }
+    ]
 }

@@ -5,7 +5,7 @@
     LineEntity,
     TextEntity,
   } from "pages-tool-store-worker";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import PhotoIcon from "@icons/PhotoIcon.svelte";
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import TrashIcon from "@icons/TrashIcon.svelte";
@@ -22,8 +22,8 @@
   export let el: TextEntity | ImageEntity | LineEntity | undefined;
   export let canDelete: boolean = false;
   export let idle: boolean = false;
-
-  requestRegion(el! as ILayoutElement);
+  const pageId: string = getContext("id");
+  requestRegion(el! as ILayoutElement, pageId);
 
   let showPreview = false;
   let previewTraget: HTMLElement | null = null;
@@ -34,7 +34,7 @@
 
   const regionIshovered = hoveredRegion$.pipe(map((v) => v === el?.id));
   const url = regionUrl.pipe(
-    first((v) => v.id === el?.id),
+    first((v) => v.pageId === pageId && v.id === el?.id),
     map((v) => v.region),
   );
 

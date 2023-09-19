@@ -2,5 +2,6 @@ packages:
   - "apps/*"
   - "config/*"
   - "lib/common/*"
+  - "lib/forked/*"
   - "lib/pages-tool/*"
   - "infrastructure/*"

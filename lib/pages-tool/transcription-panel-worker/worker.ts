@@ -1,21 +1,29 @@
+import { findSyntaxErrors } from "pages-tool-transcription-panel-wasm";
+import { TranscriptionWorkerEvent } from ".";
+
+console.log("transcription worker loaded");
+
 let currentLine = -1;
 self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
   switch (e.data.type) {
-    case 1:
-      const { findSyntaxErrors } = await import(
-        "pages-tool-transcription-panel-wasm"
-      );
+    case TranscriptionWorkerEvent.VALUE_CHANGE:
       const error = findSyntaxErrors(e.data.payload);
       if (error.length !== 0) {
-        self.postMessage({ type: 2, payload: error });
+        self.postMessage({
+          type: TranscriptionWorkerEvent.ERROR,
+          payload: error,
+        });
       } else {
-        self.postMessage({ type: 3 });
+        self.postMessage({ type: TranscriptionWorkerEvent.NO_ERROR });
       }
       break;
-    case 4:
+    case TranscriptionWorkerEvent.STATISTICS:
       if (e.data.payload.line.number !== currentLine) {
         currentLine = e.data.payload.line.number;
-        self.postMessage({ type: 5, payload: currentLine });
+        self.postMessage({
+          type: TranscriptionWorkerEvent.LINE_CHANGE,
+          payload: currentLine,
+        });
       }
       break;
     default:

@@ -67,6 +67,7 @@ export const minimalSetup: Extension = (() => [
   highlightSpecialChars(),
   history(),
   drawSelection(),
-  syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+  highlightActiveLineGutter(),
+  // syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
   keymap.of([...defaultKeymap, ...historyKeymap]),
 ])();

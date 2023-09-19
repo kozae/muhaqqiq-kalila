@@ -15,10 +15,30 @@ export default defineConfig({
   vite: {
     plugins: [wasm()],
     optimizeDeps: {
-      exclude: ["codemirror"],
+      exclude: [
+        "codemirror",
+        "@codemirror/autocomplete",
+        "@codemirror/commands",
+        "@codemirror/language",
+        "@codemirror/lint",
+        "@codemirror/search",
+        "@codemirror/state",
+        "@codemirror/view",
+        "style-mod",
+      ],
     },
     ssr: {
-      external: ["codemirror"],
+      external: [
+        "codemirror",
+        "@codemirror/autocomplete",
+        "@codemirror/commands",
+        "@codemirror/language",
+        "@codemirror/lint",
+        "@codemirror/search",
+        "@codemirror/state",
+        "@codemirror/view",
+        "style-mod",
+      ],
     },
     worker: {
       format: "es",

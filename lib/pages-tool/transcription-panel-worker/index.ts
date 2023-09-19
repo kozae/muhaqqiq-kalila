@@ -1,8 +1,8 @@
 export enum TranscriptionWorkerEvent {
-  VALUE_CHANGE = 1,
-  ERROR = 2,
-  NO_ERROR = 3,
+  VALUE_CHANGE,
+  ERROR,
+  NO_ERROR,
   //----
-  STATISTICS = 4,
-  LINE_CHANGE = 5,
+  STATISTICS,
+  LINE_CHANGE,
 }

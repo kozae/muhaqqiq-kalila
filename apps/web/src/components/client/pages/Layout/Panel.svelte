@@ -2,10 +2,11 @@
   import { requestState, source } from "@client/pages/store";
   import CommandBar from "./CommandBar.svelte";
   import SortableElements from "@client/pages/common/SortableElements.svelte";
+  import { map } from "rxjs";
 
   let mode: "view" | "edit" = "view";
   requestState("selectLayoutPanelData");
-  const data = source.selectLayoutPanelData;
+  const data = source.selectLayoutPanelData.pipe(map((data) => data?.elements));
 </script>
 
 {#if mode === "view"}

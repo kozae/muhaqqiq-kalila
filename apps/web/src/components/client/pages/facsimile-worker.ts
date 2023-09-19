@@ -19,7 +19,7 @@ const ready = new Promise<void>((resolve) => {
 
 await ready;
 
-export function requestRegion(el: ILayoutElement) {
+export function requestRegion(el: ILayoutElement, pageId: string) {
   facsimileWorker.postMessage({
     type: 2,
     payload: {
@@ -28,17 +28,23 @@ export function requestRegion(el: ILayoutElement) {
       r: lodash.last(el.region) || 0,
       padding: 0,
       frameColor: [0, 0, 0],
+      pageId,
     },
   });
 }
 
-export const regionUrl = new ReplaySubject<{ id: string; region: string }>(50);
+export const regionUrl = new ReplaySubject<{
+  id: string;
+  region: string;
+  pageId: string;
+}>(50);
 
 facsimileWorker.onmessage = (event) => {
   if (event.data.id) {
     regionUrl.next({
       id: event.data.id,
       region: event.data.region,
+      pageId: event.data.pageId,
     });
   }
 };

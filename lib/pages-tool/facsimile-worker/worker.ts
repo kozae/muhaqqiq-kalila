@@ -15,7 +15,7 @@ self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
       break;
     case 2:
       if (cropper && e.data.payload) {
-        const { p, r, frameColor, padding, id } = e.data.payload;
+        const { p, r, frameColor, padding, id, pageId } = e.data.payload;
         const rotation = isNaN(r) ? 0 : r;
         const cacheKey = id;
         let region;
@@ -27,7 +27,7 @@ self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
           region = cropper.get_region(points, rotation, color, padding);
           regionCache.set(cacheKey, region); // Store region in cache
         }
-        self.postMessage({ id, region });
+        self.postMessage({ id, region, pageId });
       }
       break;
 

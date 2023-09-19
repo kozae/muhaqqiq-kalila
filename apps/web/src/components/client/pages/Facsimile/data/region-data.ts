@@ -15,7 +15,7 @@ const regions$ = combineLatest([
     if (tool === "layout") {
       return scale(data.elements);
     }
-    if (tool === "lines") {
+    if (tool === "lines" || tool === "transcription") {
       return scale(data.lines);
     }
     return [];

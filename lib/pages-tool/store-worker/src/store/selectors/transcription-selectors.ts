@@ -31,6 +31,6 @@ export const selectTranscriptionPanelData = createSelector(
       }
     }
 
-    return { bodyLines, colors, ids, points, rotations };
+    return { bodyLines, colors, ids, points, rotations, id: state.info!.id };
   },
 );

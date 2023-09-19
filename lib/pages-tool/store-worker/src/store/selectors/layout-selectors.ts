@@ -37,6 +37,7 @@ export const selectLayout = createSelector(rootSelector, (state) => {
   return {
     lines: lines as ILayoutElement[],
     elements: [...text, ...images] as ILayoutElement[],
+    id: state.info!.id,
   };
 });
 
@@ -45,7 +46,10 @@ export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
 
   const imageList = imagesAdapter.getSelectors().selectAll(state.images);
 
-  return lodash.orderBy([...textList, ...imageList], "order");
+  return {
+    elements: lodash.orderBy([...textList, ...imageList], "order"),
+    id: state.info!.id,
+  };
 });
 
 export const selectLinePanelData = createSelector(rootSelector, (state) => {
@@ -69,5 +73,5 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
     }
   }
 
-  return elements;
+  return { elements, id: state.info!.id };
 });
