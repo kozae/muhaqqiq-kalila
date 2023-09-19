@@ -10,19 +10,10 @@
     filter((data) => data.id === id),
     map((data) => data.bodyLines.join("\n")),
   );
-
-  const colorCssVars = source.selectTranscriptionPanelData.pipe(
-    filter((data) => data.id === id),
-    map((data) =>
-      data.colors
-        .map((color, index) => `--color-${index + 1}: rgba(${color}, 0.2);`)
-        .join(""),
-    ),
-  );
 </script>
 
 {#if $data}
-  <div class="editor-container" style={$colorCssVars}>
+  <div class="editor-container">
     <Codemirror doc={$data} />
   </div>
 {/if}

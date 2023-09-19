@@ -14,6 +14,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "pages-tool-transcription-panel-wasm": "workspace:*"
+    "pages-tool-transcription-panel-wasm": "workspace:*",
+    "rxjs": "^7.8.1"
   }
 }

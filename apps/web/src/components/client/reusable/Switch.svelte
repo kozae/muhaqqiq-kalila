@@ -1,15 +1,14 @@
 <script lang="ts">
   export let isEnabled = false;
-  export let label: string = "";
+  export let labelLeft: string = "";
+  export let labelRight: string = "";
 </script>
 
 <div class="flex items-center justify-between">
-  <span class="flex flex-grow flex-col">
-    <span
-      class="text-sm font-medium leading-6 text-gray-900 mr-2"
-      id="availability-label">{label}</span
-    >
-  </span>
+  <span
+    class="text-sm font-medium leading-6 text-gray-900 mr-2"
+    id="availability-label">{labelLeft}</span
+  >
   <!-- Enabled: "bg-primary-600", Not Enabled: "bg-gray-200" -->
   <button
     type="button"
@@ -47,4 +46,8 @@
       </span>
     </span>
   </button>
+  <span
+    class="text-sm font-medium leading-6 text-gray-900 ml-2"
+    id="availability-label">{labelRight}</span
+  >
 </div>

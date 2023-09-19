@@ -4,6 +4,7 @@ import Info from "@client/pages/Info";
 import Layout from "@client/pages/Layout";
 import Lines from "@client/pages/Lines";
 import TranscriptionPanel from "@client/pages/Transcription";
+import Loading from "@client/reusable/Loading.svelte";
 
 const { pageId, mediumId, tool } = Astro.params;
 ---
@@ -18,7 +19,7 @@ const { pageId, mediumId, tool } = Astro.params;
         <TranscriptionPanel pageId={pageId!} client:only />
       )
     }
-
-    {!["info", "layout", "lines", "transcription"].includes(tool!) && tool}
+    {tool === "segmentation" && <Loading soon client:only />}
+    {tool === "images" && <Loading soon client:only />}
   </div>
 </ToolLayout>

@@ -2,36 +2,85 @@
   import CommandBarContainer from "@client/pages/common/CommandBarContainer.svelte";
   import EditionSymbolsDropdownMenu from "./EditionSymbolsDropdownMenu.svelte";
   import Switch from "@client/reusable/Switch.svelte";
+  import Moveable from "svelte-moveable";
+  import RegionPreview from "@client/pages/common/RegionPreview.svelte";
+  import { source } from "@client/pages/store";
+  import { filter, first, map, mergeMap, tap, withLatestFrom } from "rxjs";
+  import { getContext } from "svelte";
+  import { hoveredRegion$ } from "@client/pages/facsimile-events";
+  import { regionUrl, requestRegion } from "@client/pages/facsimile-worker";
+  import type { ILayoutElement } from "pages-tool-store-worker";
+  import EyeIcon from "@icons/EyeIcon.svelte";
+  import EyeSlashIcon from "@icons/EyeSlashIcon.svelte";
+  import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
+  import DocumentIcon from "@icons/DocumentIcon.svelte";
+  import SmallCardGroup from "@client/reusable/SmallCardGroup.svelte";
+
   let isEnabled = false;
+  let selectedOption = "Body";
+
+  let previewTraget: HTMLElement | null = null;
+  const throttleDrag = 1;
+  const edgeDraggable = false;
+  const startDragRotate = 0;
+  const throttleDragRotate = 0;
+  const id: string = getContext("id");
+  const el$ = hoveredRegion$.pipe(
+    filter((v) => !!v),
+    withLatestFrom(
+      source.selectTranscriptionPanelData.pipe(
+        filter((data) => data.id === id),
+        map((data) => data.lines),
+      ),
+    ),
+    map(([id, lines]) => lines[id!]),
+    tap((v) => requestRegion(v! as ILayoutElement, id)),
+  );
+
+  const url = el$.pipe(
+    filter((v) => !!v),
+    map((v) => v!.id),
+    mergeMap((elId) =>
+      regionUrl.pipe(
+        first((v) => v.pageId === id && v.id === elId),
+        map((v) => v.region),
+      ),
+    ),
+  );
 </script>
 
-<CommandBarContainer
-  ><EditionSymbolsDropdownMenu />
-  <Switch label="Previews" bind:isEnabled>
-    <svg
-      slot="disabled"
-      class="h-3 w-3 text-gray-400"
-      fill="none"
-      viewBox="0 0 12 12"
-    >
-      <path
-        d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
-
-    <svg
-      slot="enabled"
-      class="h-3 w-3 text-primary-600"
-      fill="currentColor"
-      viewBox="0 0 12 12"
-    >
-      <path
-        d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z"
-      />
-    </svg>
+<CommandBarContainer>
+  <EditionSymbolsDropdownMenu />
+  <Switch labelLeft="Previews" bind:isEnabled>
+    <EyeSlashIcon slot="disabled" className="h-4 w-4 text-gray-500" />
+    <EyeIcon slot="enabled" className="h-4 w-4 text-primary-600" />
   </Switch>
+  <!-- <SmallCardGroup /> -->
 </CommandBarContainer>
+
+{#if isEnabled}
+  <div
+    bind:this={previewTraget}
+    class="fixed top-0 left-0 z-50 h-fit w-fit"
+    style="border: none;"
+  >
+    <RegionPreview
+      element={$el$}
+      image={$url}
+      on:close={() => (isEnabled = false)}
+    />
+  </div>
+  <Moveable
+    target={previewTraget}
+    origin={false}
+    edge={false}
+    draggable={true}
+    {throttleDrag}
+    {edgeDraggable}
+    {startDragRotate}
+    {throttleDragRotate}
+    on:drag={({ detail: e }) => {
+      e.target.style.transform = e.transform;
+    }}
+  ></Moveable>
+{/if}

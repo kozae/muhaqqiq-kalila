@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import lodash from "lodash";
-import { rootSelector } from "..";
+import { rootSelector, type LineEntity } from "..";
 import { linesAdapter, textAdapter } from "../slice";
 
 export const selectTranscriptionPanelData = createSelector(
@@ -31,6 +31,21 @@ export const selectTranscriptionPanelData = createSelector(
       }
     }
 
-    return { bodyLines, colors, ids, points, rotations, id: state.info!.id };
+    const lines: Record<string, LineEntity> = {};
+    lineList
+      .filter((l) => l?.region !== undefined)
+      .forEach((l) => {
+        lines[l!.id] = l;
+      });
+
+    return {
+      bodyLines,
+      colors,
+      ids,
+      points,
+      rotations,
+      id: state.info!.id,
+      lines,
+    };
   },
 );

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { requestState } from "@client/pages/store";
+  import { requestState, source } from "@client/pages/store";
   import CommandBar from "./CommandBar/CommandBar.svelte";
   import Editor from "./Editor/Editor.svelte";
   import AuxDisplay from "./AuxDisplay/AuxDisplay.svelte";
-  import { setContext } from "svelte";
+  import { getContext, setContext } from "svelte";
+  import { filter, map } from "rxjs";
   requestState("selectTranscriptionPanelData");
 
   const worker = new Worker(
@@ -13,10 +14,18 @@
     },
   );
   setContext("worker", worker);
+
+  const id = getContext("id");
+  const lineIds$ = source.selectTranscriptionPanelData.pipe(
+    filter((data) => data.id === id),
+    map((data) => data.ids),
+  );
 </script>
 
 <CommandBar />
-<div class="flex h-[calc(100vh-150px)] flex-col bg-red-50">
+<div class="flex h-[calc(100vh-150px)] flex-col">
   <Editor />
-  <AuxDisplay />
+  {#if $lineIds$}
+    <AuxDisplay ids={$lineIds$} />
+  {/if}
 </div>

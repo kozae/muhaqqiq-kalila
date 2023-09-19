@@ -59,3 +59,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 mk_pass.txt
+aws_cred.txt

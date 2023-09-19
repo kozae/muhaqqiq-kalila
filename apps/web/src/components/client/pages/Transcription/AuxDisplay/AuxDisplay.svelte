@@ -1,25 +1,27 @@
 <script lang="ts">
+  import { hoveredRegion$ } from "@client/pages/facsimile-events";
   import XCircleIcon from "@icons/XCircleIcon.svelte";
   import lodash from "lodash";
   import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
   import { getContext, onDestroy, onMount } from "svelte";
 
   const worker: Worker = getContext("worker");
+
+  export let ids: string[];
   let error: any[] = [];
-  let canSave = true; // TODO make as an event, inform store worker
+
+  hoveredRegion$.next(ids[0]);
 
   const onMessage = (e: any) => {
     if (e.data.type === TranscriptionWorkerEvent.ERROR) {
       error = e.data.payload;
-      canSave = false;
     }
     if (e.data.type === TranscriptionWorkerEvent.NO_ERROR) {
       error = [];
-      canSave = true;
     }
     if (e.data.type === TranscriptionWorkerEvent.LINE_CHANGE) {
       const order = e.data.payload as number;
-      console.log(order);
+      hoveredRegion$.next(ids[order - 1]);
     }
   };
 

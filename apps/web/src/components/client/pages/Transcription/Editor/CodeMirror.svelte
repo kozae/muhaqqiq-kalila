@@ -97,10 +97,7 @@
     color: #4d4d0a;
     font-weight: bold;
   }
-
-  @for $i from 1 through 30 {
-    :global(.cm-line:nth-child(#{$i})) {
-      background-color: var(--color-#{$i}, white) !important;
-    }
+  :global(.cm-line:nth-child(odd)) {
+    background-color: rgb(243 244 246) !important;
   }
 </style>

@@ -11,7 +11,7 @@
   const suffixes: ISymbol[] = [
     {
       symbol: "†",
-      label: "Corrupt",
+      label: "Corrupt, [CMD+SHIFT+1]",
     },
     {
       symbol: "*",

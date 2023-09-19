@@ -1,6 +1,7 @@
 <script lang="ts">
   export let classes = "";
   export let todo = false;
+  export let soon = false;
 </script>
 
 <div class={`flex flex-col h-full items-center justify-center ${classes}`}>
@@ -9,5 +10,8 @@
   ></div>
   {#if todo}
     <p class="animate-pulse p-1 text-center text-secondary-900">todo!</p>
+  {/if}
+  {#if soon}
+    <p class="animate-pulse p-1 text-center text-secondary-900">coming soon!</p>
   {/if}
 </div>
