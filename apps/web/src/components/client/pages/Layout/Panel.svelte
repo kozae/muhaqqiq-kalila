@@ -3,7 +3,7 @@
   import CommandBar from "./CommandBar.svelte";
   import SortableElements from "@client/pages/common/SortableElements.svelte";
   import EditRegion from "../common/EditRegion.svelte";
-  import { regionUnderEdit$ } from "../facsimile-events";
+  import { hoveredRegion$, regionUnderEdit$ } from "../facsimile-events";
   import { map, mergeMap, of } from "rxjs";
 
   let mode: "view" | "edit" = "view";
@@ -35,5 +35,13 @@
     {/key}
   {/if}
 {:else}
-  <EditRegion element={$regionUnderEdit} on:done={() => (mode = "view")} />
+  <EditRegion
+    element={$regionUnderEdit}
+    on:done={(e) => {
+      mode = "view";
+      console.log(e.detail);
+      regionUnderEdit$.next(undefined);
+      hoveredRegion$.next(undefined);
+    }}
+  />
 {/if}

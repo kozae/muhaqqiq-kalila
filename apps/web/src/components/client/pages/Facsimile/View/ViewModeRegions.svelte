@@ -6,17 +6,23 @@
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
   import ComplementaryPolygon from "./ComplementaryPolygon.svelte";
   import { requestState } from "@client/pages/store";
+  import { mode } from "../mode-store";
+
   requestState("selectLayout");
 </script>
 
 {#if $regions$}
   <Layer config={{ listening: false }}>
-    {#if !$hoveredRegion$}
+    {#if !$hoveredRegion$ || $mode !== "view"}
       <AllRegions regions={$regions$} />
     {/if}
-    <ComplementaryPolygon />
+    {#if $mode === "view"}
+      <ComplementaryPolygon />
+    {/if}
   </Layer>
-  <Layer>
-    <EventedRegions regions={$regions$} />
-  </Layer>
+  {#if $mode === "view"}
+    <Layer>
+      <EventedRegions regions={$regions$} />
+    </Layer>
+  {/if}
 {/if}

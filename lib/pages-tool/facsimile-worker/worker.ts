@@ -1,4 +1,4 @@
-import { FacsimileCropper } from "./facsimile-util";
+import { FacsimileCropper } from "./cropper";
 
 let cropper: any;
 let regionCache: Map<string, any> = new Map(); // Cache for regions
