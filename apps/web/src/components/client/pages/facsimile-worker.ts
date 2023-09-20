@@ -20,6 +20,7 @@ const ready = new Promise<void>((resolve) => {
 await ready;
 
 export function requestRegion(el: ILayoutElement, pageId: string) {
+  if (!el.region) return;
   facsimileWorker.postMessage({
     type: 2,
     payload: {

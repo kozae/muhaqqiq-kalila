@@ -48,7 +48,7 @@ export type PageInfoUpdate = {
   commentary?: string | null;
   foliation?: string | null;
   pagination?: number | null;
-  tags?: string | null;
+  tags?: string[] | null;
 };
 
 export interface ILayoutElement {

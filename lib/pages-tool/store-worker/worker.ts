@@ -9,7 +9,7 @@ import {
   type RootState,
 } from "./src/store";
 import type { BrowserMessage } from "./src/worker-message.models";
-import { linesAdapter } from "./src/store/slice";
+import { imagesAdapter, linesAdapter, textAdapter } from "./src/store/slice";
 import { selectLayout } from "./src/store/selectors";
 
 console.log("Worker loaded");
@@ -26,6 +26,7 @@ self.onmessage = <E extends RequestActionName, T extends SelectorName>(
   if (message.data.name in requestActions) {
     const action = requestActions[message.data.name as E];
     if (typeof action === "function") {
+      //@ts-ignore
       store.dispatch(action(message.data.payload! as any) as any);
     }
   }
@@ -46,11 +47,11 @@ store.subscribe(async () => {
   stateIdListner.next(data.stateId);
 });
 
-const infoStateChangedListner = new Subject<boolean>();
-const textStateChangedListner = new Subject<boolean>();
-const linesStateChangedListner = new Subject<boolean>();
-const imagesStateChangedListner = new Subject<boolean>();
-const segmentsStateChangedListner = new Subject<boolean>();
+const infoStateChangedListner = new Subject<number>();
+const textStateChangedListner = new Subject<number>();
+const linesStateChangedListner = new Subject<number>();
+const imagesStateChangedListner = new Subject<number>();
+const segmentsStateChangedListner = new Subject<number>();
 
 stateIdListner
   .pipe(
@@ -63,6 +64,10 @@ stateIdListner
 
     self.postMessage({
       name: "selectBasicInfo",
+    });
+
+    self.postMessage({
+      name: "selectBasicInfo",
       payload: {
         id: data.info!.id,
         title: `${data.siglum} (p.${data.info!.number})`,
@@ -71,11 +76,11 @@ stateIdListner
     });
 
     if (stateId > 0) {
-      infoStateChangedListner.next(data.changed.info);
-      textStateChangedListner.next(data.changed.text);
-      linesStateChangedListner.next(data.changed.lines);
-      imagesStateChangedListner.next(data.changed.images);
-      segmentsStateChangedListner.next(data.changed.segments);
+      infoStateChangedListner.next(data.stateId);
+      textStateChangedListner.next(data.stateId);
+      linesStateChangedListner.next(data.stateId);
+      imagesStateChangedListner.next(data.stateId);
+      segmentsStateChangedListner.next(data.stateId);
 
       if (!Object.values(data.changed).some((v) => v)) {
         refreshFacsimileSpaceData(data);
@@ -86,10 +91,9 @@ stateIdListner
 
 infoStateChangedListner
   .pipe(distinctUntilChanged())
-  .subscribe(async (changed) => {
-    if (changed) {
-      const data = store.getState();
-      const version = Date.now();
+  .subscribe(async (version) => {
+    const data = store.getState();
+    if (data.changed.info) {
       await updatesDB.info.put({
         id: data.info!.id,
         version,
@@ -100,16 +104,42 @@ infoStateChangedListner
 
 linesStateChangedListner
   .pipe(distinctUntilChanged())
-  .subscribe(async (changed) => {
-    if (changed) {
-      const data = store.getState();
-      const version = Date.now();
-
+  .subscribe(async (version) => {
+    const data = store.getState();
+    if (data.changed.lines) {
       refreshFacsimileSpaceData(data);
       await updatesDB.lines.put({
         id: data.info!.id,
         version,
         data: linesAdapter.getSelectors().selectAll(data.lines),
+      });
+    }
+  });
+
+textStateChangedListner
+  .pipe(distinctUntilChanged())
+  .subscribe(async (version) => {
+    const data = store.getState();
+    if (data.changed.text) {
+      refreshFacsimileSpaceData(data);
+      await updatesDB.text.put({
+        id: data.info!.id,
+        version,
+        data: textAdapter.getSelectors().selectAll(data.text),
+      });
+    }
+  });
+
+imagesStateChangedListner
+  .pipe(distinctUntilChanged())
+  .subscribe(async (version) => {
+    const data = store.getState();
+    if (data.changed.images) {
+      refreshFacsimileSpaceData(data);
+      await updatesDB.images.put({
+        id: data.info!.id,
+        version,
+        data: imagesAdapter.getSelectors().selectAll(data.images),
       });
     }
   });

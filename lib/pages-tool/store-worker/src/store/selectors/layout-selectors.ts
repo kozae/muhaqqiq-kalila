@@ -43,12 +43,23 @@ export const selectLayout = createSelector(rootSelector, (state) => {
 
 export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
   const textList = textAdapter.getSelectors().selectAll(state.text);
-
   const imageList = imagesAdapter.getSelectors().selectAll(state.images);
+  const canDelete: Record<string, boolean> = {};
+
+  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
+  for (const image of imageList) {
+    canDelete[image.id] = true;
+  }
+
+  for (const el of textList) {
+    canDelete[el.id] = !lineList.some((l) => l.elementId === el.id);
+  }
 
   return {
     elements: lodash.orderBy([...textList, ...imageList], "order"),
     id: state.info!.id,
+    canDelete,
+    version: Date.now(),
   };
 });
 

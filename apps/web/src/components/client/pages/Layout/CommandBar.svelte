@@ -4,6 +4,7 @@
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import PhotoIcon from "@icons/PhotoIcon.svelte";
   import ChevronDownIcon from "@icons/ChevronDownIcon.svelte";
+  import { requestAction } from "../store";
 
   const textElementTypes: string[] = [
     "main body",
@@ -15,14 +16,18 @@
     "poem",
     "stamp",
   ];
-  const imageElementTypes: string[] = ["image in main body", "image in margin"];
+  const imageElementTypes: string[] = [
+    "image in main body",
+    "image in margin",
+    "blank",
+  ];
 </script>
 
 <CommandBarContainer>
   <Menu
     items={textElementTypes}
     buttonText="Add Text Element"
-    on:itemClick={(event) => console.log("adding text element", event.detail)}
+    on:itemClick={(event) => requestAction("addLayoutElement", event.detail)}
   >
     <DocumentTextIcon
       slot="prefixIcon"
@@ -37,7 +42,7 @@
   <Menu
     items={imageElementTypes}
     buttonText="Add Image Element"
-    on:itemClick={(event) => console.log("adding image element", event.detail)}
+    on:itemClick={(event) => requestAction("addLayoutElement", event.detail)}
   >
     <PhotoIcon slot="prefixIcon" className="text-primary-700 -ml-0.5 h-5 w-5" />
     <ChevronDownIcon

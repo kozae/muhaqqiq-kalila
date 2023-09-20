@@ -13,7 +13,8 @@
 
   const points$ = highlighted$.pipe(
     map((highlighted) => {
-      if (!highlighted) return undefined;
+      if (!highlighted || !highlighted.region || highlighted.region.length < 8)
+        return undefined;
       const [minX, minY, maxX, maxY] = getPolygonBoundingBox(
         highlighted.region.slice(0, -1) as number[],
       );

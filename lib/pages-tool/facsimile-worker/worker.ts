@@ -25,7 +25,9 @@ self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
           const points = new Uint32Array(p);
           const color = new Uint32Array(frameColor);
           region = cropper.get_region(points, rotation, color, padding);
-          regionCache.set(cacheKey, region); // Store region in cache
+          if (!cacheKey.includes("preview")) {
+            regionCache.set(cacheKey, region); // Store region in cache
+          }
         }
         self.postMessage({ id, region, pageId });
       }

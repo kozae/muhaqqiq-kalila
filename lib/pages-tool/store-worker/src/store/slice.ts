@@ -15,6 +15,9 @@ import type {
   IChangeTracker,
 } from "./model";
 import { loadState } from "./thunks";
+import { v4 as uuidv4 } from "uuid";
+import { highlightColors } from "./util";
+import lodash from "lodash";
 
 export const textAdapter = createEntityAdapter<TextEntity>();
 export const imagesAdapter = createEntityAdapter<ImageEntity>();
@@ -54,7 +57,7 @@ export const slice = createSlice({
         : state.info.commentary;
       state.info.foliation = foliation;
       state.info.pagination = pagination;
-      state.info.tags = tags ? tags.split(", ") : state.info.tags;
+      state.info.tags = tags ? tags : state.info.tags;
       state.changed.info = true;
       state.stateId = Date.now();
     },
@@ -74,6 +77,90 @@ export const slice = createSlice({
       }
       state.lines = linesAdapter.setAll(state.lines, lines);
       state.changed.lines = true;
+      state.stateId = Date.now();
+    },
+    updateLayoutElements: (
+      state,
+      action: PayloadAction<(ImageEntity | TextEntity)[]>,
+    ) => {
+      const text: TextEntity[] = [];
+      const images: ImageEntity[] = [];
+
+      for (const element of action.payload) {
+        if (
+          element.position?.includes("image") ||
+          element.position === "blank"
+        ) {
+          images.push(element as ImageEntity);
+        } else {
+          text.push(element as TextEntity);
+        }
+      }
+
+      state.text = textAdapter.setAll(state.text, text);
+      state.images = imagesAdapter.setAll(state.images, images);
+
+      state.changed.text = true;
+      state.changed.images = true;
+      state.stateId = Date.now();
+    },
+    addLayoutElement: (state, action: PayloadAction<string>) => {
+      const order = state.text.ids.length + state.images.ids.length + 1;
+      const color = highlightColors[order % 13];
+      if (action.payload.includes("image") || action.payload === "blank") {
+        imagesAdapter.addOne(state.images, {
+          id: uuidv4(),
+          position: action.payload,
+          order,
+          pageId: state.info?.id!,
+          color,
+          __typename: "Image",
+        });
+        state.changed.images = true;
+      } else {
+        textAdapter.addOne(state.text, {
+          id: uuidv4(),
+          position: action.payload,
+          order,
+          pageId: state.info?.id!,
+          color,
+          __typename: "TextElement",
+        });
+        state.changed.text = true;
+      }
+
+      state.stateId = Date.now();
+    },
+    deleteLayoutElement: (state, action: PayloadAction<string>) => {
+      const originalText = textAdapter.getSelectors().selectAll(state.text);
+      const originalImages = imagesAdapter
+        .getSelectors()
+        .selectAll(state.images);
+      const elements = lodash
+        .orderBy(
+          [...originalText, ...originalImages].filter(
+            (el) => el.id !== action.payload,
+          ),
+          "order",
+        )
+        .map((el, i) => ({ ...el, order: i }));
+      const text: TextEntity[] = [];
+      const images: ImageEntity[] = [];
+
+      for (const element of elements) {
+        if (
+          element.position?.includes("image") ||
+          element.position === "blank"
+        ) {
+          images.push(element as ImageEntity);
+        } else {
+          text.push(element as TextEntity);
+        }
+      }
+      state.text = textAdapter.setAll(state.text, text);
+      state.images = imagesAdapter.setAll(state.images, images);
+      state.changed.images = true;
+      state.changed.text = true;
       state.stateId = Date.now();
     },
     discardUpdates: (state) => {

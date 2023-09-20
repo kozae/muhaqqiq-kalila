@@ -12,6 +12,7 @@
   import { createEventDispatcher } from "svelte";
 
   export let items: (TextEntity | ImageEntity | LineEntity)[] = [];
+  export let canDelete: Record<string, boolean> = {};
   export let draggables: string[] | undefined = undefined;
   const dispatch = createEventDispatcher();
 
@@ -85,7 +86,7 @@
       <div animate:flip={{ duration: flipDurationMs }}>
         <LayoutElement
           {el}
-          canDelete={el.position?.includes("image")}
+          canDelete={canDelete[el.id]}
           idle={isIdle(el)}
           on:toggleHighlightedRegion={(e) =>
             dispatch("toggleHighlightedRegion", e.detail)}

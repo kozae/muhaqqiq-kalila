@@ -109,13 +109,14 @@
         />
       </button>
     {/if}
+
+    <slot name="dragHandle" />
+
     {#if !el?.region}
       <Tooltip message="no facsimile region defined">
         <HideImageIcon className="mr-2  h-8 w-8 rounded text-gray-500" />
       </Tooltip>
     {/if}
-
-    <slot name="dragHandle" />
 
     {#if el?.region}
       <button on:click={() => toggleZoomedRegion(el?.id)}>
