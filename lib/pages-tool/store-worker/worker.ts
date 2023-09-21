@@ -1,5 +1,5 @@
 import { Subject, distinctUntilChanged, filter } from "rxjs";
-import { discardStoredUpdates, updatesDB } from "./src/db";
+import { discardStoredUpdates, getDB } from "./src/db";
 import {
   type RequestActionName,
   type SelectorName,
@@ -9,16 +9,16 @@ import {
   type RootState,
 } from "./src/store";
 import type { BrowserMessage } from "./src/worker-message.models";
-import { imagesAdapter, linesAdapter, textAdapter } from "./src/store/slice";
 import { selectLayout } from "./src/store/selectors";
+import { initStoragePersistence } from "./src/db/persistence";
 
-console.log("Worker loaded");
+import {
+  selectAllImageElements,
+  selectAllLines,
+  selectAllTextElements,
+} from "./src/store/base-selectors";
 
 const dispatch = (event: any) => self.postMessage(event);
-
-const refreshFacsimileSpaceData = (data: RootState) => {
-  dispatch({ name: "selectLayout", payload: selectLayout(data) });
-};
 
 self.onmessage = <E extends RequestActionName, T extends SelectorName>(
   message: BrowserMessage<E, T>,
@@ -53,6 +53,10 @@ const linesStateChangedListner = new Subject<number>();
 const imagesStateChangedListner = new Subject<number>();
 const segmentsStateChangedListner = new Subject<number>();
 
+const refreshFacsimileSpaceData = (data: RootState) => {
+  dispatch({ name: "selectLayout", payload: selectLayout(data) });
+};
+
 stateIdListner
   .pipe(
     distinctUntilChanged(),
@@ -75,7 +79,8 @@ stateIdListner
       },
     });
 
-    if (stateId > 0) {
+    if (stateId > 0 && stateId !== data.info?.number) {
+      // when the state id is the page number, this means it is the initailly fetched state
       infoStateChangedListner.next(data.stateId);
       textStateChangedListner.next(data.stateId);
       linesStateChangedListner.next(data.stateId);
@@ -94,7 +99,7 @@ infoStateChangedListner
   .subscribe(async (version) => {
     const data = store.getState();
     if (data.changed.info) {
-      await updatesDB.info.put({
+      await getDB().info.put({
         id: data.info!.id,
         version,
         data: data.info!,
@@ -108,10 +113,10 @@ linesStateChangedListner
     const data = store.getState();
     if (data.changed.lines) {
       refreshFacsimileSpaceData(data);
-      await updatesDB.lines.put({
+      await getDB().lines.put({
         id: data.info!.id,
         version,
-        data: linesAdapter.getSelectors().selectAll(data.lines),
+        data: selectAllLines(data.lines),
       });
     }
   });
@@ -122,10 +127,10 @@ textStateChangedListner
     const data = store.getState();
     if (data.changed.text) {
       refreshFacsimileSpaceData(data);
-      await updatesDB.text.put({
+      await getDB().text.put({
         id: data.info!.id,
         version,
-        data: textAdapter.getSelectors().selectAll(data.text),
+        data: selectAllTextElements(data.text),
       });
     }
   });
@@ -136,12 +141,14 @@ imagesStateChangedListner
     const data = store.getState();
     if (data.changed.images) {
       refreshFacsimileSpaceData(data);
-      await updatesDB.images.put({
+      await getDB().images.put({
         id: data.info!.id,
         version,
-        data: imagesAdapter.getSelectors().selectAll(data.images),
+        data: selectAllImageElements(data.images),
       });
     }
   });
+
+await initStoragePersistence();
 
 self.postMessage("READY");

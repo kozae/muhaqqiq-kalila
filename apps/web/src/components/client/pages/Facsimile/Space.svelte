@@ -19,7 +19,6 @@
     if ($regionUnderEdit$) {
       mode.set("edit");
     } else {
-      console.log("setting mode to view");
       mode.set("view");
     }
   }

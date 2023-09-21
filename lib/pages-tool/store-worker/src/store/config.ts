@@ -9,5 +9,3 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export type ThunkApi = { state: RootState; dispatch: AppDispatch };
-
-export const rootSelector = (state: RootState) => state;

@@ -1,13 +1,14 @@
 import { createSelector } from "@reduxjs/toolkit";
 import lodash from "lodash";
-import { rootSelector, type LineEntity } from "..";
-import { linesAdapter, textAdapter } from "../slice";
+import { type LineEntity } from "..";
+import { selectAllLines, selectAllTextElements } from "../base-selectors";
+import { rootSelector } from "./root-selector";
 
 export const selectTranscriptionPanelData = createSelector(
   rootSelector,
   (state) => {
-    const lineList = linesAdapter.getSelectors().selectAll(state.lines);
-    const textList = textAdapter.getSelectors().selectAll(state.text);
+    const lineList = selectAllLines(state.lines);
+    const textList = selectAllTextElements(state.text);
 
     const grouped = lodash.groupBy(
       lodash.orderBy(lineList, "order"),

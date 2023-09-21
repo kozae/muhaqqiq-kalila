@@ -1,4 +1,5 @@
 import Dexie, { type Table } from "dexie";
+// import "dexie-observable";
 import type {
   ImageEntity,
   LineEntity,
@@ -40,4 +41,26 @@ export class PageUpdatesDexie extends Dexie {
   }
 }
 
-export const updatesDB = new PageUpdatesDexie();
+let DB: PageUpdatesDexie;
+
+const initDB = () => {
+  const db = new PageUpdatesDexie();
+  return db;
+};
+
+export const getDB = () => {
+  if (!DB) {
+    DB = initDB();
+  }
+  const idb = DB.backendDB();
+  if (idb) {
+    try {
+      idb.transaction("tasks").abort();
+    } catch (e) {
+      DB.close();
+      DB = initDB();
+    }
+  }
+
+  return DB;
+};

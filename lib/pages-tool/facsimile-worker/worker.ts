@@ -2,13 +2,11 @@ import { FacsimileCropper } from "./cropper";
 
 let cropper: any;
 let regionCache: Map<string, any> = new Map(); // Cache for regions
-console.log("facsimile worker loaded");
 self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
   switch (e.data.type) {
     case 1:
       if (e.data.payload) {
         cropper = FacsimileCropper.new(base46(e.data.payload));
-        console.log("cropper loaded");
         regionCache = new Map();
       }
 

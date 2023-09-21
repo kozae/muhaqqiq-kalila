@@ -10,6 +10,7 @@
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import TrashIcon from "@icons/TrashIcon.svelte";
   import EyeIcon from "@icons/EyeIcon.svelte";
+  import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import HighlightIcon from "@icons/HighlightIcon.svelte";
   import HideImageIcon from "@icons/HideImageIcon.svelte";
   import Tooltip from "@client/reusable/Tooltip.svelte";
@@ -18,6 +19,8 @@
   import Moveable from "svelte-moveable";
   import RegionPreview from "./RegionPreview.svelte";
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
+  import Menu from "@client/reusable/Menu.svelte";
+  import { imageElementTypes, textElementTypes } from "./element-types";
 
   export let el: TextEntity | ImageEntity | LineEntity | undefined;
   export let canDelete: boolean = false;
@@ -53,6 +56,10 @@
     dispatch("editRegion", id);
   }
 
+  function changeType(newType?: string) {
+    dispatch("changeType", newType);
+  }
+
   function deleteElement(id?: string) {
     dispatch("deleteElement", id);
   }
@@ -85,17 +92,32 @@
     <h1 class="text-xl">
       {(el?.order ?? 0) + 1}. {el?.position}
     </h1>
+    {#if el?.position !== "line" && !idle}
+      <Menu
+        hoverBg=""
+        bg=""
+        items={canDelete || el?.position?.startsWith("image")
+          ? [...textElementTypes, ...imageElementTypes]
+          : textElementTypes}
+        on:itemClick={(event) => changeType(event.detail)}
+      >
+        <PencilSquareIcon
+          slot="prefixIcon"
+          className="text-primary-500 hover:text-secondary-700 mr-2 h-4 w-4 rounded"
+        />
+      </Menu>
+    {/if}
   </div>
 
   <div class="{idle ? 'h-24' : 'h-12'} grow mx-2 flex justify-center relative">
     <div
       class={$regionIshovered
-        ? "h-full w-full rounded"
-        : "h-full w-1/2 rounded"}
+        ? "h-full w-full rounded-full"
+        : "h-full w-1/2 rounded-full"}
       style={`background-image: url(${$url}); background-position: top right; background-repeat: no-repeat;`}
     >
       <div
-        class="h-full w-full"
+        class="h-full w-full rounded-full"
         style={!$regionIshovered ? `background-image: ${imageMask}` : undefined}
       ></div>
     </div>

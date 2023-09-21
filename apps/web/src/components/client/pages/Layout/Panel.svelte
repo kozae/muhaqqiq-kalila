@@ -15,8 +15,10 @@
       return data.pipe(map((data) => data?.elements.find((e) => e.id === id)));
     }),
   );
+  let regionUnderEditId: string | undefined;
   const onEdit = (id: string) => {
     mode = "edit";
+    regionUnderEditId = id;
     regionUnderEdit$.next(id);
   };
 </script>
@@ -31,6 +33,8 @@
         on:orderChanged={(e) => requestAction("updateLayoutElements", e.detail)}
         on:deleteElement={(e) => requestAction("deleteLayoutElement", e.detail)}
         on:editRegion={(e) => onEdit(e.detail)}
+        on:changeType={(e) =>
+          requestAction("changeLayoutElementPosition", e.detail)}
       />
     {/key}
   {/if}
@@ -39,7 +43,10 @@
     element={$regionUnderEdit}
     on:done={(e) => {
       mode = "view";
-      console.log(e.detail);
+      requestAction("defineElementFacsimileRegion", {
+        id: regionUnderEditId ?? "",
+        region: e.detail,
+      });
       regionUnderEdit$.next(undefined);
       hoveredRegion$.next(undefined);
     }}

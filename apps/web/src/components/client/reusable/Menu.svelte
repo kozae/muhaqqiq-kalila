@@ -5,6 +5,8 @@
 
   export let items: string[] = [];
   export let buttonText: string = "";
+  export let bg = "bg-white";
+  export let hoverBg = "hover:bg-secondary-100";
 
   let showMenu = false;
 
@@ -37,7 +39,7 @@
 <div class="relative inline-block text-left {id}">
   <button
     on:click={toggleMenu}
-    class="text-primary-900 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-secondary-100"
+    class="text-primary-900 inline-flex w-full justify-center gap-x-1.5 rounded-md {bg} px-3 py-2 text-sm font-semibold shadow-sm {hoverBg}"
   >
     <slot name="prefixIcon" />
     {buttonText}

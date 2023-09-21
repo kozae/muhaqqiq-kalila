@@ -1,15 +1,16 @@
 import { createSelector } from "@reduxjs/toolkit";
-import {
-  rootSelector,
-  type ILayoutElement,
-  type LineEntity,
-  type TextEntity,
-} from "..";
-import { imagesAdapter, linesAdapter, textAdapter } from "../slice";
+import { type ILayoutElement, type LineEntity, type TextEntity } from "..";
 import lodash from "lodash";
 
+import {
+  selectAllImageElements,
+  selectAllLines,
+  selectAllTextElements,
+} from "../base-selectors";
+import { rootSelector } from "./root-selector";
+
 export const selectLayout = createSelector(rootSelector, (state) => {
-  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
+  const lineList = selectAllLines(state.lines);
   const lines = lineList
     .filter((l) => l?.region !== undefined)
     .map((l) => ({
@@ -18,7 +19,7 @@ export const selectLayout = createSelector(rootSelector, (state) => {
       color: l!.color,
       order: l!.order,
     }));
-  const textList = textAdapter.getSelectors().selectAll(state.text);
+  const textList = selectAllTextElements(state.text);
   const text = textList.map((e) => ({
     id: e!.id,
     region: e!.region,
@@ -26,7 +27,7 @@ export const selectLayout = createSelector(rootSelector, (state) => {
     order: e!.order,
   }));
 
-  const imageList = imagesAdapter.getSelectors().selectAll(state.images);
+  const imageList = selectAllImageElements(state.images);
 
   const images = imageList.map((e) => ({
     id: e!.id,
@@ -42,11 +43,11 @@ export const selectLayout = createSelector(rootSelector, (state) => {
 });
 
 export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
-  const textList = textAdapter.getSelectors().selectAll(state.text);
-  const imageList = imagesAdapter.getSelectors().selectAll(state.images);
+  const textList = selectAllTextElements(state.text);
+  const imageList = selectAllImageElements(state.images);
   const canDelete: Record<string, boolean> = {};
 
-  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
+  const lineList = selectAllLines(state.lines);
   for (const image of imageList) {
     canDelete[image.id] = true;
   }
@@ -64,8 +65,8 @@ export const selectLayoutPanelData = createSelector(rootSelector, (state) => {
 });
 
 export const selectLinePanelData = createSelector(rootSelector, (state) => {
-  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
-  const textList = textAdapter.getSelectors().selectAll(state.text);
+  const lineList = selectAllLines(state.lines);
+  const textList = selectAllTextElements(state.text);
   const groupedLines = lodash.groupBy([...lineList], "elementId");
   const elements: (LineEntity | TextEntity)[] = [];
   for (const el of textList.filter((el) => el!.position!.includes("main"))) {
@@ -86,3 +87,23 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
 
   return { elements, id: state.info!.id };
 });
+
+export const selectLinesGroupedByArea = createSelector(
+  rootSelector,
+  (state) => {
+    const lineList = selectAllLines(state.lines);
+    const textList = lodash.orderBy(selectAllTextElements(state.text), "order");
+    const groupedLines = lodash.groupBy([...lineList], "elementId");
+    let body: LineEntity[] = [];
+    let margins: LineEntity[] = [];
+    for (const el of textList) {
+      const lines = lodash.orderBy(groupedLines[el!.id], "order");
+      if (el.position!.includes("main")) {
+        body = [...body, ...lines];
+      } else {
+        margins = [...margins, ...lines];
+      }
+    }
+    return { body, margins };
+  },
+);

@@ -1,26 +1,14 @@
 <script lang="ts">
   import CommandBarContainer from "@client/pages/common/CommandBarContainer.svelte";
+  import {
+    textElementTypes,
+    imageElementTypes,
+  } from "@client/pages/common/element-types";
   import Menu from "@client/reusable/Menu.svelte";
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import PhotoIcon from "@icons/PhotoIcon.svelte";
   import ChevronDownIcon from "@icons/ChevronDownIcon.svelte";
   import { requestAction } from "../store";
-
-  const textElementTypes: string[] = [
-    "main body",
-    "main text in margin",
-    "gloss",
-    "legend",
-    "side title",
-    "correction in margin",
-    "poem",
-    "stamp",
-  ];
-  const imageElementTypes: string[] = [
-    "image in main body",
-    "image in margin",
-    "blank",
-  ];
 </script>
 
 <CommandBarContainer>

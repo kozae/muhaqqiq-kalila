@@ -1,6 +1,6 @@
 import type { Page } from "kalila-graphql";
 import {
-  updatesDB,
+  getDB,
   type IStoredPageUpdates,
   type StoredUpdate,
 } from "./page-updates-db";
@@ -29,13 +29,23 @@ function keepInfoIfNew(
 }
 
 export const loadStoredUpdates = async (id: string, version: number) => {
-  const [info, text, lines, images, segments] = await Promise.all([
-    updatesDB.info.get(id),
-    updatesDB.text.get(id),
-    updatesDB.lines.get(id),
-    updatesDB.images.get(id),
-    updatesDB.segments.get(id),
-  ]);
+  const updatesDB = getDB();
+  let info, text, lines, images, segments;
+  await updatesDB.transaction(
+    "r",
+    updatesDB.info,
+    updatesDB.text,
+    updatesDB.lines,
+    updatesDB.images,
+    updatesDB.segments,
+    async () => {
+      info = await updatesDB.info.get(id);
+      text = await updatesDB.text.get(id);
+      lines = await updatesDB.lines.get(id);
+      images = await updatesDB.images.get(id);
+      segments = await updatesDB.segments.get(id);
+    },
+  );
   return {
     text: keepIfNew(text, version),
     images: keepIfNew(images, version),

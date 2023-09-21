@@ -1,11 +1,20 @@
-import { updatesDB } from "./page-updates-db";
+import { getDB } from "./page-updates-db";
 
 export const discardStoredUpdates = (id: string) => {
-  return Promise.all([
-    updatesDB.info.delete(id),
-    updatesDB.text.delete(id),
-    updatesDB.lines.delete(id),
-    updatesDB.images.delete(id),
-    updatesDB.segments.delete(id),
-  ]);
+  const updatesDB = getDB();
+  return updatesDB.transaction(
+    "rw",
+    updatesDB.info,
+    updatesDB.text,
+    updatesDB.lines,
+    updatesDB.images,
+    updatesDB.segments,
+    async () => {
+      await updatesDB.info.delete(id);
+      await updatesDB.text.delete(id);
+      await updatesDB.lines.delete(id);
+      await updatesDB.images.delete(id);
+      await updatesDB.segments.delete(id);
+    },
+  );
 };

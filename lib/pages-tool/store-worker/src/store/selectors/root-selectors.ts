@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { rootSelector } from "../config";
-import { linesAdapter, segmentsAdapter } from "../slice";
 import lodash from "lodash";
+import { selectAllLines, selectAllSegments } from "../base-selectors";
+import { rootSelector } from "./root-selector";
 
 export const selectHasChanges = createSelector(rootSelector, (state) =>
   Object.values(state.changed).some((v) => v),
@@ -25,7 +25,7 @@ export const selectImageDataUrl = createSelector(
 export const selectSummary = createSelector(rootSelector, (state) => {
   const textElements = state.text ? state.text.ids.length : 0;
   const images = state.images ? state.images.ids.length : 0;
-  const lineList = linesAdapter.getSelectors().selectAll(state.lines);
+  const lineList = selectAllLines(state.lines);
   const lines = lineList.filter((l) => l?.region !== undefined).length;
   const transcripedLines = lineList.filter((l) => l?.tokens !== undefined);
 
@@ -33,7 +33,7 @@ export const selectSummary = createSelector(rootSelector, (state) => {
   const transcripedTokensCount = lodash.flatten(
     transcripedLines.map((l) => l!.tokens),
   ).length;
-  const segmentList = segmentsAdapter.getSelectors().selectAll(state.segments);
+  const segmentList = selectAllSegments(state.segments);
   const segments = segmentList.map(
     (s) => `(${s?.unit?.frame}.${s?.unit?.order}) ${s?.unit?.title}`,
   );

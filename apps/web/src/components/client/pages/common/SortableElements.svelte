@@ -94,6 +94,8 @@
             dispatch("toggleZoomedRegion", e.detail)}
           on:editRegion={(e) => dispatch("editRegion", e.detail)}
           on:deleteElement={(e) => dispatch("deleteElement", e.detail)}
+          on:changeType={(e) =>
+            dispatch("changeType", { position: e.detail, id: el.id })}
         >
           <svelte:fragment slot="dragHandle">
             {#if !draggables || draggables.includes(el.position ?? "")}
