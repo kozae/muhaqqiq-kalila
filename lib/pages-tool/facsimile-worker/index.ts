@@ -1,4 +1,6 @@
 export enum FacsimileWorkerEvent {
-  LOAD = 1,
-  PREVIEW = 2,
+  LOAD,
+  PREVIEW,
+  REMOVE_FROM_CACHE,
+  RESET_CACHE,
 }

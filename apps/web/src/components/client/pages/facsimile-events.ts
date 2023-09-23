@@ -6,3 +6,5 @@ export const initialPoints: number[] = [
   100, 100, 250, 100, 250, 250, 100, 250, 0,
 ];
 export const editRegionPoints$ = new ReplaySubject<number[]>();
+
+export const detectedRegions$ = new ReplaySubject<number[][]>(1);

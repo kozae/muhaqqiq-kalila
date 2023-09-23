@@ -4,6 +4,7 @@ import { getPageData } from "./queries";
 import { source } from "./subjects";
 import { requestAction } from ".";
 import facsimileWorker from "../facsimile-worker";
+import { FacsimileWorkerEvent } from "pages-tool-facsimile-worker";
 
 route
   .pipe(
@@ -20,6 +21,9 @@ route
   )
   .subscribe(({ siglum, page, imageDataUrl }) => {
     const data = page!;
-    facsimileWorker.postMessage({ type: 1, payload: imageDataUrl });
+    facsimileWorker.postMessage({
+      type: FacsimileWorkerEvent.LOAD,
+      payload: imageDataUrl,
+    });
     requestAction("loadState", { ...data, imageDataUrl, siglum: siglum! });
   });

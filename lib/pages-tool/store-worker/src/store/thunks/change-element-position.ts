@@ -36,7 +36,6 @@ export const changeLayoutElementPosition = createAsyncThunk<
     const elementLines = allLines.filter((l) => l.elementId === text.id);
     const { body, margins } = selectLinesGroupedByArea(state);
 
-    console.log({ body, margins });
     // TODO move the segments as well
     if (fromMainToMargin) {
       const updatedElementLines = lodash
@@ -48,8 +47,6 @@ export const changeLayoutElementPosition = createAsyncThunk<
       const updatedMainLines = body
         .filter((l) => l.elementId !== id)
         .map((l, i) => ({ ...l, order: i }));
-
-      console.log({ updatedElementLines, updatedMainLines });
 
       updatedLines = [...updatedMainLines, ...updatedElementLines, ...margins];
     }
@@ -97,8 +94,6 @@ export const changeLayoutElementPosition = createAsyncThunk<
     }
   }
 
-  console.log({ updatedLines });
-  console.log({ updatedText });
   return {
     text: updatedText,
     lines: updatedLines,

@@ -15,7 +15,7 @@
   import HideImageIcon from "@icons/HideImageIcon.svelte";
   import Tooltip from "@client/reusable/Tooltip.svelte";
   import { regionUrl, requestRegion } from "../facsimile-worker";
-  import { first, map } from "rxjs";
+  import { filter, first, map, skipWhile } from "rxjs";
   import Moveable from "svelte-moveable";
   import RegionPreview from "./RegionPreview.svelte";
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
@@ -37,7 +37,8 @@
 
   const regionIshovered = hoveredRegion$.pipe(map((v) => v === el?.id));
   const url = regionUrl.pipe(
-    first((v) => v.pageId === pageId && v.id === el?.id),
+    skipWhile((v) => v.pageId !== pageId),
+    filter((v) => v.id === el?.id),
     map((v) => v.region),
   );
 
@@ -66,11 +67,14 @@
   const twCLass = "m-1 flex items-center  rounded p-1";
   const borderColor = `rgba(${el?.color ?? "240,239,60"}, 0.6)`;
   const backgroundColor = `rgba(${el?.color ?? "240,239,60"}, 0.3)`;
-  const imageMask = idle
+  const _imageMask = idle
     ? `linear-gradient(to bottom left, rgba(255,255,255, 0.3), rgba(255,255,255, 1))`
     : `linear-gradient(to left, rgba(${el?.color ?? "240,239,60"}, 0), rgba(${
         el?.color ?? "240,239,60"
       }, 0.4))`;
+  const imageMask = idle
+    ? "rgba(255,255,255, 0.5)"
+    : ` rgba(${el?.color ?? "240,239,60"}, 0.5)`;
   const style = idle
     ? "border: thick solid black"
     : `border: solid 3px ${borderColor}; background-color: ${backgroundColor}`;
@@ -118,7 +122,7 @@
     >
       <div
         class="h-full w-full rounded-full"
-        style={!$regionIshovered ? `background-image: ${imageMask}` : undefined}
+        style={!$regionIshovered ? `background-color: ${imageMask}` : undefined}
       ></div>
     </div>
   </div>

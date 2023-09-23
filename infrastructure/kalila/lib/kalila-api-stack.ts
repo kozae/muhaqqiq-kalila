@@ -52,18 +52,18 @@ export class KalilaApiStack extends Stack {
       "..",
       "..",
       "kalila-graphql",
-      "schema.graphql"
+      "schema.graphql",
     );
 
     this.kalilaGraphQLApi = this.createApi(
-      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId)
+      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId),
     );
     this.tables = this.createTableConstructs(props.tableArns);
     this.dataSources = this.createDataSources();
     this.lambdas = this.createLambdas(props.tableNames);
 
     for (const { parent, name, source } of extractFieldsWithSource(
-      this.schemaPath
+      this.schemaPath,
     )) {
       if (source.includes("lambda")) {
         const lamda = this.lambdas.mutationHandler;
@@ -101,18 +101,18 @@ export class KalilaApiStack extends Stack {
         acc[key as keyof IKalilaTableInfo] = Table.fromTableArn(
           this,
           `${key}Table__API_Construct`,
-          tableName
+          tableName,
         );
         return acc;
       },
-      {} as KalilaTableConstructs
+      {} as KalilaTableConstructs,
     );
   }
 
   private createLambdas(names: IKalilaTableInfo) {
     const mutationHandler = new LambdaFunction(this, "KalilaMutationHandler", {
       code: LambdaCode.fromAsset(
-        "/root/Kalila/kalila_rs/target/lambda/mutation_handler"
+        "../../../kalila-rs/target/lambda/mutation_handler",
       ),
       architecture: Architecture.ARM_64,
       runtime: Runtime.PROVIDED_AL2,
@@ -132,7 +132,7 @@ export class KalilaApiStack extends Stack {
           actions: ["dynamodb:*"],
           resources: [table.tableArn, `${table.tableArn}/index/*`],
           effect: Effect.ALLOW,
-        })
+        }),
       );
     }
 
@@ -143,7 +143,7 @@ export class KalilaApiStack extends Stack {
     return Object.entries(this.tables).reduce((acc, [key, table]) => {
       const dataSource = this.kalilaGraphQLApi.addDynamoDbDataSource(
         `${key}DataSource`,
-        table
+        table,
       );
 
       dataSource.grantPrincipal.addToPrincipalPolicy(
@@ -151,7 +151,7 @@ export class KalilaApiStack extends Stack {
           actions: ["dynamodb:*"],
           resources: [`${table.tableArn}/index/*`],
           effect: Effect.ALLOW,
-        })
+        }),
       );
       acc[key as keyof IKalilaTableInfo] = dataSource;
       return acc;
@@ -161,12 +161,12 @@ export class KalilaApiStack extends Stack {
   private createLambdaResolver(
     typeName: string,
     fieldName: string,
-    lambdaFn: LambdaFunction
+    lambdaFn: LambdaFunction,
   ) {
     // todo, refactor
     const dataSource = this.kalilaGraphQLApi.addLambdaDataSource(
       "MutationHandler",
-      lambdaFn
+      lambdaFn,
     );
     this.kalilaGraphQLApi.createResolver(`${typeName}_${fieldName}ResolverFn`, {
       typeName,
@@ -178,7 +178,7 @@ export class KalilaApiStack extends Stack {
   private createResolver(
     typeName: string,
     fieldName: string,
-    dataSource: BaseDataSource
+    dataSource: BaseDataSource,
   ) {
     const func = new AppsyncFunction(
       this,
@@ -195,11 +195,11 @@ export class KalilaApiStack extends Stack {
             "kalila-appsync-code",
             "dist",
             typeName,
-            `${fieldName}.mjs`
-          )
+            `${fieldName}.mjs`,
+          ),
         ),
         runtime: FunctionRuntime.JS_1_0_0,
-      }
+      },
     );
 
     this.kalilaGraphQLApi.createResolver(
@@ -215,12 +215,12 @@ export class KalilaApiStack extends Stack {
             "kalila-appsync-code",
             "dist",
             "base",
-            "pipeline.mjs"
-          )
+            "pipeline.mjs",
+          ),
         ),
         runtime: new FunctionRuntime(FunctionRuntimeFamily.JS, "1.0.0"),
         pipelineConfig: [func],
-      }
+      },
     );
   }
 }

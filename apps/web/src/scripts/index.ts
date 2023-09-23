@@ -3,7 +3,6 @@ import { Amplify } from "aws-amplify";
 
 import route from "@client/route";
 import { persistStorage } from "pages-tool-store-worker";
-console.log("configuring amplify");
 Amplify.configure(awsConfig);
 
 function propagateRoute() {

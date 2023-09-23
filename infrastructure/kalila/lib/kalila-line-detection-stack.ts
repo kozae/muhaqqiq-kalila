@@ -21,14 +21,14 @@ export class KalilaLineDetectionStack extends Stack {
   constructor(
     scope: Construct,
     id: string,
-    props: IKalilaLineDetectionStackProps
+    props: IKalilaLineDetectionStackProps,
   ) {
     super(scope, id, props);
 
     const pagesBucket = Bucket.fromBucketArn(
       this,
       "KalilaPagesBucketLineDetectionConstruct",
-      "arn:aws:s3:::kalila-pages"
+      "arn:aws:s3:::kalila-pages",
     );
 
     const vpc = Vpc.fromLookup(this, "KalilaVpcLineDetectionConstruct", {
@@ -48,17 +48,22 @@ export class KalilaLineDetectionStack extends Stack {
     const repository = Repository.fromRepositoryArn(
       this,
       "LineDetectionRepository",
-      "arn:aws:ecr:eu-central-1:557976691964:repository/line_detection_service"
+      "arn:aws:ecr:eu-central-1:557976691964:repository/line_detection_service",
     );
 
     const taskDef = new ecs.FargateTaskDefinition(
       this,
       "LineDetectionTaskDef",
-      { memoryLimitMiB: 512, cpu: 256 }
+      { memoryLimitMiB: 512, cpu: 256 },
     );
+
+    const logging = new ecs.AwsLogDriver({
+      streamPrefix: "lineDetectionService",
+    });
 
     const container = taskDef.addContainer("LineDetectionContainer", {
       image: ecs.ContainerImage.fromEcrRepository(repository, "latest"),
+      logging,
     });
 
     const starter = new KalilaLineDetectionStarter(
@@ -74,7 +79,7 @@ export class KalilaLineDetectionStack extends Stack {
           SUBNET: vpc.privateSubnets[0].subnetId,
           CLUSTER_NAME: cluster.clusterName,
         },
-      }
+      },
     );
 
     taskDef.grantRun(starter.fn);
@@ -85,7 +90,7 @@ export class KalilaLineDetectionStack extends Stack {
       {
         tableArn: props.tableArns.lineDetectionJobs,
         tableStreamArn: props.tableStreamArns.lineDetectionJobs,
-      }
+      },
     );
 
     starter.fn.addEventSource(
@@ -96,7 +101,7 @@ export class KalilaLineDetectionStack extends Stack {
             eventName: lambda.FilterRule.isEqual("INSERT"),
           }),
         ],
-      })
+      }),
     );
 
     taskDef.addToTaskRolePolicy(
@@ -104,7 +109,7 @@ export class KalilaLineDetectionStack extends Stack {
         actions: ["dynamodb:Scan", "dynamodb:UpdateItem"],
         resources: [props.tableArns.lineDetectionJobs],
         effect: iam.Effect.ALLOW,
-      })
+      }),
     );
 
     taskDef.addToTaskRolePolicy(
@@ -117,7 +122,7 @@ export class KalilaLineDetectionStack extends Stack {
           `${props.tableArns.pages}/index/*`,
         ],
         effect: iam.Effect.ALLOW,
-      })
+      }),
     );
 
     taskDef.addToTaskRolePolicy(
@@ -125,7 +130,7 @@ export class KalilaLineDetectionStack extends Stack {
         actions: ["s3:GetObject", "s3:PutObject"],
         resources: [pagesBucket.arnForObjects("*")],
         effect: iam.Effect.ALLOW,
-      })
+      }),
     );
 
     taskDef.addToTaskRolePolicy(
@@ -133,7 +138,7 @@ export class KalilaLineDetectionStack extends Stack {
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
         resources: ["*"],
         effect: iam.Effect.ALLOW,
-      })
+      }),
     );
   }
 }

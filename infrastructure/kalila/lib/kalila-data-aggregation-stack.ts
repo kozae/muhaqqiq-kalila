@@ -22,24 +22,22 @@ export class KalilaDataAggregationStack extends Stack {
   constructor(
     scope: Construct,
     id: string,
-    props: IKalilaDataAggregationStackProps
+    props: IKalilaDataAggregationStackProps,
   ) {
     super(scope, id, props);
     this.tables = this.createTableConstructs(
       props.tableArns,
-      props.tableStreamArns
+      props.tableStreamArns,
     );
     this.createCountAggregator(props.tableArns, props.itemCountTableName);
   }
 
   private createCountAggregator(
     itableArns: IKalilaTableInfo,
-    itemCountTableName: string
+    itemCountTableName: string,
   ) {
     const handler = new LambdaFunction(this, "KalilaCountAggregator", {
-      code: Code.fromAsset(
-        "/root/Kalila/kalila_rs/target/lambda/count_handler"
-      ),
+      code: Code.fromAsset("../../../kalila-rs/target/lambda/count_handler"),
       architecture: Architecture.ARM_64,
       runtime: Runtime.PROVIDED_AL2,
       handler: "does_not_matter",
@@ -58,14 +56,14 @@ export class KalilaDataAggregationStack extends Stack {
         handler.addEventSource(
           new DynamoEventSource(table, {
             startingPosition: StartingPosition.TRIM_HORIZON,
-          })
+          }),
         );
       });
   }
 
   private createTableConstructs(
     arns: IKalilaTableInfo,
-    streamArns: IKalilaTableInfo
+    streamArns: IKalilaTableInfo,
   ) {
     return Object.entries(arns).reduce(
       (acc, [key, tableArn]: [string, string]) => {
@@ -75,12 +73,12 @@ export class KalilaDataAggregationStack extends Stack {
           {
             tableArn,
             tableStreamArn: streamArns[key as keyof IKalilaTableInfo],
-          }
+          },
         );
         acc[key as keyof IKalilaTableInfo] = table;
         return acc;
       },
-      {} as KalilaTableConstructs
+      {} as KalilaTableConstructs,
     );
   }
 }

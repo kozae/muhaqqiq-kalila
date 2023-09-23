@@ -321,8 +321,8 @@ input LineDetectionJobInput {
   id: ID!
   manuscriptId: ID!
   pages: [Int!]!
-  notifications: [String!]
   parameters: AWSJSON
+  state: Int!
 }
 
 input PageInfoUpdateInput {

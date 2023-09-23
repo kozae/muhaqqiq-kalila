@@ -4,7 +4,9 @@
   import { setContext } from "svelte";
 
   export let pageId: string;
+  export let mediumId: string;
   setContext("id", pageId);
+  setContext("mediumId", mediumId);
   const { ready } = derived;
   let loaded = false;
   $: loaded = $ready === pageId;

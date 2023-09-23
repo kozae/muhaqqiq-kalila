@@ -78,6 +78,7 @@ export const deleteLayoutElement = (
   state.changed.text = true;
   state.stateId = Date.now();
 };
+
 export const defineElementFacsimileRegion = (
   state: WritableState,
   action: PayloadAction<{ id: string; region: number[] }>,

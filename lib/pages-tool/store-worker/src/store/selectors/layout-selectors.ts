@@ -69,11 +69,14 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
   const textList = selectAllTextElements(state.text);
   const groupedLines = lodash.groupBy([...lineList], "elementId");
   const elements: (LineEntity | TextEntity)[] = [];
+  const canDelete: Record<string, boolean> = {};
   for (const el of textList.filter((el) => el!.position!.includes("main"))) {
     elements.push(el);
     const lines = lodash.orderBy(groupedLines[el!.id], "order");
     for (const line of lines) {
       elements.push(line);
+      canDelete[line.id] =
+        line?.tokens !== undefined && line?.tokens?.length === 0;
     }
   }
 
@@ -82,10 +85,22 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
     const lines = lodash.orderBy(groupedLines[el!.id], "order");
     for (const line of lines) {
       elements.push(line);
+      canDelete[line.id] =
+        line?.tokens !== undefined && line?.tokens?.length === 0;
     }
   }
 
-  return { elements, id: state.info!.id };
+  return {
+    elements,
+    id: state.info!.id,
+    version: Date.now(),
+    canDelete,
+    pageNumber: state.info!.number,
+    hasTextElementsRegions: textList.every(
+      (el) =>
+        el!.region !== undefined && el!.region !== null && el.region.length > 0,
+    ),
+  };
 });
 
 export const selectLinesGroupedByArea = createSelector(

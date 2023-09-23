@@ -1,5 +1,5 @@
 <script lang="ts">
-  import regions$ from "../data/region-data";
+  import storeRegions from "../data/region-data";
   import { Layer } from "svelte-konva";
   import AllRegions from "./AllRegions.svelte";
   import EventedRegions from "./EventedRegions.svelte";
@@ -11,10 +11,10 @@
   requestState("selectLayout");
 </script>
 
-{#if $regions$}
+{#if $storeRegions}
   <Layer config={{ listening: false }}>
     {#if !$hoveredRegion$ || $mode !== "view"}
-      <AllRegions regions={$regions$} />
+      <AllRegions regions={$storeRegions} />
     {/if}
     {#if $mode === "view"}
       <ComplementaryPolygon />
@@ -22,7 +22,7 @@
   </Layer>
   {#if $mode === "view"}
     <Layer>
-      <EventedRegions regions={$regions$} />
+      <EventedRegions regions={$storeRegions} />
     </Layer>
   {/if}
 {/if}

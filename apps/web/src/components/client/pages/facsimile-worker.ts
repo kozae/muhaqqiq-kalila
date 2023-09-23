@@ -1,6 +1,7 @@
 import lodash from "lodash";
 import type { ILayoutElement } from "pages-tool-store-worker";
 import { ReplaySubject } from "rxjs";
+import { FacsimileWorkerEvent } from "pages-tool-facsimile-worker";
 
 const facsimileWorker = new Worker(
   new URL("pages-tool-facsimile-worker/worker.ts", import.meta.url),
@@ -22,7 +23,7 @@ await ready;
 export function requestRegion(el: ILayoutElement, pageId: string, padding = 0) {
   if (!el.region) return;
   facsimileWorker.postMessage({
-    type: 2,
+    type: FacsimileWorkerEvent.PREVIEW,
     payload: {
       id: el.id,
       p: el.region.slice(0, -1),
@@ -34,11 +35,24 @@ export function requestRegion(el: ILayoutElement, pageId: string, padding = 0) {
   });
 }
 
+export function removeFromCache(id: string) {
+  facsimileWorker.postMessage({
+    type: FacsimileWorkerEvent.REMOVE_FROM_CACHE,
+    payload: id,
+  });
+}
+
 export const regionUrl = new ReplaySubject<{
   id: string;
   region: string;
   pageId: string;
-}>(50);
+}>(1);
+
+export function resetRegionFacsimileCache() {
+  facsimileWorker.postMessage({
+    type: FacsimileWorkerEvent.RESET_CACHE,
+  });
+}
 
 facsimileWorker.onmessage = (event) => {
   if (event.data.id) {

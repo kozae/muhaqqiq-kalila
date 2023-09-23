@@ -5,6 +5,8 @@
   import EditRegion from "../common/EditRegion.svelte";
   import { hoveredRegion$, regionUnderEdit$ } from "../facsimile-events";
   import { map, mergeMap, of } from "rxjs";
+  import { removeFromCache, requestRegion } from "../facsimile-worker";
+  import { getContext } from "svelte";
 
   let mode: "view" | "edit" = "view";
   requestState("selectLayoutPanelData");
@@ -21,6 +23,7 @@
     regionUnderEditId = id;
     regionUnderEdit$.next(id);
   };
+  const pageId = getContext("id");
 </script>
 
 {#if mode === "view"}
@@ -47,6 +50,9 @@
         id: regionUnderEditId ?? "",
         region: e.detail,
       });
+      removeFromCache(regionUnderEditId ?? "");
+      //@ts-ignore
+      requestRegion({ ...$regionUnderEdit, region: e.detail }, pageId);
       regionUnderEdit$.next(undefined);
       hoveredRegion$.next(undefined);
     }}

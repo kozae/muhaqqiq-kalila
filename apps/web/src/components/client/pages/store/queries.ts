@@ -1,4 +1,8 @@
-import { type GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
+import {
+  type GraphQLQuery,
+  GRAPHQL_AUTH_MODE,
+  type GraphQLResult,
+} from "@aws-amplify/api";
 import { API, Storage } from "aws-amplify";
 import type { GetMediumQuery, GetPageQuery } from "kalila-graphql";
 import { loadImageAsDataUrl } from "../StateControls/helpers";
@@ -17,7 +21,7 @@ export async function getMedium(id: string) {
     variables: { id },
     authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
   });
-  return response.data?.getMedium?.siglum;
+  return (response as GraphQLResult<GetMediumQuery>).data?.getMedium?.siglum;
 }
 
 export async function getPage(id: string) {
@@ -119,7 +123,7 @@ export async function getPage(id: string) {
     authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
   });
 
-  return response.data?.getPage;
+  return (response as GraphQLResult<GetPageQuery>).data?.getPage;
 }
 
 export async function getImage(url: string) {

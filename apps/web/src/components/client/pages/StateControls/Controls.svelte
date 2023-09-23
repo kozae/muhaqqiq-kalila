@@ -5,6 +5,7 @@
   import BigButton from "@client/reusable/BigButton.svelte";
   import CloudArrowUpIcon from "@icons/CloudArrowUpIcon.svelte";
   import { map } from "rxjs";
+  import { resetRegionFacsimileCache } from "../facsimile-worker";
 
   const canSave = true;
   const title$ = source.selectBasicInfo.pipe(
@@ -15,7 +16,10 @@
   );
   const handleDiscard = () => {
     source.selectBasicInfo.next(undefined);
-    requestAction("discardUpdates", undefined);
+    resetRegionFacsimileCache();
+    setTimeout(() => {
+      requestAction("discardUpdates", undefined);
+    }, 1000);
   };
 </script>
 

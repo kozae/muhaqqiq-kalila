@@ -153,3 +153,102 @@ export const createLineDetectionJob = /* GraphQL */ `
     }
   }
 `;
+export const updatePageInfo = /* GraphQL */ `
+  mutation UpdatePageInfo($id: ID!, $input: PageInfoUpdateInput!) {
+    updatePageInfo(id: $id, input: $input) {
+      id
+      mediumId
+      number
+      image
+      commentary
+      foliation
+      pagination
+      tags
+      images {
+        id
+        pageId
+        unitId
+        legendId
+        legend {
+          id
+          pageId
+          order
+          position
+          region
+          lines {
+            id
+            elementId
+            order
+            region
+            states
+            tokens
+            version
+            __typename
+          }
+          version
+          __typename
+        }
+        location
+        motifs
+        order
+        position
+        region
+        style
+        version
+        __typename
+      }
+      text {
+        id
+        pageId
+        order
+        position
+        region
+        lines {
+          id
+          elementId
+          order
+          region
+          states
+          tokens
+          version
+          __typename
+        }
+        version
+        __typename
+      }
+      segments {
+        id
+        mediumId
+        unitId
+        unit {
+          bookId
+          id
+          commentary
+          divider
+          frame
+          motifs
+          order
+          title
+          topics
+          variant
+          version
+          __typename
+        }
+        startPage
+        startLine
+        startToken
+        endPage
+        endLine
+        endToken
+        lacuna
+        tags
+        type
+        version
+        __typename
+      }
+      editor
+      version
+      __typename
+    }
+  }
+`;
