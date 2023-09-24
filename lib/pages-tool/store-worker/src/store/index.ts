@@ -1,4 +1,5 @@
 export * from "./config";
+export * from "./util";
 export * from "./model";
 export * from "./request-actions";
 import * as selectors from "./selectors";

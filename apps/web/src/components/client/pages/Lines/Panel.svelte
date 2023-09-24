@@ -1,12 +1,20 @@
 <script lang="ts">
   import { requestAction, requestState, source } from "@client/pages/store";
-  import CommandBar from "./CommandBar.svelte";
+  import CommandBar from "./CommandBar/CommandBar.svelte";
   import SortableElements from "@client/pages/common/SortableElements.svelte";
   import { map, mergeMap, of } from "rxjs";
-  import { hoveredRegion$, regionUnderEdit$ } from "../facsimile-events";
+  import {
+    hoveredRegion$,
+    regionUnderEdit$,
+    detectedRegions$,
+  } from "../facsimile-events";
   import EditRegion from "../common/EditRegion.svelte";
   import { removeFromCache, requestRegion } from "../facsimile-worker";
   import { getContext } from "svelte";
+  import { EtlDetectedRegions } from "./etl-detected-regions";
+  import type { ILayoutElement } from "pages-tool-store-worker";
+  import { mode as facsimileMode } from "@client/pages/Facsimile/mode-store";
+  import Review from "./Review/Review.svelte";
 
   let mode: "view" | "edit" | "review-regions" = "view";
   requestState("selectLinePanelData");
@@ -24,7 +32,14 @@
     regionUnderEdit$.next(id);
   };
   const pageId = getContext("id");
-  let detectedLines: number[][] = [];
+  let detectedLines: ILayoutElement[] = [];
+
+  function handleReviewDone(e: any) {
+    requestAction("assignDetectedRegions", e.detail);
+    mode = "view";
+    facsimileMode.set("view");
+    detectedRegions$.next([]);
+  }
 </script>
 
 {#if mode === "view"}
@@ -40,6 +55,12 @@
         pageNumber={$data.pageNumber}
         hasTextElementsRegions={$data.hasTextElementsRegions}
         on:addLine={(e) => requestAction("addLine", e.detail)}
+        on:previewLines={(e) => {
+          mode = "review-regions";
+          detectedLines = EtlDetectedRegions(e.detail);
+          detectedRegions$.next(detectedLines);
+          facsimileMode.set("review");
+        }}
       />
       <SortableElements
         items={$data.elements}
@@ -68,5 +89,9 @@
     }}
   />
 {:else}
-  <p>Review</p>
+  <Review
+    {detectedLines}
+    elements={$data.elements}
+    on:reviewDone={handleReviewDone}
+  />
 {/if}

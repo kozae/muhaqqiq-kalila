@@ -1,7 +1,3 @@
-export interface IColoredRegion {
-  color?: string;
-}
-
 export const highlightColors = [
   "100,149,237",
   "192,57,43",

@@ -1,5 +1,6 @@
 <script lang="ts">
   import storeRegions from "../data/region-data";
+  import previewRegions from "../data/preview-data";
   import { Layer } from "svelte-konva";
   import AllRegions from "./AllRegions.svelte";
   import EventedRegions from "./EventedRegions.svelte";
@@ -13,16 +14,28 @@
 
 {#if $storeRegions}
   <Layer config={{ listening: false }}>
-    {#if !$hoveredRegion$ || $mode !== "view"}
-      <AllRegions regions={$storeRegions} />
+    {#if !$hoveredRegion$ && $mode !== "edit"}
+      <AllRegions
+        regions={$mode === "review" && $previewRegions
+          ? $previewRegions
+          : $storeRegions}
+      />
     {/if}
-    {#if $mode === "view"}
-      <ComplementaryPolygon />
+    {#if $mode === "view" || $mode === "review"}
+      {#key $mode}
+        <ComplementaryPolygon />
+      {/key}
     {/if}
   </Layer>
-  {#if $mode === "view"}
-    <Layer>
-      <EventedRegions regions={$storeRegions} />
-    </Layer>
+  {#if $mode === "view" || $mode === "review"}
+    {#key $mode}
+      <Layer>
+        <EventedRegions
+          regions={$mode === "review" && $previewRegions
+            ? $previewRegions
+            : $storeRegions}
+        />
+      </Layer>
+    {/key}
   {/if}
 {/if}

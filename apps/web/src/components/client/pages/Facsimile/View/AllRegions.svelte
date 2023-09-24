@@ -14,7 +14,7 @@
       <AppPolygon
         region={item.region}
         color={$mode === "edit" ? "0,0,0" : item.color ?? ""}
-        text={`${(item.order ?? 0) + 1}`}
+        text={item.order >= 0 ? `${(item.order ?? 0) + 1}` : "?"}
       />
     {/if}
   {/each}

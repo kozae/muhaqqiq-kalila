@@ -20,3 +20,17 @@ export const updateLines = (
   state.changed.lines = true;
   state.stateId = Date.now();
 };
+
+export const assignDetectedRegions = (
+  state: WritableState,
+  action: PayloadAction<LineEntity[]>,
+) => {
+  const updates = action.payload.map((line) => ({
+    id: line.id,
+    changes: { region: line.region },
+  }));
+
+  state.lines = linesAdapter.updateMany(state.lines, updates);
+  state.changed.lines = true;
+  state.stateId = Date.now();
+};

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Layer, Rect, Transformer } from "svelte-konva";
   import type { RectConfig } from "konva/lib/shapes/Rect";
-  import { getWidthAndHeight, fromRect } from "./helpers/polygon.helper";
+  import {
+    getWidthAndHeight,
+    fromRect,
+  } from "@client/pages/math-helpers/polygon.helper";
   import { editRegionPoints$ } from "../facsimile-events";
   import type { IRect } from "konva/lib/types";
 

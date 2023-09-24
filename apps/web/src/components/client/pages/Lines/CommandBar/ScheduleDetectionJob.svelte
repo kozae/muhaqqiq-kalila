@@ -40,7 +40,7 @@
           threshold: values.threshold,
           text_direction: "horizontal-rl",
         }),
-        state: values.startMode === "immediately" ? 1 : 3,
+        state: values.startMode === "immediately" ? 0 : 2,
       };
       try {
         await postJob(request);

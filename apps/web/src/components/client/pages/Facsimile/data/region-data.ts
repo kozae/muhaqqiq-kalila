@@ -2,7 +2,7 @@ import activeTool$ from "@client/pages/active-tool";
 import imageData$ from "./image-data";
 import { source } from "@client/pages/store";
 import { combineLatest, map } from "rxjs";
-import { getScale } from "../helpers/scale";
+import { getScale } from "../../math-helpers/scale";
 
 const regions$ = combineLatest([
   source.selectLayout,

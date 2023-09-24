@@ -1,5 +1,5 @@
 <script lang="ts">
-  import getPolygonBoundingBox from "../helpers/polygon-bounding-box";
+  import getPolygonBoundingBox from "@client/pages/math-helpers/polygon-bounding-box";
   import imageData$ from "../data/image-data";
   import highlighted$ from "../data/highlighted-region";
   import { Rect, Group } from "svelte-konva";

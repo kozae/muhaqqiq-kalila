@@ -56,6 +56,7 @@ export interface ILayoutElement {
   region: Array<number>;
   color: string;
   order: number;
+  position?: string;
 }
 
 export interface IChangeTracker {

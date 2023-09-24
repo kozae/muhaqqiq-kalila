@@ -1,13 +1,14 @@
 <script lang="ts">
   import Modal from "@client/reusable/Modal.svelte";
   import BigButton from "@client/reusable/BigButton.svelte";
-  import { from } from "rxjs";
+  import { Observable, from, of } from "rxjs";
   import { createEventDispatcher, getContext } from "svelte";
   import { getJobData, formatDatetime, fetchAndParseS3Json } from "./queries";
+  import type { DetectedRegions } from "@client/pages/facsimile-events";
 
   export let showJobResultsModal = false;
   let selected: any = undefined;
-  let data: any = undefined;
+  let data: Observable<DetectedRegions | undefined> = of(undefined);
 
   const id: string = getContext("id");
   const files = from(getJobData(id));
@@ -18,6 +19,16 @@
   }
 
   const dispatch = createEventDispatcher();
+
+  function countLines(data: DetectedRegions) {
+    let count = 0;
+
+    for (const line of Object.values(data.lines)) {
+      count += line.boxes.length;
+    }
+
+    return count;
+  }
 </script>
 
 {#if showJobResultsModal}
@@ -25,6 +36,9 @@
     <h1 class="font-bold text-primary-500">Finished Line Detection Jobs</h1>
     <hr />
     {#if $files}
+      {#if $files.length === 0}
+        <p>No jobs available</p>
+      {/if}
       <div
         class="max-h-[300px] overflow-auto flex flex-col p-2 w-[450px] items-center"
       >
@@ -44,11 +58,11 @@
             Job performed with threshold <strong
               >{$data.parameters.threshold}</strong
             >
-            and detected <strong>{$data.lines.length}</strong> lines
+            and detected <strong>{countLines($data)}</strong> lines
           </p>
           <BigButton
             on:click={() => {
-              dispatch("loadLines", $data.lines);
+              dispatch("loadLines", $data && $data.lines);
               showJobResultsModal = false;
             }}>Load & Review</BigButton
           >

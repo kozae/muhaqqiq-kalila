@@ -48,3 +48,24 @@ export function fromRect(
   );
   return [...points, rotationValue === 360 ? 0 : rotationValue];
 }
+
+export function getSubRegion(
+  p: number[],
+  rotation: number,
+  {
+    top,
+    left,
+    width,
+    height,
+  }: { top: number; left: number; width: number; height: number },
+) {
+  const p1 = atDistanceAndAngle(
+      [p[0], p[1]],
+      Math.sqrt(Math.pow(top, 2) + Math.pow(left, 2)),
+      rotation + 90,
+    ),
+    p2 = atDistanceAndAngle(p1, width, rotation),
+    p3 = atDistanceAndAngle(p2, height, rotation + 90),
+    p4 = atDistanceAndAngle(p1, height, rotation + 90);
+  return [p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1], rotation];
+}

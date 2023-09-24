@@ -9,11 +9,10 @@ export function request(
     ...ctx.args.input,
     version: getTime(),
   };
-  const modAttributes = { ...attributes, state: 0 };
   return {
     operation: "PutItem",
     key: util.dynamodb.toMapValues({ id }),
-    attributeValues: util.dynamodb.toMapValues(modAttributes),
+    attributeValues: util.dynamodb.toMapValues(attributes),
   };
 }
 

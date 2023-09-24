@@ -15,7 +15,7 @@
   import HideImageIcon from "@icons/HideImageIcon.svelte";
   import Tooltip from "@client/reusable/Tooltip.svelte";
   import { regionUrl, requestRegion } from "../facsimile-worker";
-  import { filter, first, map, skipWhile } from "rxjs";
+  import { filter, map, skipWhile } from "rxjs";
   import Moveable from "svelte-moveable";
   import RegionPreview from "./RegionPreview.svelte";
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
@@ -67,11 +67,6 @@
   const twCLass = "m-1 flex items-center  rounded p-1";
   const borderColor = `rgba(${el?.color ?? "240,239,60"}, 0.6)`;
   const backgroundColor = `rgba(${el?.color ?? "240,239,60"}, 0.3)`;
-  const _imageMask = idle
-    ? `linear-gradient(to bottom left, rgba(255,255,255, 0.3), rgba(255,255,255, 1))`
-    : `linear-gradient(to left, rgba(${el?.color ?? "240,239,60"}, 0), rgba(${
-        el?.color ?? "240,239,60"
-      }, 0.4))`;
   const imageMask = idle
     ? "rgba(255,255,255, 0.5)"
     : ` rgba(${el?.color ?? "240,239,60"}, 0.5)`;
