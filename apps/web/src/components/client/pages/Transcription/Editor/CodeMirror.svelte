@@ -29,7 +29,7 @@
       });
     }
 
-    const data = getStatistics(vu);
+    const data = getStatistics(vu.state);
     worker.postMessage({
       type: TranscriptionWorkerEvent.STATISTICS,
       payload: data,
@@ -37,19 +37,29 @@
   });
 
   onMount(() => {
+    const state = EditorState.create({
+      doc,
+      extensions: [
+        minimalSetup,
+        editorTheme,
+        editorKeymap,
+        editorHighlights,
+        updateListener,
+      ],
+    });
     view = new EditorView({
-      state: EditorState.create({
-        doc,
-        extensions: [
-          minimalSetup,
-          editorTheme,
-          editorKeymap,
-          editorHighlights,
-          updateListener,
-        ],
-      }),
+      state,
       parent,
       root: document,
+    });
+    const data = getStatistics(view.state);
+    worker.postMessage({
+      type: TranscriptionWorkerEvent.STATISTICS,
+      payload: data,
+    });
+    worker.postMessage({
+      type: TranscriptionWorkerEvent.VALUE_CHANGE,
+      payload: doc,
     });
   });
 

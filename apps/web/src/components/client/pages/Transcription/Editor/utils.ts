@@ -1,4 +1,9 @@
-import { EditorSelection, SelectionRange, Line } from "@codemirror/state";
+import {
+  EditorSelection,
+  SelectionRange,
+  Line,
+  EditorState,
+} from "@codemirror/state";
 import { ViewUpdate } from "@codemirror/view";
 
 export interface Statistics {
@@ -31,24 +36,22 @@ export interface Statistics {
   selectedText: boolean;
 }
 
-export const getStatistics = (view: ViewUpdate): Statistics => {
+export const getStatistics = (state: EditorState): Statistics => {
   return {
-    line: view.state.doc.lineAt(view.state.selection.main.from),
-    lineCount: view.state.doc.lines,
-    lineBreak: view.state.lineBreak,
-    length: view.state.doc.length,
-    readOnly: view.state.readOnly,
-    tabSize: view.state.tabSize,
-    selection: view.state.selection,
-    selectionAsSingle: view.state.selection.asSingle().main,
-    ranges: view.state.selection.ranges,
-    selectionCode: view.state.sliceDoc(
-      view.state.selection.main.from,
-      view.state.selection.main.to,
+    line: state.doc.lineAt(state.selection.main.from),
+    lineCount: state.doc.lines,
+    lineBreak: state.lineBreak,
+    length: state.doc.length,
+    readOnly: state.readOnly,
+    tabSize: state.tabSize,
+    selection: state.selection,
+    selectionAsSingle: state.selection.asSingle().main,
+    ranges: state.selection.ranges,
+    selectionCode: state.sliceDoc(
+      state.selection.main.from,
+      state.selection.main.to,
     ),
-    selections: view.state.selection.ranges.map((r) =>
-      view.state.sliceDoc(r.from, r.to),
-    ),
-    selectedText: view.state.selection.ranges.some((r) => !r.empty),
+    selections: state.selection.ranges.map((r) => state.sliceDoc(r.from, r.to)),
+    selectedText: state.selection.ranges.some((r) => !r.empty),
   };
 };

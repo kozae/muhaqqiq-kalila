@@ -6,6 +6,7 @@ class Range {
 export function findInvalidRanges(s: string): Array<Range> {
   return findInvalidCharacterRanges(s)
     .concat(findInvalidAsteriskRanges(s))
+    .concat(findInvalidSquareBracketRanges(s))
     .concat(findInvalidDotRanges(s));
 }
 
@@ -34,22 +35,21 @@ function findInvalidCharacterRanges(s: string): Array<Range> {
       charCode === ".".charCodeAt(0) ||
       charCode === "<".charCodeAt(0) ||
       charCode === ">".charCodeAt(0) ||
-      charCode === "[".charCodeAt(0) ||
       charCode === "{".charCodeAt(0) ||
       charCode === "}".charCodeAt(0) ||
+      charCode === "]".charCodeAt(0) ||
+      charCode === "[".charCodeAt(0) ||
       charCode === "!".charCodeAt(0) ||
       charCode === "؟".charCodeAt(0) ||
       charCode === "(".charCodeAt(0) ||
       charCode === ")".charCodeAt(0) ||
       charCode === "†".charCodeAt(0);
 
-    const isPrefix = ["!", "†", "؟", "{", "[", "<", "("].includes(
-      String.fromCharCode(charCode)
+    const isPrefix = ["!", "†", "؟", "{", "<", "("].includes(
+      String.fromCharCode(charCode),
     );
 
-    const isSuffix = [")", "]", "}", ">"].includes(
-      String.fromCharCode(charCode)
-    );
+    const isSuffix = [")", "}", ">"].includes(String.fromCharCode(charCode));
 
     if (isPrefix) {
       isValidChar =
@@ -238,4 +238,82 @@ function findInvalidAsteriskRanges(s: string): Array<Range> {
   }
 
   return ranges;
+}
+
+function findInvalidSquareBracketRanges(s: string): Array<Range> {
+  let results: Array<Range> = [];
+  let i: i32 = 0;
+
+  function isSpaceOrLineBreak(ch: string): bool {
+    return ch == " " || ch == "\n";
+  }
+
+  while (i < s.length) {
+    let ch: string = s[i];
+    if (ch == "[") {
+      let start: u32 = i;
+      i++;
+      if (i < s.length && s[i] == "[") {
+        // Potential [[ sequence
+        i++;
+        while (
+          i < s.length &&
+          s[i] != "[" &&
+          s[i] != "]" &&
+          !isSpaceOrLineBreak(s[i])
+        ) {
+          i++;
+        }
+        if (i < s.length && s[i] == "]") {
+          i++;
+          if (i < s.length && s[i] == "]") {
+            if (i + 1 >= s.length || !isSpaceOrLineBreak(s[i + 1])) {
+              const range = new Range();
+              range.from = start;
+              range.to = i + 1;
+              results.push(range);
+            }
+            i++;
+          } else {
+            const range = new Range();
+            range.from = start;
+            range.to = i + 1;
+            results.push(range);
+          }
+        } else {
+          const range = new Range();
+          range.from = start;
+          range.to = i;
+          results.push(range);
+        }
+      } else {
+        // Potential [ sequence
+        while (
+          i < s.length &&
+          s[i] != "[" &&
+          s[i] != "]" &&
+          !isSpaceOrLineBreak(s[i])
+        ) {
+          i++;
+        }
+        if (i < s.length && s[i] == "]") {
+          if (i + 1 >= s.length || !isSpaceOrLineBreak(s[i + 1])) {
+            const range = new Range();
+            range.from = start;
+            range.to = i + 1;
+            results.push(range);
+          }
+          i++;
+        } else {
+          const range = new Range();
+          range.from = start;
+          range.to = i;
+          results.push(range);
+        }
+      }
+    } else {
+      i++;
+    }
+  }
+  return results;
 }

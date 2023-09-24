@@ -9,6 +9,7 @@ export function findSyntaxErrors(s: string): Array<SyntaxError> {
   return findCharachterSyntaxErrors(s)
     .concat(findInvalidAsteriskSequence(s))
     .concat(findInvalidDotSequence(s))
+    .concat(findInvalidSquareBracketSequence(s))
     .concat(findInvalidBraces(s));
 }
 
@@ -51,22 +52,21 @@ function findCharachterSyntaxErrors(s: string): Array<SyntaxError> {
       charCode === ".".charCodeAt(0) ||
       charCode === "<".charCodeAt(0) ||
       charCode === ">".charCodeAt(0) ||
-      charCode === "[".charCodeAt(0) ||
       charCode === "{".charCodeAt(0) ||
       charCode === "}".charCodeAt(0) ||
+      charCode === "]".charCodeAt(0) ||
+      charCode === "[".charCodeAt(0) ||
       charCode === "!".charCodeAt(0) ||
       charCode === "؟".charCodeAt(0) ||
       charCode === "(".charCodeAt(0) ||
       charCode === ")".charCodeAt(0) ||
       charCode === "†".charCodeAt(0);
 
-    const isPrefix = ["!", "†", "؟", "{", "[", "<", "("].includes(
-      String.fromCharCode(charCode)
+    const isPrefix = ["!", "†", "؟", "{", "<", "("].includes(
+      String.fromCharCode(charCode),
     );
 
-    const isSuffix = [")", "]", "}", ">"].includes(
-      String.fromCharCode(charCode)
-    );
+    const isSuffix = [")", "}", ">"].includes(String.fromCharCode(charCode));
 
     if (isPrefix) {
       isValidChar =
@@ -409,6 +409,125 @@ function findInvalidBraces(s: string): Array<SyntaxError> {
     }
     error.message = errorMessage;
     errors.push(error);
+  }
+
+  return errors;
+}
+
+function findInvalidSquareBracketSequence(s: string): Array<SyntaxError> {
+  let errors: Array<SyntaxError> = [];
+  let i: i32 = 0;
+
+  function isSpaceOrLineBreak(ch: string): bool {
+    return ch == " " || ch == "\n";
+  }
+
+  while (i < s.length) {
+    let ch: string = s[i];
+    if (ch == "[") {
+      let start: u32 = i;
+      let currentLine: u32 = 1;
+
+      // Calculate line number for the current position
+      for (let j: i32 = 0; j < i; j++) {
+        if (s[j] == "\n") {
+          currentLine++;
+        }
+      }
+
+      i++;
+      if (i < s.length && s[i] == "[") {
+        // Potential [[ sequence
+        i++;
+        while (
+          i < s.length &&
+          s[i] != "[" &&
+          s[i] != "]" &&
+          !isSpaceOrLineBreak(s[i])
+        ) {
+          i++;
+        }
+        if (i < s.length && s[i] == "]") {
+          i++;
+          if (i < s.length && s[i] == "]") {
+            if (i + 1 >= s.length || !isSpaceOrLineBreak(s[i + 1])) {
+              let error = new SyntaxError();
+              error.from = start;
+              error.to = i + 1;
+              error.line = currentLine;
+              error.message =
+                "Invalid [[word]] sequence without a trailing space or line break.";
+              errors.push(error);
+            }
+            i++;
+          } else {
+            let error = new SyntaxError();
+            error.from = start;
+            error.to = i + 1;
+            error.line = currentLine;
+            error.message = "Missing closing bracket for [[word] sequence.";
+            errors.push(error);
+          }
+        } else {
+          let error = new SyntaxError();
+          error.from = start;
+          error.to = i;
+          error.line = currentLine;
+          error.message = "Invalid bracket sequence.";
+          errors.push(error);
+        }
+      } else {
+        // Potential [ sequence
+        while (
+          i < s.length &&
+          s[i] != "[" &&
+          s[i] != "]" &&
+          !isSpaceOrLineBreak(s[i])
+        ) {
+          i++;
+        }
+        if (i < s.length && s[i] == "]") {
+          if (i + 1 >= s.length || !isSpaceOrLineBreak(s[i + 1])) {
+            let error = new SyntaxError();
+            error.from = start;
+            error.to = i + 1;
+            error.line = currentLine;
+            error.message =
+              "Invalid [word] sequence without a trailing space or line break.";
+            errors.push(error);
+          }
+          i++;
+        } else {
+          let error = new SyntaxError();
+          error.from = start;
+          error.to = i;
+          error.line = currentLine;
+          error.message = "Invalid bracket sequence.";
+          errors.push(error);
+        }
+      }
+    } else if (ch == "]") {
+      // If there's a closing bracket without a matching opening bracket
+      let start: u32 = i;
+      let currentLine: u32 = 1;
+
+      // Calculate line number for the current position
+      for (let j: i32 = 0; j < i; j++) {
+        if (s[j] == "\n") {
+          currentLine++;
+        }
+      }
+
+      let error = new SyntaxError();
+      error.from = start;
+      error.to = i + 1;
+      error.line = currentLine;
+      error.message = "Closing bracket without a matching opening bracket.";
+      errors.push(error);
+      i++;
+    } else {
+      i++;
+    }
   }
 
   return errors;
