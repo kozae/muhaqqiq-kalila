@@ -1,5 +1,5 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
-import type { LineEntity, TextEntity } from "..";
+import type { PayloadAction, Update } from "@reduxjs/toolkit";
+import { determineTokenState, type LineEntity, type TextEntity } from "..";
 import { linesAdapter, type WritableState } from "../initial-state";
 
 export const updateLines = (
@@ -30,6 +30,28 @@ export const assignDetectedRegions = (
     changes: { region: line.region },
   }));
 
+  state.lines = linesAdapter.updateMany(state.lines, updates);
+  state.changed.lines = true;
+  state.stateId = Date.now();
+};
+
+export const updateTranscription = (
+  state: WritableState,
+  action: PayloadAction<{ doc: string; ids: string[] }>,
+) => {
+  const updates: Update<LineEntity>[] = [];
+  const text = action.payload.doc.replace(/\s{2,}/g, " ").split("\n");
+  text.forEach((line, index) => {
+    const processed = line
+      .split(" ")
+      .map((token) => determineTokenState(token.trim()));
+    const tokens = processed.map((t) => t.token);
+    const states = processed.map((t) => t.state);
+    updates.push({
+      id: action.payload.ids[index],
+      changes: { tokens, states },
+    });
+  });
   state.lines = linesAdapter.updateMany(state.lines, updates);
   state.changed.lines = true;
   state.stateId = Date.now();

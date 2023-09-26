@@ -29,7 +29,7 @@ export function requestRegion(el: ILayoutElement, pageId: string, padding = 0) {
       p: el.region.slice(0, -1),
       r: lodash.last(el.region) || 0,
       padding,
-      frameColor: [0, 0, 0],
+      frameColor: [246, 246, 204],
       pageId,
     },
   });

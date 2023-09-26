@@ -17,3 +17,5 @@
 {:else}
   <Loading />
 {/if}
+
+<slot name="static" />

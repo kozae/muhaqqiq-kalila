@@ -12,12 +12,12 @@
   import type { ILayoutElement } from "pages-tool-store-worker";
   import EyeIcon from "@icons/EyeIcon.svelte";
   import EyeSlashIcon from "@icons/EyeSlashIcon.svelte";
-  import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
-  import DocumentIcon from "@icons/DocumentIcon.svelte";
-  import SmallCardGroup from "@client/reusable/SmallCardGroup.svelte";
+  import SmallButton from "@client/reusable/SmallButton.svelte";
+  import { selectedTextClass } from "../selected-text-class";
+  import { editorStats, actions } from "../event-hubs";
+  import Menu from "@client/reusable/Menu.svelte";
 
   let isEnabled = false;
-  let selectedOption = "Body";
 
   let previewTraget: HTMLElement | null = null;
   const throttleDrag = 1;
@@ -34,7 +34,7 @@
       ),
     ),
     map(([id, lines]) => lines[id!]),
-    tap((v) => requestRegion(v! as ILayoutElement, id)),
+    tap((v) => requestRegion(v! as ILayoutElement, id, 5)),
   );
 
   const url = el$.pipe(
@@ -47,15 +47,56 @@
       ),
     ),
   );
+  const hasMarginalia = source.selectTranscriptionPanelData.pipe(
+    filter((data) => data.id === id),
+    map((data) => data.hasGloss),
+  );
+
+  const glossKeys = source.selectTranscriptionPanelData.pipe(
+    filter((data) => data.id === id),
+    map((data) => Object.keys(data.glosses)),
+  );
 </script>
 
 <CommandBarContainer>
-  <EditionSymbolsDropdownMenu />
+  {#if $hasMarginalia}
+    <div>
+      <SmallButton
+        bgcolor={$selectedTextClass === "Body"
+          ? "bg-primary-600 text-white"
+          : "bg-white"}
+        on:click={() => selectedTextClass.next("Body")}
+        disabled={$selectedTextClass === "Body"}>Main</SmallButton
+      >
+
+      <Menu
+        items={$glossKeys}
+        buttonText={$selectedTextClass === "Body"
+          ? "Marginalia"
+          : $selectedTextClass}
+        bg={$selectedTextClass !== "Body"
+          ? "bg-primary-600 text-white"
+          : "bg-white"}
+        hoverBg={$selectedTextClass !== "Body" ? "" : "hover:bg-secondary-100"}
+        on:itemClick={(event) => selectedTextClass.next(event.detail)}
+      />
+    </div>
+  {/if}
+
+  <div class="flex items-center">
+    <EditionSymbolsDropdownMenu />
+    <SmallButton
+      on:click={() => actions.next({ type: "remove" })}
+      disabled={!$editorStats?.selectedText}
+      className={!$editorStats?.selectedText ? "opacity-50" : ""}
+      >Remove symbols</SmallButton
+    >
+  </div>
+
   <Switch labelLeft="Previews" bind:isEnabled>
     <EyeSlashIcon slot="disabled" className="h-4 w-4 text-gray-500" />
     <EyeIcon slot="enabled" className="h-4 w-4 text-primary-600" />
   </Switch>
-  <!-- <SmallCardGroup /> -->
 </CommandBarContainer>
 
 {#if isEnabled}

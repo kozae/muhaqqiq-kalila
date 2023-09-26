@@ -1,28 +1,37 @@
 <script lang="ts">
-  import { getContext, onDestroy, onMount } from "svelte";
-
+  import {
+    createEventDispatcher,
+    getContext,
+    onDestroy,
+    onMount,
+  } from "svelte";
   import { EditorView, ViewUpdate } from "@codemirror/view";
   import { EditorState } from "@codemirror/state";
   import { minimalSetup } from "./setup";
   import { editorTheme } from "./editor-theme";
   import { editorKeymap } from "./editor-keymap";
   import { editorHighlights } from "./editor-highlights";
-  import { getStatistics } from "./utils";
+  import { getStatistics } from "../utils";
+  import { actions, editorStats } from "../event-hubs";
   import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
+  import { Subscription } from "rxjs";
   let klass = "";
   export { klass as class };
 
   export let doc = "";
+
   let parent: HTMLDivElement;
 
   let view: EditorView;
 
   const worker: Worker = getContext("worker");
+  const dispatch = createEventDispatcher();
 
   const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
     if (vu.docChanged) {
       const doc = vu.state.doc;
       const value = doc.toString();
+      dispatch("change", value);
       worker.postMessage({
         type: TranscriptionWorkerEvent.VALUE_CHANGE,
         payload: value,
@@ -30,12 +39,14 @@
     }
 
     const data = getStatistics(vu.state);
+    editorStats.next(data);
     worker.postMessage({
       type: TranscriptionWorkerEvent.STATISTICS,
       payload: data,
     });
   });
 
+  let sub: Subscription | undefined = undefined;
   onMount(() => {
     const state = EditorState.create({
       doc,
@@ -61,10 +72,36 @@
       type: TranscriptionWorkerEvent.VALUE_CHANGE,
       payload: doc,
     });
+
+    sub = actions.subscribe((a) => {
+      if (a.type === "insert") {
+        view.dispatch({
+          changes: {
+            from: view.state.selection.main.from,
+            insert: a.payload,
+          },
+        });
+      } else {
+        const selectedText = view.state.selection.ranges.map((r) =>
+          state.sliceDoc(r.from, r.to),
+        );
+        view.dispatch({
+          changes: {
+            from: view.state.selection.main.from,
+            to: view.state.selection.main.to,
+            insert: selectedText[0].replace(/[^ \n\u0600-\u06FF]/g, ""),
+          },
+        });
+      }
+    });
   });
 
   onDestroy(() => {
+    console.log("unmounting");
     view.destroy();
+    if (sub) {
+      sub.unsubscribe();
+    }
   });
 </script>
 
@@ -104,7 +141,7 @@
   }
 
   :global(.edition-symbol) {
-    color: #4d4d0a;
+    color: #767015;
     font-weight: bold;
   }
   :global(.cm-line:nth-child(odd)) {

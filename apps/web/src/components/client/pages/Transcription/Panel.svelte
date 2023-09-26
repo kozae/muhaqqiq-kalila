@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { requestState, source } from "@client/pages/store";
+  import { derived, discard, requestState } from "@client/pages/store";
   import CommandBar from "./CommandBar/CommandBar.svelte";
   import Editor from "./Editor/Editor.svelte";
   import AuxDisplay from "./AuxDisplay/AuxDisplay.svelte";
   import { getContext, onDestroy, onMount, setContext } from "svelte";
-  import { ReplaySubject, filter, map } from "rxjs";
-  import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
-  import { hoveredRegion$ } from "../facsimile-events";
-  requestState("selectTranscriptionPanelData");
+  import { Subscription, filter, first } from "rxjs";
+
+  const id = getContext("id");
 
   const worker = new Worker(
     new URL("pages-tool-transcription-panel-worker/worker.ts", import.meta.url),
@@ -16,44 +15,29 @@
     },
   );
   setContext("worker", worker);
-
-  const id = getContext("id");
-  let ids: string[] = [];
-  const lineIds$ = source.selectTranscriptionPanelData.pipe(
-    filter((data) => data.id === id),
-    map((data) => data.ids),
-  );
-
-  $: ids = $lineIds$ ? $lineIds$ : [];
-  $: hoveredRegion$.next(ids[0]);
-
-  const error = new ReplaySubject<any[]>(1);
-  const onMessage = (e: any) => {
-    if (e.data.type === TranscriptionWorkerEvent.ERROR) {
-      error.next(e.data.payload);
-    }
-    if (e.data.type === TranscriptionWorkerEvent.NO_ERROR) {
-      error.next([]);
-    }
-    if (e.data.type === TranscriptionWorkerEvent.LINE_CHANGE) {
-      const order = e.data.payload as number;
-      hoveredRegion$.next(ids[order - 1]);
-    }
-  };
-
+  let sub: Subscription[] = [];
+  let render = Date.now();
   onMount(() => {
-    worker.onmessage = onMessage;
+    sub = [
+      derived.ready.pipe(first((v) => v === id)).subscribe(() => {
+        render = Date.now();
+        requestState("selectTranscriptionPanelData");
+      }),
+      discard.subscribe(() => {
+        render = Date.now();
+        requestState("selectTranscriptionPanelData");
+      }),
+    ];
   });
-
   onDestroy(() => {
-    worker.onmessage = null;
+    sub.forEach((s) => s.unsubscribe());
   });
 </script>
 
-<CommandBar />
-<div class="flex h-[calc(100vh-150px)] flex-col">
-  <Editor />
-  {#if $error}
-    <AuxDisplay error={$error} />
-  {/if}
-</div>
+{#key render}
+  <CommandBar />
+  <div class="flex h-[calc(100vh-150px)] flex-col">
+    <Editor />
+    <AuxDisplay />
+  </div>
+{/key}

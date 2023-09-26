@@ -4,34 +4,41 @@ import Info from "@client/pages/Info";
 import Layout from "@client/pages/Layout";
 import Lines from "@client/pages/Lines";
 import TranscriptionPanel from "@client/pages/Transcription";
+import SegmentationPanel from "@client/pages/Segmentation";
 import Loading from "@client/reusable/Loading.svelte";
 
 const { pageId, mediumId, tool } = Astro.params;
 ---
 
 <ToolLayout pageId={pageId} mediumId={mediumId!} tool={tool}>
-  <div class="animate-fade-in w-full grow scale-90 rounded bg-white opacity-0">
-    {
-      tool === "info" && (
-        <Info pageId={pageId!} mediumId={mediumId!} client:only />
-      )
-    }
-    {
-      tool === "layout" && (
-        <Layout pageId={pageId!} mediumId={mediumId!} client:only />
-      )
-    }
-    {
-      tool === "lines" && (
-        <Lines pageId={pageId!} mediumId={mediumId!} client:only />
-      )
-    }
-    {
-      tool === "transcription" && (
-        <TranscriptionPanel pageId={pageId!} mediumId={mediumId!} client:only />
-      )
-    }
-    {tool === "segmentation" && <Loading soon client:only />}
-    {tool === "images" && <Loading soon client:only />}
-  </div>
+  {
+    tool !== "segmentation" && (
+      <div class="animate-fade-in w-1/2 grow scale-90 rounded bg-white opacity-0">
+        {tool === "info" && (
+          <Info pageId={pageId!} mediumId={mediumId!} client:only />
+        )}
+        {tool === "layout" && (
+          <Layout pageId={pageId!} mediumId={mediumId!} client:only />
+        )}
+        {tool === "lines" && (
+          <Lines pageId={pageId!} mediumId={mediumId!} client:only />
+        )}
+        {tool === "transcription" && (
+          <TranscriptionPanel
+            pageId={pageId!}
+            mediumId={mediumId!}
+            client:only
+          />
+        )}
+        {tool === "images" && <Loading soon client:only />}
+      </div>
+    )
+  }
+  {
+    tool === "segmentation" && (
+      <div class="w-full grow  rounded bg-white">
+        <SegmentationPanel pageId={pageId!} mediumId={mediumId!} client:only />
+      </div>
+    )
+  }
 </ToolLayout>

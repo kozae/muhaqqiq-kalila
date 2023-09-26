@@ -1,21 +1,42 @@
 <script lang="ts">
   import Codemirror from "./CodeMirror.svelte";
-  import { source } from "@client/pages/store";
-  import { filter, map } from "rxjs";
+  import { requestAction, source } from "@client/pages/store";
+  import { combineLatest, filter, first, map } from "rxjs";
   import { getContext } from "svelte";
+  import { selectedTextClass } from "../selected-text-class";
+  import Loading from "@client/reusable/Loading.svelte";
 
   const id = getContext("id");
-
-  const data = source.selectTranscriptionPanelData.pipe(
-    filter((data) => data.id === id),
-    map((data) => data.bodyLines.join("\n")),
+  let ids: string[] = [];
+  const data = combineLatest([
+    source.selectTranscriptionPanelData,
+    selectedTextClass,
+  ]).pipe(
+    filter(([data, _]) => data.id === id),
+    map(([data, selected]) =>
+      selected === "Body"
+        ? { doc: data.body.text.join("\n"), ids: data.body.ids }
+        : {
+            doc: data.glosses[selected].text.join("\n"),
+            ids: data.glosses[selected].ids,
+          },
+    ),
   );
+  $: ids = $data?.ids;
+
+  const handleChanges = (e: any) => {
+    requestAction("updateTranscription", { doc: e.detail, ids });
+  };
 </script>
 
 {#if $data}
-  <div class="editor-container">
-    <Codemirror doc={$data} />
-  </div>
+  {#key $selectedTextClass}
+    <div class="editor-container">
+      <Codemirror doc={$data.doc} on:change={handleChanges} />
+    </div>
+  {/key}
+{:else}
+  <Loading />
 {/if}
 
 <style>

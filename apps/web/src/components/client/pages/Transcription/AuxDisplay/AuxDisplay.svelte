@@ -1,9 +1,51 @@
 <script lang="ts">
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
+  import { source } from "@client/pages/store";
   import XCircleIcon from "@icons/XCircleIcon.svelte";
   import lodash from "lodash";
+  import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
+  import { combineLatest, filter, map } from "rxjs";
+  import { getContext, onMount, onDestroy } from "svelte";
+  import { selectedTextClass } from "../selected-text-class";
 
-  export let error: any[] = [];
+  let error: any[] = [];
+
+  const id = getContext("id");
+  const worker: Worker = getContext("worker");
+  let ids: string[] = [];
+  const lineIds$ = combineLatest([
+    source.selectTranscriptionPanelData,
+    selectedTextClass,
+  ]).pipe(
+    filter(([data, _]) => data.id === id),
+    map(([data, selected]) =>
+      selected === "Body" ? data.body.ids : data.glosses[selected].ids,
+    ),
+  );
+
+  $: ids = $lineIds$ ? $lineIds$ : [];
+  $: hoveredRegion$.next(ids[0]);
+
+  const onMessage = (e: any) => {
+    if (e.data.type === TranscriptionWorkerEvent.ERROR) {
+      error = e.data.payload;
+    }
+    if (e.data.type === TranscriptionWorkerEvent.NO_ERROR) {
+      error = [];
+    }
+    if (e.data.type === TranscriptionWorkerEvent.LINE_CHANGE) {
+      const order = e.data.payload as number;
+      hoveredRegion$.next(ids[order - 1]);
+    }
+  };
+
+  onMount(() => {
+    worker.onmessage = onMessage;
+  });
+
+  onDestroy(() => {
+    worker.onmessage = null;
+  });
 </script>
 
 {#if error.length !== 0}

@@ -3,7 +3,12 @@
   import PlusIcon from "@icons/PlusIcon.svelte";
   import SymbolGroup from "./SymbolGroup.svelte";
   import { slide } from "svelte/transition";
+  import { editorStats, actions } from "../event-hubs";
+  import { map } from "rxjs";
 
+  const disabled = editorStats.pipe(
+    map((v) => v.selectionAsSingle.from !== v.selectionAsSingle.to),
+  );
   interface ISymbol {
     symbol: string;
     label: string;
@@ -11,7 +16,7 @@
   const suffixes: ISymbol[] = [
     {
       symbol: "†",
-      label: "Corrupt, [CMD+SHIFT+1]",
+      label: "Corrupt [cmd+shift+1]",
     },
     {
       symbol: "*",
@@ -29,44 +34,44 @@
 
   const suppletion: ISymbol[] = [
     {
-      symbol: "}",
+      symbol: "{",
       label: "Supplied range begin",
     },
     {
-      symbol: "{",
+      symbol: "}",
       label: "Supplied range end",
     },
   ];
 
   const crossOut: ISymbol[] = [
     {
-      symbol: "]]",
+      symbol: "[[",
       label: "Cross-out range begin",
     },
     {
-      symbol: "[[",
+      symbol: "]]",
       label: "Cross-out range end",
     },
   ];
 
   const added: ISymbol[] = [
     {
-      symbol: ">",
+      symbol: "<",
       label: "Added range begin",
     },
     {
-      symbol: "<",
+      symbol: ">",
       label: "Added range end",
     },
   ];
 
   const superfluous: ISymbol[] = [
     {
-      symbol: "]",
+      symbol: "[",
       label: "Superfluous range begin",
     },
     {
-      symbol: "[",
+      symbol: "]",
       label: "Superfluous range end",
     },
   ];
@@ -83,12 +88,22 @@
   ];
 
   let open = false;
+  const handleItemSelected = (e: any) => {
+    open = false;
+    actions.next({
+      type: "insert",
+      payload: e.detail,
+    });
+  };
 </script>
 
 <div class="relative inline-block text-left">
   <div>
     <button
-      class="text-primary-600 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-50"
+      disabled={$disabled}
+      class="{!$disabled
+        ? 'hover:bg-gray-50'
+        : 'opacity-50'} text-primary-600 inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold"
       on:click={() => (open = !open)}
     >
       <PlusIcon className="-ml-0.5 h-5 w-5" />
@@ -102,12 +117,12 @@
       transition:slide={{ delay: 0, duration: 300, axis: "y" }}
       class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
     >
-      <SymbolGroup symbols={suffixes} />
-      <SymbolGroup symbols={added} />
-      <SymbolGroup symbols={superfluous} />
-      <SymbolGroup symbols={suppletion} />
-      <SymbolGroup symbols={crossOut} />
-      <SymbolGroup symbols={standalones} />
+      <SymbolGroup symbols={suffixes} on:itemSelected={handleItemSelected} />
+      <SymbolGroup symbols={added} on:itemSelected={handleItemSelected} />
+      <SymbolGroup symbols={superfluous} on:itemSelected={handleItemSelected} />
+      <SymbolGroup symbols={suppletion} on:itemSelected={handleItemSelected} />
+      <SymbolGroup symbols={crossOut} on:itemSelected={handleItemSelected} />
+      <SymbolGroup symbols={standalones} on:itemSelected={handleItemSelected} />
     </div>
   {/if}
 </div>

@@ -4,7 +4,6 @@ import {
   Line,
   EditorState,
 } from "@codemirror/state";
-import { ViewUpdate } from "@codemirror/view";
 
 export interface Statistics {
   /** total length of the document */
