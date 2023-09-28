@@ -113,7 +113,7 @@
       class={$regionIshovered
         ? "h-full w-full rounded-full"
         : "h-full w-1/2 rounded-full"}
-      style={`background-image: url(${$url}); background-position: top right; background-repeat: no-repeat;`}
+      style={`background-image: url(${$url}); background-position: center; background-repeat: no-repeat;`}
     >
       <div
         class="h-full w-full rounded-full"

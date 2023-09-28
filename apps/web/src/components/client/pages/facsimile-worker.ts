@@ -25,7 +25,7 @@ export function requestRegion(el: ILayoutElement, pageId: string, padding = 0) {
   facsimileWorker.postMessage({
     type: FacsimileWorkerEvent.PREVIEW,
     payload: {
-      id: el.id,
+      id: padding !== 0 ? `padded_${el.id}` : el.id,
       p: el.region.slice(0, -1),
       r: lodash.last(el.region) || 0,
       padding,

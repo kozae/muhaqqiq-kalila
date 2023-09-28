@@ -42,7 +42,7 @@
     map((v) => v!.id),
     mergeMap((elId) =>
       regionUrl.pipe(
-        first((v) => v.pageId === id && v.id === elId),
+        first((v) => v.pageId === id && v.id === `padded_${elId}`),
         map((v) => v.region),
       ),
     ),

@@ -1,61 +1,18 @@
 <script lang="ts">
-  import { CHAPTERS } from "../chapters";
-  let selectedChapter = CHAPTERS[0]; // default selection
-  let menuOpen = false; // added state for menu open/close
+  import type { IChapter } from "../chapters";
+  import ChapterSelector from "./ChapterSelector.svelte";
+  let currentChapter: IChapter | undefined = undefined;
 </script>
 
-<div class="animate-fade-in w-1/2 grow scale-90 rounded bg-white opacity-0">
-  <div class="relative inline-block text-left">
-    <div>
-      <button
-        type="button"
-        class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        id="menu-button"
-        aria-expanded={menuOpen}
-        aria-haspopup="true"
-        on:click={() => (menuOpen = !menuOpen)}
-      >
-        {selectedChapter.name}
-        <svg
-          class="-mr-1 h-5 w-5 text-gray-400"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
-    </div>
-
-    {#if menuOpen}
-      <div
-        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-300 overflow-auto"
-        role="menu"
-        aria-orientation="vertical"
-        aria-labelledby="menu-button"
-        tabindex="-1"
-      >
-        <div class="py-1" role="none">
-          {#each CHAPTERS as chapter, i}
-            <button
-              class="text-gray-700 block px-4 py-2 text-sm"
-              role="menuitem"
-              tabindex="-1"
-              id={`menu-item-${i}`}
-              on:click={() => {
-                selectedChapter = chapter;
-                menuOpen = false; // close menu after selection
-              }}
-            >
-              {chapter.name}
-            </button>
-          {/each}
-        </div>
-      </div>
-    {/if}
+<div
+  class="animate-fade-in w-5/12 h-full scale-90 rounded bg-red-100 opacity-0 flex flex-col"
+>
+  <div class="flex w-full justify-center font-bold">
+    <ChapterSelector
+      text={currentChapter
+        ? `${currentChapter.abbr} - ${currentChapter.name}`
+        : "Select Chapter"}
+      on:selected={(e) => (currentChapter = e.detail)}
+    />
   </div>
 </div>

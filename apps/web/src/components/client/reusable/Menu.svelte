@@ -5,8 +5,12 @@
 
   export let items: string[] = [];
   export let buttonText: string = "";
+  export let buttonSize: string = "text-sm";
   export let bg = "bg-white";
   export let hoverBg = "hover:bg-secondary-100";
+  export let height = "auto";
+  export let width = "w-56";
+  export let origin = "origin-top-right";
 
   let showMenu = false;
 
@@ -39,7 +43,7 @@
 <div class="relative inline-block text-left {id}">
   <button
     on:click={toggleMenu}
-    class="text-primary-900 inline-flex w-full justify-center gap-x-1.5 rounded-md {bg} px-3 py-2 text-sm font-semibold shadow-sm {hoverBg}"
+    class="text-primary-900 inline-flex w-full justify-center gap-x-1.5 rounded-md {bg} px-3 py-2 {buttonSize} font-semibold shadow-sm {hoverBg}"
   >
     <slot name="prefixIcon" />
     {buttonText}
@@ -48,7 +52,7 @@
   {#if showMenu}
     <div
       transition:slide={{ delay: 0, duration: 300, axis: "y" }}
-      class="absolute z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class="absolute z-10 mt-2 {width} {origin} divide-y z-50 divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none {height} overflow-y-auto"
     >
       {#each items as item (item)}
         <button
