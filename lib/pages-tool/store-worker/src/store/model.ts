@@ -4,6 +4,7 @@ import {
   type Line,
   type Segment,
   type Image,
+  type Unit,
 } from "kalila-graphql";
 
 export interface IColoredRegion {
@@ -33,6 +34,12 @@ export type ImagesState = Array<ImageEntity>;
 
 export type SegmentEntity = Segment;
 export type SegmentsState = Array<SegmentEntity>;
+
+export type UnitEntity = Omit<
+  Unit,
+  "segments" | "children" | "bookId" | "parentId"
+> & { displayOrder: string };
+export type UnitsState = Array<SegmentEntity>;
 
 export interface FetchedState {
   info?: PageState;

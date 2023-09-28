@@ -3,6 +3,7 @@ import {
   linesAdapter,
   segmentsAdapter,
   textAdapter,
+  unitsAdapter,
 } from "./initial-state";
 
 const text = textAdapter.getSelectors();
@@ -28,3 +29,9 @@ const segments = segmentsAdapter.getSelectors();
 export const selectAllSegments = segments.selectAll;
 export const selectSegmentById = segments.selectById;
 export const selectSegmentsCount = segments.selectTotal;
+
+const units = unitsAdapter.getSelectors();
+
+export const selectAllUnits = units.selectAll;
+export const selectUnitById = units.selectById;
+export const selectUnitsCount = units.selectTotal;

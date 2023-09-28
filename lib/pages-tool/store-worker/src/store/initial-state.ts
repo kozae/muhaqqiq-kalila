@@ -7,12 +7,14 @@ import type {
   PageState,
   FetchedState,
   IChangeTracker,
+  UnitEntity,
 } from ".";
 
 export const textAdapter = createEntityAdapter<TextEntity>();
 export const imagesAdapter = createEntityAdapter<ImageEntity>();
 export const linesAdapter = createEntityAdapter<LineEntity>();
 export const segmentsAdapter = createEntityAdapter<SegmentEntity>();
+export const unitsAdapter = createEntityAdapter<UnitEntity>();
 
 export const initialState = {
   info: undefined as PageState | undefined,
@@ -22,6 +24,8 @@ export const initialState = {
   images: imagesAdapter.getInitialState(),
   lines: linesAdapter.getInitialState(),
   segments: segmentsAdapter.getInitialState(),
+  units: unitsAdapter.getInitialState(),
+  chapter: undefined as string | undefined,
   fetched: undefined as FetchedState | undefined,
   changed: {
     info: false,
@@ -29,6 +33,7 @@ export const initialState = {
     images: false,
     lines: false,
     segments: false,
+    units: false,
   } as IChangeTracker,
   stateId: -1,
 };

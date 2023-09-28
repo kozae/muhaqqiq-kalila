@@ -60,5 +60,5 @@ export function request(
 }
 
 export function response(ctx: any) {
-  return ctx.result;
+  return ctx.result ?? { items: [] };
 }
