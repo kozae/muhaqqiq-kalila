@@ -93,6 +93,38 @@ export const onCreateMedium = /* GraphQL */ `
             version
             __typename
           }
+          openSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
+          endingSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
           editor
           version
           __typename

@@ -27,6 +27,7 @@ export const source = {
   selectTranscriptionPanelData:
     createReplaySubject<"selectTranscriptionPanelData">(),
   selectUnits: createReplaySubject<"selectUnits">(),
+  selectSegementationData: createReplaySubject<"selectSegementationData">(),
 };
 
 export const derived = {

@@ -93,6 +93,38 @@ export const createMedium = /* GraphQL */ `
             version
             __typename
           }
+          openSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
+          endingSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
           editor
           version
           __typename
@@ -246,9 +278,84 @@ export const updatePageInfo = /* GraphQL */ `
         version
         __typename
       }
+      openSegments {
+        id
+        mediumId
+        unitId
+        unit {
+          bookId
+          id
+          commentary
+          divider
+          frame
+          motifs
+          order
+          title
+          topics
+          variant
+          version
+          __typename
+        }
+        startPage
+        startLine
+        startToken
+        endPage
+        endLine
+        endToken
+        lacuna
+        tags
+        type
+        version
+        __typename
+      }
+      endingSegments {
+        id
+        mediumId
+        unitId
+        unit {
+          bookId
+          id
+          commentary
+          divider
+          frame
+          motifs
+          order
+          title
+          topics
+          variant
+          version
+          __typename
+        }
+        startPage
+        startLine
+        startToken
+        endPage
+        endLine
+        endToken
+        lacuna
+        tags
+        type
+        version
+        __typename
+      }
       editor
       version
       __typename
     }
+  }
+`;
+export const createUnit = /* GraphQL */ `
+  mutation CreateUnit($input: CreateUnitInput!) {
+    createUnit(input: $input)
+  }
+`;
+export const updateUnit = /* GraphQL */ `
+  mutation UpdateUnit($input: UpdateUnitInput!) {
+    updateUnit(input: $input)
+  }
+`;
+export const deleteUnit = /* GraphQL */ `
+  mutation DeleteUnit($input: DeleteUnitInput!) {
+    deleteUnit(input: $input)
   }
 `;

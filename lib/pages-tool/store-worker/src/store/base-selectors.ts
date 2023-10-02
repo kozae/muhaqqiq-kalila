@@ -1,6 +1,7 @@
 import {
   imagesAdapter,
   linesAdapter,
+  openSegmentsAdapter,
   segmentsAdapter,
   textAdapter,
   unitsAdapter,
@@ -29,6 +30,12 @@ const segments = segmentsAdapter.getSelectors();
 export const selectAllSegments = segments.selectAll;
 export const selectSegmentById = segments.selectById;
 export const selectSegmentsCount = segments.selectTotal;
+
+const openSegments = openSegmentsAdapter.getSelectors();
+
+export const selectAllOpenSegments = openSegments.selectAll;
+export const selectOpenSegmentById = openSegments.selectById;
+export const selectOpenSegmentsCount = openSegments.selectTotal;
 
 const units = unitsAdapter.getSelectors();
 

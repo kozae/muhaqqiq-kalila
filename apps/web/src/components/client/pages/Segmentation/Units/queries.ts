@@ -5,9 +5,10 @@ import {
 } from "@aws-amplify/api";
 import { API } from "aws-amplify";
 import type { ListUnitsQuery } from "kalila-graphql";
+import { Subject } from "rxjs";
 
 const query = /* GraphQL */ `
-  query ListUnits($parentId: ID!) {
+  query ListUnits($parentId: ID!, $mediumIds: [ID]) {
     listUnits(parentId: $parentId, limit: 1000) {
       items {
         bookId
@@ -21,6 +22,20 @@ const query = /* GraphQL */ `
         title
         topics
         variant
+        segments(mediumIds: $mediumIds) {
+          id
+          startPage
+          startLine
+          startToken
+          endPage
+          endLine
+          endToken
+          lacuna
+          tags
+          type
+          version
+          __typename
+        }
         children {
           items {
             bookId
@@ -68,11 +83,13 @@ const query = /* GraphQL */ `
   }
 `;
 
-export async function listUnits(parentId: string) {
+export async function listUnits(parentId: string, mediumId: string) {
   const response = await API.graphql<GraphQLQuery<ListUnitsQuery>>({
     query,
-    variables: { parentId },
+    variables: { parentId, mediumIds: [mediumId] },
     authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
   });
   return (response as GraphQLResult<ListUnitsQuery>).data?.listUnits;
 }
+
+export const unitFilter = new Subject<string>();

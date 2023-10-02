@@ -10,10 +10,11 @@ import {
   FunctionRuntime,
   FunctionRuntimeFamily,
   DynamoDbDataSource,
+  LambdaDataSource,
 } from "aws-cdk-lib/aws-appsync";
 
 import * as path from "path";
-import { ITable, Table } from "aws-cdk-lib/aws-dynamodb";
+import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { IUserPool, UserPool } from "aws-cdk-lib/aws-cognito";
 import {
@@ -62,12 +63,17 @@ export class KalilaApiStack extends Stack {
     this.dataSources = this.createDataSources();
     this.lambdas = this.createLambdas(props.tableNames);
 
+    const lamdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
+      "MutationHandler",
+      this.lambdas.mutationHandler,
+    );
+
     for (const { parent, name, source } of extractFieldsWithSource(
       this.schemaPath,
     )) {
       if (source.includes("lambda")) {
         const lamda = this.lambdas.mutationHandler;
-        this.createLambdaResolver(parent, name, lamda);
+        this.createLambdaResolver(parent, name, lamdaDataSource);
       } else {
         this.createResolver(parent, name, this.dataSources[source]);
       }
@@ -124,6 +130,8 @@ export class KalilaApiStack extends Stack {
         LINES: names.lines,
         TEXT: names.textElements,
         IMAGES: names.images,
+        UNITS: names.units,
+        SEGMENTS: names.segments,
       },
     });
     for (const table of Object.values(this.tables)) {
@@ -161,13 +169,8 @@ export class KalilaApiStack extends Stack {
   private createLambdaResolver(
     typeName: string,
     fieldName: string,
-    lambdaFn: LambdaFunction,
+    dataSource: LambdaDataSource,
   ) {
-    // todo, refactor
-    const dataSource = this.kalilaGraphQLApi.addLambdaDataSource(
-      "MutationHandler",
-      lambdaFn,
-    );
     this.kalilaGraphQLApi.createResolver(`${typeName}_${fieldName}ResolverFn`, {
       typeName,
       fieldName,

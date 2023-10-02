@@ -35,10 +35,19 @@ export type ImagesState = Array<ImageEntity>;
 export type SegmentEntity = Segment;
 export type SegmentsState = Array<SegmentEntity>;
 
+export type UnitSegmentInfo = {
+  page: number;
+  line: number;
+  id: string;
+};
+
 export type UnitEntity = Omit<
   Unit,
   "segments" | "children" | "bookId" | "parentId"
-> & { displayOrder: string };
+> & {
+  displayOrder: string;
+  segment?: UnitSegmentInfo;
+};
 export type UnitsState = Array<SegmentEntity>;
 
 export interface FetchedState {
@@ -72,4 +81,26 @@ export interface IChangeTracker {
   images: boolean;
   lines: boolean;
   segments: boolean;
+}
+
+export interface TextToken {
+  raw: string;
+  id: number;
+  type: "token";
+}
+
+export interface SegmentStartMark {
+  id: string;
+  unitId: string;
+  title: string;
+  display: string;
+  type: "start";
+}
+
+export interface SegmentEndMark {
+  id: string;
+  unitId: string;
+  title: string;
+  display: string;
+  type: "end";
 }

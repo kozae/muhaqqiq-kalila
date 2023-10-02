@@ -78,6 +78,47 @@ type Mutation {
 
   updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
     
+
+  createUnit(input: CreateUnitInput!): String 
+
+  updateUnit(input: UpdateUnitInput!): String 
+
+  deleteUnit(input: DeleteUnitInput!): String 
+}
+input CreateUnitInput {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+input UpdateUnitInput {
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  newOrder: Int!
+  oldOrder: Int!
+  title: String
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+input DeleteUnitInput {
+  id: ID!
+  parentId: ID!
+  order: Int!
 }
 
 type Subscription {
@@ -154,7 +195,7 @@ type Unit {
     orderGt: Int
     orderLt: Int
   ): UnitList 
-  segments: [Segment] 
+  segments(mediumIds: [ID]): [Segment] 
   version: Int
 }
 
@@ -166,7 +207,7 @@ type Segment {
   startPage: Int!
   startLine: Int!
   startToken: Int!
-  endPage: Int
+  endPage: Int!
   endLine: Int
   endToken: Int
   lacuna: Boolean
@@ -201,6 +242,8 @@ type Page {
   images: [Image] 
   text: [TextElement] 
   segments: [Segment] 
+  openSegments: [Segment] 
+  endingSegments: [Segment] 
   editor: String
   version: Int
 }

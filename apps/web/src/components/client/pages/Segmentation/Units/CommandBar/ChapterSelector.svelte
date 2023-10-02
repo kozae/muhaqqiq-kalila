@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { CHAPTERS } from "../chapters";
+  import { CHAPTERS } from "../../chapters";
   import Menu from "@client/reusable/Menu.svelte";
   import ChevronDownIcon from "@icons/ChevronDownIcon.svelte";
   export let text = "Select chapter";
@@ -18,7 +18,6 @@
   {items}
   height="h-[300px]"
   width="w-[300px]"
-  buttonSize="text-lg"
   on:itemClick={handleItemClick}
 >
   <ChevronDownIcon slot="suffixIcon" className="w-5 h-5" />

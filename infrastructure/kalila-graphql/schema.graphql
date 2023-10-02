@@ -78,6 +78,47 @@ type Mutation {
 
   updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
     @source(value: mutation_lambda)
+
+  createUnit(input: CreateUnitInput!): String @source(value: mutation_lambda)
+
+  updateUnit(input: UpdateUnitInput!): String @source(value: mutation_lambda)
+
+  deleteUnit(input: DeleteUnitInput!): String @source(value: mutation_lambda)
+}
+input CreateUnitInput {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+input UpdateUnitInput {
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  newOrder: Int!
+  oldOrder: Int!
+  title: String
+  topics: [String]
+  variant: String
+  version: Int
+}
+
+input DeleteUnitInput {
+  id: ID!
+  parentId: ID!
+  order: Int!
 }
 
 type Subscription {
@@ -154,7 +195,7 @@ type Unit {
     orderGt: Int
     orderLt: Int
   ): UnitList @source(value: units)
-  segments: [Segment] @source(value: segments)
+  segments(mediumIds: [ID]): [Segment] @source(value: segments)
   version: Int
 }
 
@@ -166,7 +207,7 @@ type Segment {
   startPage: Int!
   startLine: Int!
   startToken: Int!
-  endPage: Int
+  endPage: Int!
   endLine: Int
   endToken: Int
   lacuna: Boolean
@@ -201,6 +242,8 @@ type Page {
   images: [Image] @source(value: images)
   text: [TextElement] @source(value: textElements)
   segments: [Segment] @source(value: segments)
+  openSegments: [Segment] @source(value: segments)
+  endingSegments: [Segment] @source(value: segments)
   editor: String
   version: Int
 }

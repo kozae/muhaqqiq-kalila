@@ -15,7 +15,7 @@
   <div></div>
 {:then session}
   {#if session && session.isValid()}
-    <div class="w-1/2 mt-4">
+    <div class="w-1/2 mt-[10px] h-[calc(100vh-74px)] overflow-y-auto">
       <div class="bg-secondary-50 mx-auto w-full max-w-xl rounded-2xl p-2">
         <div class="text-secondary-900 flex justify-center align-baseline">
           <LinkIcon className="h-10 w-5 px-0 pt-3 pb-2 text-secondary-900" />

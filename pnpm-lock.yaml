@@ -173,6 +173,9 @@ importers:
       sass:
         specifier: ^1.66.1
         version: 1.66.1
+      sortablejs:
+        specifier: ^1.15.0
+        version: 1.15.0
       svelte:
         specifier: ^4.2.0
         version: 4.2.0
@@ -207,6 +210,9 @@ importers:
       '@types/sharedworker':
         specifier: ^0.0.102
         version: 0.0.102
+      '@types/sortablejs':
+        specifier: ^1.15.3
+        version: 1.15.3
       astro-sst:
         specifier: ^2.24.26
         version: 2.24.26
@@ -7889,6 +7895,10 @@ packages:
 
   /@types/sharedworker@0.0.102:
     resolution: {integrity: sha512-8ZqXPwoaVOrFrEwHy+kKDdiKQxp5E2kw3sB6V7bdVqXJyVTLK0u+FmuJVzQbQtM11YYcvexXdDy7qvTziK3/Cg==}
+    dev: true
+
+  /@types/sortablejs@1.15.3:
+    resolution: {integrity: sha512-v+zh6TZP/cLeMUK0MDx1onp8e7Jk2/4iTQ7sb/n80rTAvBm14yJkpOEfJdrTCkHiF7IZbPjxGX2NRJfogRoYIg==}
     dev: true
 
   /@types/stack-utils@2.0.1:
@@ -16162,6 +16172,10 @@ packages:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 4.0.0
     dev: true
+
+  /sortablejs@1.15.0:
+    resolution: {integrity: sha512-bv9qgVMjUMf89wAvM6AxVvS/4MX3sPeN0+agqShejLU5z5GX4C75ow1O2e5k4L6XItUyAK3gH6AxSbXrOM5e8w==}
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}

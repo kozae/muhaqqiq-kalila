@@ -137,6 +137,38 @@ export const getMedium = /* GraphQL */ `
             version
             __typename
           }
+          openSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
+          endingSegments {
+            id
+            mediumId
+            unitId
+            startPage
+            startLine
+            startToken
+            endPage
+            endLine
+            endToken
+            lacuna
+            tags
+            type
+            version
+            __typename
+          }
           editor
           version
           __typename
@@ -580,6 +612,66 @@ export const getPage = /* GraphQL */ `
         version
         __typename
       }
+      openSegments {
+        id
+        mediumId
+        unitId
+        unit {
+          bookId
+          id
+          commentary
+          divider
+          frame
+          motifs
+          order
+          title
+          topics
+          variant
+          version
+          __typename
+        }
+        startPage
+        startLine
+        startToken
+        endPage
+        endLine
+        endToken
+        lacuna
+        tags
+        type
+        version
+        __typename
+      }
+      endingSegments {
+        id
+        mediumId
+        unitId
+        unit {
+          bookId
+          id
+          commentary
+          divider
+          frame
+          motifs
+          order
+          title
+          topics
+          variant
+          version
+          __typename
+        }
+        startPage
+        startLine
+        startToken
+        endPage
+        endLine
+        endToken
+        lacuna
+        tags
+        type
+        version
+        __typename
+      }
       editor
       version
       __typename
@@ -655,6 +747,66 @@ export const listMediumPages = /* GraphQL */ `
           __typename
         }
         segments {
+          id
+          mediumId
+          unitId
+          unit {
+            bookId
+            id
+            commentary
+            divider
+            frame
+            motifs
+            order
+            title
+            topics
+            variant
+            version
+            __typename
+          }
+          startPage
+          startLine
+          startToken
+          endPage
+          endLine
+          endToken
+          lacuna
+          tags
+          type
+          version
+          __typename
+        }
+        openSegments {
+          id
+          mediumId
+          unitId
+          unit {
+            bookId
+            id
+            commentary
+            divider
+            frame
+            motifs
+            order
+            title
+            topics
+            variant
+            version
+            __typename
+          }
+          startPage
+          startLine
+          startToken
+          endPage
+          endLine
+          endToken
+          lacuna
+          tags
+          type
+          version
+          __typename
+        }
+        endingSegments {
           id
           mediumId
           unitId

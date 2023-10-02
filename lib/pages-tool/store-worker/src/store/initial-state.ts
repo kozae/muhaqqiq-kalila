@@ -14,6 +14,7 @@ export const textAdapter = createEntityAdapter<TextEntity>();
 export const imagesAdapter = createEntityAdapter<ImageEntity>();
 export const linesAdapter = createEntityAdapter<LineEntity>();
 export const segmentsAdapter = createEntityAdapter<SegmentEntity>();
+export const openSegmentsAdapter = createEntityAdapter<SegmentEntity>();
 export const unitsAdapter = createEntityAdapter<UnitEntity>();
 
 export const initialState = {
@@ -24,6 +25,7 @@ export const initialState = {
   images: imagesAdapter.getInitialState(),
   lines: linesAdapter.getInitialState(),
   segments: segmentsAdapter.getInitialState(),
+  openSegments: openSegmentsAdapter.getInitialState(),
   units: unitsAdapter.getInitialState(),
   chapter: undefined as string | undefined,
   fetched: undefined as FetchedState | undefined,

@@ -62,7 +62,7 @@ export class KalilaDataManagementStack extends Stack {
         acc[key as keyof IKalilaTableInfo] = streamArn;
         return acc;
       },
-      {} as IKalilaTableInfo
+      {} as IKalilaTableInfo,
     );
   }
 
@@ -556,6 +556,22 @@ export class KalilaDataManagementStack extends Stack {
           },
         },
         {
+          indexName: "segmentMediumIdEndPageIndex",
+          keySchema: [
+            {
+              attributeName: "mediumId",
+              keyType: "HASH",
+            },
+            {
+              attributeName: "endPage",
+              keyType: "RANGE",
+            },
+          ],
+          projection: {
+            projectionType: ProjectionType.ALL,
+          },
+        },
+        {
           indexName: "segmentUnitIdIndex",
           keySchema: [
             {
@@ -587,6 +603,10 @@ export class KalilaDataManagementStack extends Stack {
         },
         {
           attributeName: "startPage",
+          attributeType: AttributeType.NUMBER,
+        },
+        {
+          attributeName: "endPage",
           attributeType: AttributeType.NUMBER,
         },
       ],

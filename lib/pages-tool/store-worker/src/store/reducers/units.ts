@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { UnitEntity } from "..";
+import type { UnitEntity, UnitSegmentInfo } from "..";
 import { unitsAdapter, type WritableState } from "../initial-state";
 import type { ListUnitsQuery, Unit } from "kalila-graphql";
 
@@ -9,7 +9,12 @@ function getDescendants(unit: Unit, parentDisplayOrder?: string): UnitEntity[] {
   const displayOrder = parentDisplayOrder
     ? `${parentDisplayOrder}.${unit.order}`
     : `${unit.order}`;
-  let descendants: UnitEntity[] = [{ ...unit, displayOrder }];
+  let segment: UnitSegmentInfo | undefined = undefined;
+  if (unit.segments && unit.segments.length > 0) {
+    const { startPage: page, startLine: line, id } = unit.segments[0]!;
+    segment = { page, line, id };
+  }
+  let descendants: UnitEntity[] = [{ ...unit, segment, displayOrder }];
 
   if (unit.children) {
     for (const child of unit.children.items) {
@@ -28,6 +33,7 @@ export const loadChapter = (
 ) => {
   const { chapter, units } = action.payload;
   state.chapter = chapter;
+  console.log(units);
   let unitEntities: UnitEntity[] = [];
   for (const unit of units!.items) {
     if (unit) {

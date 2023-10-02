@@ -54,6 +54,7 @@
     "pages-tool-transcription-panel-worker": "workspace:*",
     "rxjs": "^7.8.1",
     "sass": "^1.66.1",
+    "sortablejs": "^1.15.0",
     "svelte": "^4.2.0",
     "svelte-dnd-action": "^0.9.29",
     "svelte-konva": "^0.3.1",
@@ -67,6 +68,7 @@
   },
   "devDependencies": {
     "@types/sharedworker": "^0.0.102",
+    "@types/sortablejs": "^1.15.3",
     "astro-sst": "^2.24.26",
     "aws-cdk-lib": "2.91.0",
     "constructs": "10.2.69",
