@@ -1,25 +1,56 @@
 <script lang="ts">
+  import Menu from "@client/reusable/SelectIdMenu.svelte";
   import IconButton from "@client/reusable/IconButton.svelte";
   import ArrowRightInBox from "@icons/ArrowRightInBox.svelte";
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import TrashIcon from "@icons/TrashIcon.svelte";
-  import type { UnitEntity } from "pages-tool-store-worker";
+  import type { UnitEntity, UnitSegmentInfo } from "pages-tool-store-worker";
   import { insertSegment } from "../../segment-watcher";
+  import {
+    selectedUnit,
+    showDeleteModal,
+    showEditModal,
+  } from "../modal-states";
+  import { segmentWatcher } from "../../segment-watcher";
 
   export let unit: UnitEntity;
+  let segments: (UnitSegmentInfo & { key: string })[] = [];
+  function handleDelete() {
+    selectedUnit.set(unit);
+    showDeleteModal.set(true);
+  }
+
+  function handleEdit() {
+    selectedUnit.set(unit);
+    showEditModal.set(true);
+  }
+  $: segments = $segmentWatcher
+    ? Object.entries($segmentWatcher).map(([key, v]) => ({ key, ...v }))
+    : [];
+
+  function handleInsert(operation: string) {
+    insertSegment.next({ operation, unit });
+  }
 </script>
 
 <div
-  class="w-5/12 pointer-events-auto overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 m-3 flex flex-col justify-center items-center h-fit"
+  class="w-5/12 pointer-events-auto rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 m-3 flex flex-col justify-center items-center h-fit"
 >
   <div class="p-1 relative border-b-2 w-full flex justify-center">
-    <IconButton
-      on:click={() => insertSegment.next(unit)}
-      color="secondary-900"
-      class="absolute left-1"
+    <Menu
+      iconButton
+      position="absolute left-1"
+      items={[
+        { id: "insert", display: "Insert in top of the page" },
+        ...segments.map((s) => ({
+          id: s.key,
+          display: `Replace ${s.display}`,
+        })),
+      ]}
+      on:itemClick={(e) => handleInsert(e.detail)}
     >
-      <ArrowRightInBox />
-    </IconButton>
+      <ArrowRightInBox slot="icon" />
+    </Menu>
 
     <p class=" text-primary-500 font-semibold px-1 rounded">
       {unit.frame}.{unit.displayOrder}
@@ -31,11 +62,15 @@
     {unit.title}
   </p>
   <div class="p-1 border-t-2 w-full flex justify-evenly">
-    <IconButton>
+    <IconButton on:click={handleEdit}>
       <PencilSquareIcon />
     </IconButton>
 
-    <IconButton color="red-700" class="hover:bg-red-700">
+    <IconButton
+      on:click={handleDelete}
+      color="red-700"
+      class="hover:bg-red-700"
+    >
       <TrashIcon />
     </IconButton>
   </div>

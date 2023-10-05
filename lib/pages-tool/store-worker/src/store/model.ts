@@ -36,15 +36,17 @@ export type SegmentEntity = Segment;
 export type SegmentsState = Array<SegmentEntity>;
 
 export type UnitSegmentInfo = {
+  title: string;
+  display: string;
   page: number;
+  end: number;
   line: number;
+  token: number;
   id: string;
+  hasEnd: boolean;
 };
 
-export type UnitEntity = Omit<
-  Unit,
-  "segments" | "children" | "bookId" | "parentId"
-> & {
+export type UnitEntity = Omit<Unit, "segments" | "children"> & {
   displayOrder: string;
   segment?: UnitSegmentInfo;
 };
@@ -58,6 +60,7 @@ export interface FetchedState {
   lines: LinesState;
   images: ImagesState;
   segments: SegmentsState;
+  openSegments: SegmentsState;
 }
 
 export type PageInfoUpdate = {
@@ -87,6 +90,7 @@ export interface TextToken {
   raw: string;
   id: number;
   type: "token";
+  line: number;
 }
 
 export interface SegmentStartMark {
@@ -95,6 +99,7 @@ export interface SegmentStartMark {
   title: string;
   display: string;
   type: "start";
+  line: number;
 }
 
 export interface SegmentEndMark {
@@ -103,4 +108,30 @@ export interface SegmentEndMark {
   title: string;
   display: string;
   type: "end";
+  line: number;
 }
+
+export interface SegmentEndFromPreviousPageMark {
+  id: string;
+  unitId: string;
+  title: string;
+  display: string;
+  type: "endFromPrev";
+  line: number;
+}
+
+export interface OpenSegmentPreviousPageMark {
+  id: string;
+  unitId: string;
+  title: string;
+  display: string;
+  type: "open";
+  line: number;
+}
+
+export type SegmentationToken =
+  | TextToken
+  | SegmentStartMark
+  | SegmentEndMark
+  | SegmentEndFromPreviousPageMark
+  | OpenSegmentPreviousPageMark;

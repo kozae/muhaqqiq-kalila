@@ -79,46 +79,18 @@ type Mutation {
   updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
     @source(value: mutation_lambda)
 
+  updatePage(
+    id: ID!
+    mediumId: ID!
+    number: Int!
+    update: PageUpdateInput!
+  ): String @source(value: mutation_lambda)
+
   createUnit(input: CreateUnitInput!): String @source(value: mutation_lambda)
 
   updateUnit(input: UpdateUnitInput!): String @source(value: mutation_lambda)
 
   deleteUnit(input: DeleteUnitInput!): String @source(value: mutation_lambda)
-}
-input CreateUnitInput {
-  bookId: ID!
-  id: ID!
-  parentId: ID!
-  commentary: String
-  divider: Boolean
-  frame: String
-  motifs: [String]
-  order: Int!
-  title: String!
-  topics: [String]
-  variant: String
-  version: Int
-}
-
-input UpdateUnitInput {
-  id: ID!
-  parentId: ID!
-  commentary: String
-  divider: Boolean
-  frame: String
-  motifs: [String]
-  newOrder: Int!
-  oldOrder: Int!
-  title: String
-  topics: [String]
-  variant: String
-  version: Int
-}
-
-input DeleteUnitInput {
-  id: ID!
-  parentId: ID!
-  order: Int!
 }
 
 type Subscription {
@@ -142,7 +114,7 @@ type Book {
   media(limit: Int, nextToken: String, sort: SortDirection): MediumList
     @source(value: media)
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type Medium {
@@ -165,7 +137,7 @@ type Medium {
     sort: SortDirection
   ): SegmentList @source(value: segments)
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 type ChapterCollation {
   id: ID!
@@ -173,7 +145,7 @@ type ChapterCollation {
   name: String
   mediumIds: [String]
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 type Unit {
   bookId: ID!
@@ -196,7 +168,7 @@ type Unit {
     orderLt: Int
   ): UnitList @source(value: units)
   segments(mediumIds: [ID]): [Segment] @source(value: segments)
-  version: Int
+  version: AWSTimestamp
 }
 
 type Segment {
@@ -213,7 +185,7 @@ type Segment {
   lacuna: Boolean
   tags: [String]
   type: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type SegmentUnitConnection {
@@ -227,7 +199,7 @@ type SegmentUnitConnection {
   title: String!
   topics: [String]
   variant: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type Page {
@@ -245,7 +217,7 @@ type Page {
   openSegments: [Segment] @source(value: segments)
   endingSegments: [Segment] @source(value: segments)
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type TextElement {
@@ -255,7 +227,7 @@ type TextElement {
   position: String
   region: [Int]
   lines: [Line] @source(value: lines)
-  version: Int
+  version: AWSTimestamp
 }
 
 type Line {
@@ -265,7 +237,7 @@ type Line {
   region: [Int]
   states: [String]
   tokens: [String]
-  version: Int
+  version: AWSTimestamp
 }
 
 type Image {
@@ -280,7 +252,7 @@ type Image {
   position: String
   region: [Int]
   style: [String]
-  version: Int
+  version: AWSTimestamp
 }
 
 type LineDetectionJob {
@@ -343,6 +315,42 @@ enum SortDirection {
 
 # input types
 
+input CreateUnitInput {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: AWSTimestamp
+}
+
+input UpdateUnitInput {
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  newOrder: Int!
+  oldOrder: Int!
+  title: String
+  topics: [String]
+  variant: String
+  version: AWSTimestamp
+}
+
+input DeleteUnitInput {
+  id: ID!
+  parentId: ID!
+  order: Int!
+}
+
 input CreateBookInput {
   author: String
   authorDeathYear: Int
@@ -374,4 +382,61 @@ input PageInfoUpdateInput {
   tags: [String]
   commentary: [String]
   image: String
+}
+
+input PageUpdateInput {
+  image: String
+  commentary: [String]
+  foliation: String
+  pagination: Int
+  tags: [String]
+  images: [ImageUpdateInput]
+  text: [TextUpdateInput]
+  segments: [SegmentUpdateInput]
+  editor: String
+  version: AWSTimestamp
+}
+
+input TextUpdateInput {
+  id: ID!
+  order: Int!
+  position: String!
+  region: [Int]
+  lines: [LineUpdateInput]
+}
+
+input LineUpdateInput {
+  id: ID!
+  elementId: ID!
+  order: Int!
+  region: [Int]
+  states: [String]
+  tokens: [String]
+}
+
+input ImageUpdateInput {
+  id: ID!
+  unitId: ID
+  legendId: ID
+  location: [Int]
+  motifs: [String]
+  order: Int!
+  position: String!
+  region: [Int]
+  style: [String]
+}
+
+input SegmentUpdateInput {
+  id: ID!
+  mediumId: ID!
+  unitId: ID!
+  startPage: Int!
+  startLine: Int!
+  startToken: Int!
+  endPage: Int!
+  endLine: Int
+  endToken: Int
+  lacuna: Boolean
+  tags: [String]
+  type: String
 }

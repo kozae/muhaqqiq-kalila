@@ -3,7 +3,7 @@
   import { slide } from "svelte/transition";
   import { onMount } from "svelte";
 
-  export let items: string[] = [];
+  export let items: { id: string; display: string }[] = [];
   export let buttonText: string = "";
   export let buttonSize: string = "text-sm";
   export let bg = "bg-white";
@@ -68,10 +68,10 @@
     >
       {#each items as item (item)}
         <button
-          on:click={() => handleItemClick(item)}
+          on:click={() => handleItemClick(item.id)}
           class="group flex w-full items-center px-4 py-2 text-sm hover:bg-secondary-100"
         >
-          {item}
+          {item.display}
         </button>
       {/each}
     </div>

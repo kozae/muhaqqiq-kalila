@@ -5,4 +5,7 @@ export const segmentWatcher = new ReplaySubject<
   Record<string, UnitSegmentInfo>
 >(1);
 
-export const insertSegment = new Subject<UnitEntity>();
+export const insertSegment = new Subject<{
+  operation: string;
+  unit: UnitEntity;
+}>();

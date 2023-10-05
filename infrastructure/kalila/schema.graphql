@@ -97,7 +97,7 @@ input CreateUnitInput {
   title: String!
   topics: [String]
   variant: String
-  version: Int
+  version: AWSTimestamp
 }
 
 input UpdateUnitInput {
@@ -112,7 +112,7 @@ input UpdateUnitInput {
   title: String
   topics: [String]
   variant: String
-  version: Int
+  version: AWSTimestamp
 }
 
 input DeleteUnitInput {
@@ -142,7 +142,7 @@ type Book {
   media(limit: Int, nextToken: String, sort: SortDirection): MediumList
     
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type Medium {
@@ -165,7 +165,7 @@ type Medium {
     sort: SortDirection
   ): SegmentList 
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 type ChapterCollation {
   id: ID!
@@ -173,7 +173,7 @@ type ChapterCollation {
   name: String
   mediumIds: [String]
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 type Unit {
   bookId: ID!
@@ -196,7 +196,7 @@ type Unit {
     orderLt: Int
   ): UnitList 
   segments(mediumIds: [ID]): [Segment] 
-  version: Int
+  version: AWSTimestamp
 }
 
 type Segment {
@@ -213,7 +213,7 @@ type Segment {
   lacuna: Boolean
   tags: [String]
   type: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type SegmentUnitConnection {
@@ -227,7 +227,7 @@ type SegmentUnitConnection {
   title: String!
   topics: [String]
   variant: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type Page {
@@ -245,7 +245,7 @@ type Page {
   openSegments: [Segment] 
   endingSegments: [Segment] 
   editor: String
-  version: Int
+  version: AWSTimestamp
 }
 
 type TextElement {
@@ -255,7 +255,7 @@ type TextElement {
   position: String
   region: [Int]
   lines: [Line] 
-  version: Int
+  version: AWSTimestamp
 }
 
 type Line {
@@ -265,7 +265,7 @@ type Line {
   region: [Int]
   states: [String]
   tokens: [String]
-  version: Int
+  version: AWSTimestamp
 }
 
 type Image {
@@ -280,7 +280,7 @@ type Image {
   position: String
   region: [Int]
   style: [String]
-  version: Int
+  version: AWSTimestamp
 }
 
 type LineDetectionJob {

@@ -5,13 +5,22 @@ import {
   imagesAdapter,
   linesAdapter,
   segmentsAdapter,
+  openSegmentsAdapter,
 } from "../initial-state";
 import { loadState } from "../thunks";
 
 export function attachLoadState(builder: ActionReducerMapBuilder<State>) {
   builder.addMatcher(isFulfilled(loadState), (state, action) => {
-    const { text, images, lines, segments, siglum, imageDataUrl, info } =
-      action.payload.load;
+    const {
+      text,
+      images,
+      lines,
+      segments,
+      openSegments,
+      siglum,
+      imageDataUrl,
+      info,
+    } = action.payload.load;
     state.info = info;
     state.siglum = siglum!;
     state.imageDataUrl = imageDataUrl;
@@ -19,6 +28,10 @@ export function attachLoadState(builder: ActionReducerMapBuilder<State>) {
     state.images = imagesAdapter.setAll(state.images, images);
     state.lines = linesAdapter.setAll(state.lines, lines);
     state.segments = segmentsAdapter.setAll(state.segments, segments);
+    state.openSegments = openSegmentsAdapter.setAll(
+      state.openSegments,
+      openSegments,
+    );
     state.fetched = action.payload.fetched;
     state.changed = action.payload.changed;
     state.stateId = info?.number!;

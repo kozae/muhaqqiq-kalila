@@ -2,9 +2,23 @@
   import IconButton from "@client/reusable/IconButton.svelte";
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import ArrowLeftFromBox from "@icons/ArrowLeftFromBox.svelte";
+  import CircleSlashIcon from "@icons/CircleSlashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
+  import { selectedUnit, showEditModal } from "../modal-states";
+  import { insertSegment } from "../../segment-watcher";
 
   export let unit: UnitEntity;
+  export let hasEnd: boolean = false;
+  function handleEdit() {
+    selectedUnit.set(unit);
+    showEditModal.set(true);
+  }
+  function handleClose() {
+    insertSegment.next({ operation: "close", unit });
+  }
+  function handleRemove() {
+    insertSegment.next({ operation: "remove", unit });
+  }
 </script>
 
 <div
@@ -12,7 +26,7 @@
 >
   <div class="p-1 relative border-b-2 w-full flex justify-center">
     <p class="absolute left-1 bg-secondary-900 text-white rounded px-1">
-      {unit.segment?.page}:{unit.segment?.line ?? 0 + 1}
+      {unit.segment?.page}:{(unit.segment?.line ?? 0) + 1}
     </p>
     <p class=" text-primary-500 font-semibold px-1 rounded">
       {unit.frame}.{unit.displayOrder}
@@ -24,11 +38,21 @@
     {unit.title}
   </p>
   <div class="p-1 border-t-2 w-full flex justify-evenly">
-    <IconButton>
+    <IconButton on:click={handleEdit}>
       <PencilSquareIcon />
     </IconButton>
 
-    <IconButton color="red-700" class="hover:bg-red-700">
+    {#if !hasEnd}
+      <IconButton on:click={handleClose}>
+        <CircleSlashIcon />
+      </IconButton>
+    {/if}
+
+    <IconButton
+      color="red-700"
+      class="hover:bg-red-700"
+      on:click={handleRemove}
+    >
       <ArrowLeftFromBox />
     </IconButton>
   </div>

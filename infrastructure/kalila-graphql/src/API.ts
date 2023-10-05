@@ -184,6 +184,63 @@ export type PageInfoUpdateInput = {
   image?: string | null,
 };
 
+export type PageUpdateInput = {
+  image?: string | null,
+  commentary?: Array< string | null > | null,
+  foliation?: string | null,
+  pagination?: number | null,
+  tags?: Array< string | null > | null,
+  images?: Array< ImageUpdateInput | null > | null,
+  text?: Array< TextUpdateInput | null > | null,
+  segments?: Array< SegmentUpdateInput | null > | null,
+  editor?: string | null,
+  version?: number | null,
+};
+
+export type ImageUpdateInput = {
+  id: string,
+  unitId?: string | null,
+  legendId?: string | null,
+  location?: Array< number | null > | null,
+  motifs?: Array< string | null > | null,
+  order: number,
+  position: string,
+  region?: Array< number | null > | null,
+  style?: Array< string | null > | null,
+};
+
+export type TextUpdateInput = {
+  id: string,
+  order: number,
+  position: string,
+  region?: Array< number | null > | null,
+  lines?: Array< LineUpdateInput | null > | null,
+};
+
+export type LineUpdateInput = {
+  id: string,
+  elementId: string,
+  order: number,
+  region?: Array< number | null > | null,
+  states?: Array< string | null > | null,
+  tokens?: Array< string | null > | null,
+};
+
+export type SegmentUpdateInput = {
+  id: string,
+  mediumId: string,
+  unitId: string,
+  startPage: number,
+  startLine: number,
+  startToken: number,
+  endPage: number,
+  endLine?: number | null,
+  endToken?: number | null,
+  lacuna?: boolean | null,
+  tags?: Array< string | null > | null,
+  type?: string | null,
+};
+
 export type CreateUnitInput = {
   bookId: string,
   id: string,
@@ -636,6 +693,17 @@ export type UpdatePageInfoMutation = {
     editor?: string | null,
     version?: number | null,
   } | null,
+};
+
+export type UpdatePageMutationVariables = {
+  id: string,
+  mediumId: string,
+  number: number,
+  update: PageUpdateInput,
+};
+
+export type UpdatePageMutation = {
+  updatePage?: string | null,
 };
 
 export type CreateUnitMutationVariables = {

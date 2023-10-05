@@ -3,8 +3,21 @@
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import TrashIcon from "@icons/TrashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
+  import {
+    selectedUnit,
+    showDeleteModal,
+    showEditModal,
+  } from "../modal-states";
 
   export let unit: UnitEntity;
+  function handleDelete() {
+    selectedUnit.set(unit);
+    showDeleteModal.set(true);
+  }
+  function handleEdit() {
+    selectedUnit.set(unit);
+    showEditModal.set(true);
+  }
 </script>
 
 <div
@@ -24,11 +37,14 @@
     {unit.title}
   </p>
   <div class="p-1 border-t-2 w-full flex justify-evenly">
-    <IconButton>
+    <IconButton on:click={handleEdit}>
       <PencilSquareIcon />
     </IconButton>
-
-    <IconButton color="red-700" class="hover:bg-red-700">
+    <IconButton
+      on:click={handleDelete}
+      color="red-700"
+      class="hover:bg-red-700"
+    >
       <TrashIcon />
     </IconButton>
   </div>

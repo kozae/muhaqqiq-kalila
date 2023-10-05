@@ -23,7 +23,16 @@ function merge(fetched: FetchedState, stored: IStoredPageUpdates) {
 function prepareInitialState(
   page: Page & { imageDataUrl: string; siglum: string },
 ) {
-  const { text, images, segments, imageDataUrl, siglum, ...data } = page;
+  const {
+    text,
+    images,
+    segments,
+    imageDataUrl,
+    siglum,
+    endingSegments,
+    openSegments,
+    ...data
+  } = page;
 
   const textElements: Array<TextEntity> = [];
   const allLines: Array<LineEntity> = [];
@@ -70,7 +79,8 @@ function prepareInitialState(
     siglum,
     images: coloredImages,
     lines: coloredLines,
-    segments,
+    openSegments: openSegments ?? [],
+    segments: [...segments!, ...endingSegments!],
   } as FetchedState;
 }
 
@@ -84,8 +94,6 @@ export type LoadedState = {
 export const loadState = createAsyncThunk<LoadedState, Payload, ThunkApi>(
   "loadState",
   async (data) => {
-    console.log(data);
-
     const stored = await loadStoredUpdates(data.id, data.version!);
 
     const changed = {

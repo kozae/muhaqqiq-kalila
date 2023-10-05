@@ -1,8 +1,4 @@
-import {
-  type ActionReducerMapBuilder,
-  isFulfilled,
-  isRejected,
-} from "@reduxjs/toolkit";
+import { type ActionReducerMapBuilder, isFulfilled } from "@reduxjs/toolkit";
 import { type State, linesAdapter } from "../initial-state";
 import { addLine } from "../thunks";
 

@@ -1,13 +1,20 @@
 <script lang="ts">
   import IconButton from "@client/reusable/IconButton.svelte";
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
+  import ArrowLeftFromBox from "@icons/ArrowLeftFromBox.svelte";
+  import CircleSlashIcon from "@icons/CircleSlashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
   import { selectedUnit, showEditModal } from "../modal-states";
-  export let unit: UnitEntity;
+  import { insertSegment } from "../../segment-watcher";
 
+  export let unit: UnitEntity;
+  export let hasEnd: boolean = false;
   function handleEdit() {
     selectedUnit.set(unit);
     showEditModal.set(true);
+  }
+  function handleClose() {
+    insertSegment.next({ operation: "close", unit });
   }
 </script>
 
@@ -31,5 +38,11 @@
     <IconButton on:click={handleEdit}>
       <PencilSquareIcon />
     </IconButton>
+
+    {#if !hasEnd}
+      <IconButton on:click={handleClose}>
+        <CircleSlashIcon />
+      </IconButton>
+    {/if}
   </div>
 </div>

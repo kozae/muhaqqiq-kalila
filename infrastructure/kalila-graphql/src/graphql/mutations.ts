@@ -344,6 +344,16 @@ export const updatePageInfo = /* GraphQL */ `
     }
   }
 `;
+export const updatePage = /* GraphQL */ `
+  mutation UpdatePage(
+    $id: ID!
+    $mediumId: ID!
+    $number: Int!
+    $update: PageUpdateInput!
+  ) {
+    updatePage(id: $id, mediumId: $mediumId, number: $number, update: $update)
+  }
+`;
 export const createUnit = /* GraphQL */ `
   mutation CreateUnit($input: CreateUnitInput!) {
     createUnit(input: $input)

@@ -1,17 +1,28 @@
 <script lang="ts">
-  import { derived, requestState } from "../store";
+  import { derived, discard, requestState } from "../store";
   import Panel from "./Panel.svelte";
-  import { setContext } from "svelte";
+  import { onDestroy, setContext } from "svelte";
   export let pageId: string;
   export let mediumId: string;
   setContext("id", pageId);
   setContext("mediumId", mediumId);
-
+  let key = Date.now();
   const { ready } = derived;
 
   $: if ($ready === pageId) {
     requestState("selectSegementationData");
   }
+
+  const sub = discard.subscribe(() => {
+    requestState("selectSegementationData");
+    key = Date.now();
+  });
+
+  onDestroy(() => {
+    sub.unsubscribe();
+  });
 </script>
 
-<Panel />
+{#key key}
+  <Panel />
+{/key}

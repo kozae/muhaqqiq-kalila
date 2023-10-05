@@ -1,18 +1,12 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { rootSelector } from "./root-selector";
-import {
-  selectAllOpenSegments,
-  selectAllSegments,
-  selectAllUnits,
-} from "../base-selectors";
+import { selectAllSegments, selectAllUnits } from "../base-selectors";
 import lodash from "lodash";
 import {
   formatTokens,
   type LineEntity,
-  type SegmentEndMark,
+  type SegmentationToken,
   type SegmentEntity,
-  type SegmentStartMark,
-  type TextToken,
 } from "..";
 import { selectAllLines, selectAllTextElements } from "../base-selectors";
 
@@ -20,12 +14,12 @@ const getGroupedLines = (lineList: any) => {
   return lodash.groupBy(lodash.orderBy(lineList, "order"), "elementId");
 };
 
-const getSegmentsInLine = (segments: SegmentEntity[], line: LineEntity) => {
+const getSegmentsInLine = (segments: SegmentEntity[], line: number) => {
   const segmentsStartInLine = segments.filter(
-    (segment) => segment.startLine === line.order,
+    (segment) => segment.startLine === line,
   );
   const segmentsEndInLine = segments.filter(
-    (segment) => segment.endLine === line.order,
+    (segment) => segment.endLine === line,
   );
   return { segmentsStartInLine, segmentsEndInLine };
 };
@@ -34,17 +28,19 @@ const formatText = (line: LineEntity) => {
   return formatTokens(line!.tokens! as string[], line!.states! as string[]).map(
     (token) => ({
       raw: token,
-      id: Math.floor(Math.random() * 100000),
+      id: Math.floor(Math.random() * 10000000),
       type: "token" as const,
+      line: line.order,
     }),
   );
 };
 
 const insertSegmentMarks = (
-  text: (TextToken | SegmentStartMark | SegmentEndMark)[],
+  text: SegmentationToken[],
   segment: SegmentEntity,
-  type: "start" | "end",
+  type: "start" | "end" | "endFromPrev" | "open",
   tokenIndex: number,
+  line: number,
 ) => {
   return [
     ...text.slice(0, tokenIndex),
@@ -54,6 +50,7 @@ const insertSegmentMarks = (
       unitId: segment.unitId,
       title: segment.unit!.title,
       display: `${segment.unit!.frame}.${segment.unit!.order}`,
+      line,
     },
     ...text.slice(tokenIndex),
   ];
@@ -64,9 +61,11 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
   const textList = selectAllTextElements(state.text);
   const segments = selectAllSegments(state.segments);
 
+  const lastLine = Math.max(...lineList.map((line) => line.order));
+
   const grouped = getGroupedLines(lineList);
   const body = {
-    text: [] as (TextToken | SegmentStartMark | SegmentEndMark)[][],
+    text: [] as SegmentationToken[][],
     ids: [] as string[],
   };
 
@@ -75,10 +74,9 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
       for (const line of grouped[el.id]) {
         const { segmentsStartInLine, segmentsEndInLine } = getSegmentsInLine(
           segments,
-          line,
+          line.order,
         );
-        let text: (TextToken | SegmentStartMark | SegmentEndMark)[] =
-          formatText(line);
+        let text: SegmentationToken[] = formatText(line);
 
         let markCount = 0;
         for (const segment of segmentsStartInLine) {
@@ -87,21 +85,45 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
             segment,
             "start",
             segment.startToken + markCount,
+            line.order,
           );
           markCount++;
         }
 
         for (const segment of segmentsEndInLine) {
+          if (segment.startPage !== state.info?.number) {
+            text = insertSegmentMarks(
+              text,
+              segment,
+              "endFromPrev",
+              0,
+              line.order,
+            );
+            markCount++;
+            continue;
+          }
+
           if (
             segmentsStartInLine.every(
               (s) => s.startToken !== segment.endToken! + 1,
             )
           ) {
+            if (segment.endPage !== state.info?.number) {
+              continue;
+            }
+            if (line.order !== lastLine) {
+              const { segmentsStartInLine: segmentsStartInNextLine } =
+                getSegmentsInLine(segments, line.order + 1);
+              if (segmentsStartInNextLine.some((s) => s.startToken === 0)) {
+                continue;
+              }
+            }
             text = insertSegmentMarks(
               text,
               segment,
               "end",
               segment.endToken! + 1 + markCount,
+              line.order,
             );
             markCount++;
           }
@@ -121,9 +143,12 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
 });
 
 export const selectUnits = createSelector(rootSelector, (state) => {
+  const units = selectAllUnits(state.units);
   return {
     chapter: state.chapter,
-    units: selectAllUnits(state.units),
+    units,
     currentPage: state.info?.number,
+    bookId: units[0]?.bookId,
+    parentId: units[0]?.parentId,
   };
 });

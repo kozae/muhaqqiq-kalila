@@ -1,15 +1,12 @@
 <script lang="ts">
-  import type {
-    SegmentEndMark,
-    SegmentStartMark,
-    TextToken,
-  } from "pages-tool-store-worker";
+  import type { SegmentationToken } from "pages-tool-store-worker";
   import { createEventDispatcher } from "svelte";
   import { dndzone, SOURCES, TRIGGERS } from "svelte-dnd-action";
   import StartMark from "./Marks/StartMark.svelte";
   import EndMark from "./Marks/EndMark.svelte";
+  import StartedInPrev from "./Marks/StartedInPrev.svelte";
 
-  export let items: (TextToken | SegmentStartMark | SegmentEndMark)[] = [];
+  export let items: SegmentationToken[] = [];
   export let index: number;
 
   const color = index % 2 === 0 ? "bg-gray-100" : "bg-white";
@@ -62,6 +59,8 @@
         <div class="text-lg ml-1 font-semibold font-arabicnoto">
           {item.raw}
         </div>
+      {:else if item.type === "endFromPrev"}
+        <StartedInPrev {item} />
       {:else if item.type === "start"}
         <StartMark {item} bind:dragDisabled />
       {:else if item.type === "end"}

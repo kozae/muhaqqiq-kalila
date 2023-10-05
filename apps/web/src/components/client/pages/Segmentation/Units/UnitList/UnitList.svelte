@@ -3,6 +3,7 @@
   import { setContext } from "svelte";
   import Divider from "./Divider.svelte";
   import UnitAssignedInPage from "./UnitAssignedInPage.svelte";
+  import UnitAssignedInPrevPage from "./UnitAssignedInPrevPage.svelte";
   import UnitAssignedInMedium from "./UnitAssignedInMedium.svelte";
   import UnitUnassigned from "./UnitUnassigned.svelte";
   export let items: UnitEntity[] = [];
@@ -15,7 +16,9 @@
     {#if unit.divider}
       <Divider {unit} />
     {:else if unit.segment && unit.segment.page === page}
-      <UnitAssignedInPage {unit} />
+      <UnitAssignedInPage {unit} hasEnd={unit.segment.hasEnd} />
+    {:else if unit.segment && unit.segment.end === page}
+      <UnitAssignedInPrevPage {unit} hasEnd={unit.segment.hasEnd} />
     {:else if unit.segment && unit.segment.page !== page}
       <UnitAssignedInMedium {unit} />
     {:else}

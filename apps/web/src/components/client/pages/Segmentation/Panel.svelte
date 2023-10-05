@@ -3,8 +3,12 @@
   import UnitPanel from "./Units/UnitPanel.svelte";
   import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query";
   import { source } from "@client/pages/store";
+  import { getContext } from "svelte";
+  import { filter } from "rxjs";
+  import Loading from "@client/reusable/Loading.svelte";
 
-  const data = source.selectSegementationData;
+  const id: string = getContext("id");
+  const data = source.selectSegementationData.pipe(filter((d) => d.id === id));
 
   const queryClient = new QueryClient();
 </script>
@@ -15,5 +19,9 @@
   </QueryClientProvider>
   {#if $data}
     <Text data={$data} />
+  {:else}
+    <div class="w-6/12">
+      <Loading />
+    </div>
   {/if}
 </div>

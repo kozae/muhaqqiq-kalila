@@ -11,8 +11,23 @@ function getDescendants(unit: Unit, parentDisplayOrder?: string): UnitEntity[] {
     : `${unit.order}`;
   let segment: UnitSegmentInfo | undefined = undefined;
   if (unit.segments && unit.segments.length > 0) {
-    const { startPage: page, startLine: line, id } = unit.segments[0]!;
-    segment = { page, line, id };
+    const {
+      startPage: page,
+      startLine: line,
+      id,
+      startToken: token,
+      endPage: end,
+    } = unit.segments[0]!;
+    segment = {
+      page,
+      line,
+      token,
+      id,
+      title: unit.title,
+      display: `${unit.frame}.${unit.order}`,
+      end,
+      hasEnd: false,
+    };
   }
   let descendants: UnitEntity[] = [{ ...unit, segment, displayOrder }];
 
@@ -33,7 +48,7 @@ export const loadChapter = (
 ) => {
   const { chapter, units } = action.payload;
   state.chapter = chapter;
-  console.log(units);
+
   let unitEntities: UnitEntity[] = [];
   for (const unit of units!.items) {
     if (unit) {

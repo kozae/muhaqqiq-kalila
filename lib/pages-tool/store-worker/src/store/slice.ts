@@ -29,6 +29,13 @@ export const slice = createSlice({
       state.changed = { ...initialState.changed };
       state.stateId = Date.now();
     },
+    saveUpd: (state) => {
+      const { text, images, lines, segments, siglum, imageDataUrl, info } =
+        state.fetched!;
+      //todo it actually needs to ba a thunk
+      state.changed = { ...initialState.changed };
+      state.stateId = Date.now();
+    },
   },
   extraReducers: (builder) => {
     Object.values(extraReducers).forEach((reducer) => reducer(builder));

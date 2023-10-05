@@ -15,6 +15,7 @@ import { initStoragePersistence } from "./src/db/persistence";
 import {
   selectAllImageElements,
   selectAllLines,
+  selectAllSegments,
   selectAllTextElements,
 } from "./src/store/base-selectors";
 
@@ -145,6 +146,18 @@ imagesStateChangedListner
         id: data.info!.id,
         version,
         data: selectAllImageElements(data.images),
+      });
+    }
+  });
+segmentsStateChangedListner
+  .pipe(distinctUntilChanged())
+  .subscribe(async (version) => {
+    const data = store.getState();
+    if (data.changed.segments) {
+      await getDB().segments.put({
+        id: data.info!.id,
+        version,
+        data: selectAllSegments(data.segments),
       });
     }
   });
