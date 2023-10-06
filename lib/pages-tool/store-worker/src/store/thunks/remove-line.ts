@@ -1,10 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { LineEntity, ThunkApi } from "..";
-import {
-  selectAllLines,
-  selectLineById,
-  selectTextElementsById,
-} from "../base-selectors";
+import { selectLineById, selectTextElementsById } from "../base-selectors";
 import { selectLinesGroupedByArea } from "../selectors/layout-selectors";
 import lodash from "lodash";
 import { selectElementLines } from "../internal-selectors";
@@ -13,7 +9,6 @@ export const removeLine = createAsyncThunk<LineEntity[], string, ThunkApi>(
   "removeLine",
   async (lineId, { getState }) => {
     const state = getState();
-    const lines = selectAllLines(state.lines);
     const lineToDelete = selectLineById(state.lines, lineId);
     const elementId = lineToDelete!.elementId;
     const element = selectTextElementsById(state.text, elementId);

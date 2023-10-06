@@ -1,21 +1,21 @@
-2023-10-05T00:27:54.680Z  +3751ms [debug] Config loaded {"version":"2.24.26","cdkVersion":"2.91.0","constructsVersion":"10.2.69","config":{"name":"KalilaFrontendStack","region":"eu-central-1","stage":"MuhaqqiqKalilaFrontend","ssmPrefix":"/sst/KalilaFrontendStack/MuhaqqiqKalilaFrontend/"},"metafile":{"inputs":{"sst.config.ts":{"bytes":338,"imports":[{"path":"sst/constructs","kind":"import-statement","external":true},{"path":"aws-cdk-lib/aws-cloudfront","kind":"import-statement","external":true},{"path":"aws-cdk-lib/core","kind":"import-statement","external":true}],"format":"esm"}},"outputs":{".sst.config.1696465671938.mjs":{"imports":[{"path":"sst/constructs","kind":"import-statement","external":true},{"path":"aws-cdk-lib/aws-cloudfront","kind":"import-statement","external":true},{"path":"aws-cdk-lib/core","kind":"import-statement","external":true}],"exports":["default"],"entryPoint":"sst.config.ts","inputs":{"sst.config.ts":{"bytesInOutput":226}},"bytes":408}}},"paths":{"config":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\sst.config.ts","root":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web","out":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\.sst","artifacts":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\.sst\\artifacts"}}
-2023-10-05T00:27:55.842Z  +1162ms [debug] Using AWS profile 
-2023-10-05T00:27:55.903Z    +61ms [debug] Created AWS client IoTClient
-2023-10-05T00:27:55.903Z     +0ms [debug] Getting IoT endpoint
-2023-10-05T00:27:56.021Z   +118ms [debug] Using IoT endpoint: a2uig2jud0dqoc-ats.iot.eu-central-1.amazonaws.com
-2023-10-05T00:27:56.021Z     +0ms [debug] Initializing bootstrap context
-2023-10-05T00:27:56.022Z     +1ms [debug] Created AWS client CloudFormationClient
-2023-10-05T00:27:56.173Z   +151ms [debug] Loaded bootstrap status
-2023-10-05T00:27:56.173Z     +0ms [debug] Bootstrap context initialized {"status":"ready","version":"7.2","bucket":"sstbootstrap-eucentral134f82fae-179smwl77jqj3"}
-2023-10-05T00:27:56.174Z     +1ms [debug] Created AWS client S3Client
-2023-10-05T00:27:56.241Z    +67ms [debug] Synthesizing stacks...
-2023-10-05T00:27:56.282Z    +41ms [debug] Created AWS client STSClient
-2023-10-05T00:27:56.394Z   +112ms [debug] Using identity Account: 557976691964 User: AROAYD2QAUT6LOGM3FL42:aws-mahmoudkozae
-2023-10-05T00:27:56.485Z    +91ms [debug] Generating types in C:\Workspace\Kalila\muhaqqiq-kalila\apps\web\.sst\types
-2023-10-05T00:27:56.488Z     +3ms [debug] Running 1 deferred tasks with concurrency: 15
-2023-10-05T00:27:56.636Z   +148ms [debug] 
-2023-10-05T00:27:56.636Z     +0ms [debug] Loading v2 AWS SDK
-2023-10-05T00:27:56.636Z     +0ms [debug] Finished synthesizing
-2023-10-05T00:27:56.643Z     +7ms [debug] IoT connected
-2023-10-05T00:27:56.773Z   +130ms [debug] Fetching metadata for stack MuhaqqiqKalilaFrontend-KalilaFrontendStack-Site failed {"name":"NoSuchKey","$fault":"client","$metadata":{"httpStatusCode":404,"requestId":"Q9AHDY8WRG18QPB9","extendedRequestId":"Z8qTO5d2X1kfvNwPHdagUHG1GUakc8WXLif78E3JE5rYu3sGDjSSaDFcvhajtRKuKxhZvu3rIkMlPP/yLA/Xlw==","attempts":1,"totalRetryDelay":0},"Code":"NoSuchKey","Key":"stackMetadata/app.KalilaFrontendStack/stage.MuhaqqiqKalilaFrontend/stack.MuhaqqiqKalilaFrontend-KalilaFrontendStack-Site.json","RequestId":"Q9AHDY8WRG18QPB9","HostId":"Z8qTO5d2X1kfvNwPHdagUHG1GUakc8WXLif78E3JE5rYu3sGDjSSaDFcvhajtRKuKxhZvu3rIkMlPP/yLA/Xlw==","message":"The specified key does not exist."}
-2023-10-05T00:27:56.774Z     +1ms [debug] Created AWS client SSMClient
+2023-10-05T12:11:51.609Z  +3977ms [debug] Config loaded {"version":"2.24.26","cdkVersion":"2.91.0","constructsVersion":"10.2.69","config":{"name":"KalilaFrontendStack","region":"eu-central-1","stage":"MuhaqqiqKalilaFrontend","ssmPrefix":"/sst/KalilaFrontendStack/MuhaqqiqKalilaFrontend/"},"metafile":{"inputs":{"sst.config.ts":{"bytes":338,"imports":[{"path":"sst/constructs","kind":"import-statement","external":true},{"path":"aws-cdk-lib/aws-cloudfront","kind":"import-statement","external":true},{"path":"aws-cdk-lib/core","kind":"import-statement","external":true}],"format":"esm"}},"outputs":{".sst.config.1696507908709.mjs":{"imports":[{"path":"sst/constructs","kind":"import-statement","external":true},{"path":"aws-cdk-lib/aws-cloudfront","kind":"import-statement","external":true},{"path":"aws-cdk-lib/core","kind":"import-statement","external":true}],"exports":["default"],"entryPoint":"sst.config.ts","inputs":{"sst.config.ts":{"bytesInOutput":226}},"bytes":408}}},"paths":{"config":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\sst.config.ts","root":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web","out":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\.sst","artifacts":"C:\\Workspace\\Kalila\\muhaqqiq-kalila\\apps\\web\\.sst\\artifacts"}}
+2023-10-05T12:11:52.819Z  +1210ms [debug] Using AWS profile 
+2023-10-05T12:11:52.890Z    +71ms [debug] Created AWS client IoTClient
+2023-10-05T12:11:52.890Z     +0ms [debug] Getting IoT endpoint
+2023-10-05T12:11:53.010Z   +120ms [debug] Using IoT endpoint: a2uig2jud0dqoc-ats.iot.eu-central-1.amazonaws.com
+2023-10-05T12:11:53.010Z     +0ms [debug] Initializing bootstrap context
+2023-10-05T12:11:53.011Z     +1ms [debug] Created AWS client CloudFormationClient
+2023-10-05T12:11:53.162Z   +151ms [debug] Loaded bootstrap status
+2023-10-05T12:11:53.162Z     +0ms [debug] Bootstrap context initialized {"status":"ready","version":"7.2","bucket":"sstbootstrap-eucentral134f82fae-179smwl77jqj3"}
+2023-10-05T12:11:53.163Z     +1ms [debug] Created AWS client S3Client
+2023-10-05T12:11:53.228Z    +65ms [debug] Synthesizing stacks...
+2023-10-05T12:11:53.260Z    +32ms [debug] Created AWS client STSClient
+2023-10-05T12:11:53.352Z    +92ms [debug] Using identity Account: 557976691964 User: AROAYD2QAUT6LOGM3FL42:aws-mahmoudkozae
+2023-10-05T12:11:53.446Z    +94ms [debug] Generating types in C:\Workspace\Kalila\muhaqqiq-kalila\apps\web\.sst\types
+2023-10-05T12:11:53.449Z     +3ms [debug] Running 1 deferred tasks with concurrency: 15
+2023-10-05T12:11:53.599Z   +150ms [debug] 
+2023-10-05T12:11:53.599Z     +0ms [debug] Loading v2 AWS SDK
+2023-10-05T12:11:53.599Z     +0ms [debug] Finished synthesizing
+2023-10-05T12:11:53.607Z     +8ms [debug] IoT connected
+2023-10-05T12:11:53.732Z   +125ms [debug] Fetching metadata for stack MuhaqqiqKalilaFrontend-KalilaFrontendStack-Site failed {"name":"NoSuchKey","$fault":"client","$metadata":{"httpStatusCode":404,"requestId":"TMQ7963S27GJHS9Q","extendedRequestId":"SMTTPtyOq0TciVQ3OP7b7QM3ohWBkX2ioBhqdd748mpt21adr3DteyQdtvpA11BskM12aNx4dL0=","attempts":1,"totalRetryDelay":0},"Code":"NoSuchKey","Key":"stackMetadata/app.KalilaFrontendStack/stage.MuhaqqiqKalilaFrontend/stack.MuhaqqiqKalilaFrontend-KalilaFrontendStack-Site.json","RequestId":"TMQ7963S27GJHS9Q","HostId":"SMTTPtyOq0TciVQ3OP7b7QM3ohWBkX2ioBhqdd748mpt21adr3DteyQdtvpA11BskM12aNx4dL0=","message":"The specified key does not exist."}
+2023-10-05T12:11:53.734Z     +2ms [debug] Created AWS client SSMClient
