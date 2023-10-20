@@ -18,7 +18,7 @@ config = {
     },
     "Storage": {
         "AWSS3": {
-            "bucket": outputs.get("BucketName", ""),
+            "bucket": outputs.get("BucketName", "kalila-pages"),
             "region": "eu-central-1",
         },
     },

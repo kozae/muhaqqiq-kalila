@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   AppsyncFunction,
@@ -34,10 +34,11 @@ interface IKalilaApiStackProps extends StackProps {
   readonly tableArns: IKalilaTableInfo;
   readonly tableNames: IKalilaTableInfo;
   readonly userPoolId: string;
+  readonly stage: string;
 }
 
 type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
-type KalilaLamdas = Record<"mutationHandler", LambdaFunction>;
+type KalilaLamdas = Record<"mutationHandler" | 'searchHandler', LambdaFunction>;
 
 export class KalilaApiStack extends Stack {
   private readonly schemaPath: string;
@@ -45,9 +46,12 @@ export class KalilaApiStack extends Stack {
   private readonly tables: KalilaTableConstructs;
   private readonly dataSources: KalilaDataSources;
   private readonly lambdas: KalilaLamdas;
+  private readonly stage: string;
 
   constructor(scope: Construct, id: string, props: IKalilaApiStackProps) {
     super(scope, id, props);
+
+    this.stage = props.stage;
     this.schemaPath = path.join(
       __dirname,
       "..",
@@ -63,17 +67,23 @@ export class KalilaApiStack extends Stack {
     this.dataSources = this.createDataSources();
     this.lambdas = this.createLambdas(props.tableNames);
 
-    const lamdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
+    const mutationLambdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
       "MutationHandler",
       this.lambdas.mutationHandler,
+    );
+
+    const searchLambdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
+      "SearchHandler",
+      this.lambdas.searchHandler,
     );
 
     for (const { parent, name, source } of extractFieldsWithSource(
       this.schemaPath,
     )) {
-      if (source.includes("lambda")) {
-        const lamda = this.lambdas.mutationHandler;
-        this.createLambdaResolver(parent, name, lamdaDataSource);
+      if (source === 'mutation_lambda') {
+        this.createLambdaResolver(parent, name, mutationLambdaDataSource);
+      } else if (source === 'search_lambda') {
+        this.createLambdaResolver(parent, name, searchLambdaDataSource);
       } else {
         this.createResolver(parent, name, this.dataSources[source]);
       }
@@ -87,7 +97,7 @@ export class KalilaApiStack extends Stack {
   private createApi(userPool: IUserPool) {
     createSchemaFileWithoutSourceDirective(this.schemaPath, "schema.graphql");
     return new GraphqlApi(this, "KalilaApi", {
-      name: "kalila-api",
+      name: `kalila-api_${this.stage}`,
       schema: SchemaFile.fromAsset("schema.graphql"),
       authorizationConfig: {
         defaultAuthorization: {
@@ -124,7 +134,7 @@ export class KalilaApiStack extends Stack {
       runtime: Runtime.PROVIDED_AL2,
       handler: "does_not_matter",
 
-      functionName: "kalila-api-mutation-handler",
+      functionName: `kalila-mutation-handler_${this.stage}`,
       environment: {
         PAGES: names.pages,
         LINES: names.lines,
@@ -144,7 +154,39 @@ export class KalilaApiStack extends Stack {
       );
     }
 
-    return { mutationHandler };
+    const searchHandler = new LambdaFunction(this, "KalilaSearchHandler", {
+      code: LambdaCode.fromAsset(
+        "../../../kalila-rs/target/lambda/search_handler",
+      ),
+      architecture: Architecture.ARM_64,
+      runtime: Runtime.PROVIDED_AL2,
+      timeout: Duration.seconds(10),
+      memorySize: 1024,
+      handler: "does_not_matter",
+
+      functionName: `kalila-search-handler_${this.stage}`,
+      environment: {
+        PAGES: names.pages,
+        LINES: names.lines,
+        TEXT: names.textElements,
+        IMAGES: names.images,
+        UNITS: names.units,
+        LEMMAS: names.lemmas,
+        INVERTED_LEMMAS: names.invertedLemmas,
+        SEGMENTS: names.segments,
+      },
+    });
+    for (const table of Object.values(this.tables)) {
+      searchHandler.grantPrincipal.addToPrincipalPolicy(
+        new PolicyStatement({
+          actions: ["dynamodb:*"],
+          resources: [table.tableArn, `${table.tableArn}/index/*`],
+          effect: Effect.ALLOW,
+        }),
+      );
+    }
+
+    return { mutationHandler, searchHandler };
   }
 
   private createDataSources() {
@@ -187,7 +229,7 @@ export class KalilaApiStack extends Stack {
       this,
       `${typeName}_${fieldName}ResolverFunc`,
       {
-        name: `${typeName}_${fieldName}_resolver`,
+        name: `${typeName}_${fieldName}_resolver_${this.stage}`,
         api: this.kalilaGraphQLApi,
         dataSource,
         code: Code.fromAsset(
@@ -206,7 +248,7 @@ export class KalilaApiStack extends Stack {
     );
 
     this.kalilaGraphQLApi.createResolver(
-      `${typeName}_${fieldName}ResolverPipeline`,
+      `${typeName}_${fieldName}ResolverPipeline_${this.stage}`,
       {
         typeName,
         fieldName,

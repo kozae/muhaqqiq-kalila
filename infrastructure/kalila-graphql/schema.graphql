@@ -67,6 +67,13 @@ type Query {
   listLineDetectionJobs: [LineDetectionJob] @source(value: lineDetectionJobs)
   getLineDetectionJob(manuscriptId: ID!, state: Int!): LineDetectionJob
     @source(value: lineDetectionJobs)
+
+  # Lemma Locations
+  searchByLemma(
+    phrase: [String!]!
+    pageIds: [ID]
+    mediumIds: [ID]
+  ): [SearchResult] @source(value: search_lambda)
 }
 
 type Mutation {
@@ -185,7 +192,15 @@ type Segment {
   lacuna: Boolean
   tags: [String]
   type: String
+  content: SegmentContent @source(value: segmentContents)
   version: AWSTimestamp
+}
+
+type SegmentContent {
+  tokens: [[String]]
+  lines: [Int]
+  pages: [Int]
+  breaks: [Boolean]
 }
 
 type SegmentUnitConnection {
@@ -237,6 +252,7 @@ type Line {
   region: [Int]
   states: [String]
   tokens: [String]
+  lemmas: [String]
   version: AWSTimestamp
 }
 
@@ -262,6 +278,18 @@ type LineDetectionJob {
   pages: [Int]
   finishedOn: Int
   parameters: AWSJSON
+}
+
+type SearchResult {
+  mediumId: ID!
+  start: Location
+  end: Location
+}
+
+type Location {
+  pageId: ID!
+  line: Int
+  token: Int
 }
 
 # list types
@@ -295,12 +323,15 @@ enum Sources {
   units
   pages
   segments
+  segmentContents
   images
   textElements
   lines
   chapterCollations
   lineDetectionJobs
+  lemmas
   mutation_lambda
+  search_lambda
 }
 enum MediaFormat {
   DIGITAL

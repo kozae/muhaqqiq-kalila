@@ -9,39 +9,66 @@ import { KalilaDataStorageStack } from "../lib/kalila-data-storage-stack";
 import { KalilaDataAggregationStack } from "../lib/kalila-data-aggregation-stack";
 import { KalilaLineDetectionStack } from "../lib/kalila-line-detection-stack";
 
-const env = { account: "557976691964", region: "eu-central-1" };
+const environments: Record<string, { account: string; region: string }> = {
+  dev: {
+    account: "557976691964",
+    region: "eu-central-1",
+  },
+  stage: {
+    account: "557976691964",
+    region: "eu-central-1",
+  },
+  prod: {
+    account: "557976691964",
+    region: "eu-central-1",
+  },
+};
 
 const app = new cdk.App();
 
-const authStack = new KalilaAuthStack(app, "KalilaAuthStack", { env });
+const environment: string = app.node.tryGetContext("environment") || "dev";
+const env = environments[environment];
+
+const authStack = new KalilaAuthStack(app, `KalilaAuthStack-${environment}`, {
+  env,
+  stage: environment,
+});
 
 const dataStack = new KalilaDataManagementStack(
   app,
-  "KalilaDataManagementStack",
-  { env },
+  `KalilaDataManagementStack-${environment}`,
+  { env, stage: environment },
 );
 
-new KalilaApiStack(app, "KalilaApiStack", {
+new KalilaApiStack(app, `KalilaApiStack-${environment}`, {
   tableArns: dataStack.tableArns,
   tableNames: dataStack.tableNames,
   userPoolId: authStack.userPoolId,
   env,
+  stage: environment,
 });
-new KalilaDataStorageStack(app, "KalilaDataStorageStack", {
+new KalilaDataStorageStack(app, `KalilaDataStorageStack-${environment}`, {
   authenticatedRole: authStack.authenticatedRole,
   env,
+  stage: environment,
 });
 
-new KalilaDataAggregationStack(app, "KalilaDataAggregationStack", {
-  tableArns: dataStack.tableArns,
-  tableStreamArns: dataStack.tableStreamArns,
-  itemCountTableName: dataStack.tableNames.itemCounts,
-  env,
-});
+new KalilaDataAggregationStack(
+  app,
+  `KalilaDataAggregationStack-${environment}`,
+  {
+    tableArns: dataStack.tableArns,
+    tableStreamArns: dataStack.tableStreamArns,
+    itemCountTableName: dataStack.tableNames.itemCounts,
+    env,
+    stage: environment,
+  },
+);
 
-new KalilaLineDetectionStack(app, "KalilaLineDetectionStack", {
+new KalilaLineDetectionStack(app, `KalilaLineDetectionStack-${environment}`, {
   tableArns: dataStack.tableArns,
   tableStreamArns: dataStack.tableStreamArns,
   tableNames: dataStack.tableNames,
-  env: { account: "557976691964", region: "eu-central-1" },
+  env,
+  stage: environment,
 });

@@ -46,6 +46,9 @@ export default {
           serverCachePolicy: customCachePolicy,
         },
         bind: [api],
+        environment: {
+          SRAGE: stack.stage,
+        },
       });
 
       const fn = api.getFunction("POST /")!;

@@ -15,9 +15,11 @@ export interface IKalilaLineDetectionStackProps extends StackProps {
   tableArns: IKalilaTableInfo;
   tableStreamArns: IKalilaTableInfo;
   tableNames: IKalilaTableInfo;
+  readonly stage: string;
 }
 
 export class KalilaLineDetectionStack extends Stack {
+  private readonly stage: string;
   constructor(
     scope: Construct,
     id: string,
@@ -25,6 +27,7 @@ export class KalilaLineDetectionStack extends Stack {
   ) {
     super(scope, id, props);
 
+    this.stage = props.stage;
     const pagesBucket = Bucket.fromBucketArn(
       this,
       "KalilaPagesBucketLineDetectionConstruct",
@@ -43,6 +46,7 @@ export class KalilaLineDetectionStack extends Stack {
     const cluster = new ecs.Cluster(this, "KalilaCluster", {
       vpc,
       enableFargateCapacityProviders: true,
+      clusterName: `kalila-cluster-${this.stage}`,
     });
 
     const repository = Repository.fromRepositoryArn(

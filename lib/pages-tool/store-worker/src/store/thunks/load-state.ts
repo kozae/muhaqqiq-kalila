@@ -58,14 +58,14 @@ function prepareInitialState(
 
   const coloredImages = images
     ? images.map(
-        (l, i) => (
-          l!.id,
-          {
-            ...l,
-            color: highlightColors[(i + 5) % 13],
-          } as ImageEntity
-        ),
-      )
+      (l, i) => (
+        l!.id,
+        {
+          ...l,
+          color: highlightColors[(i + 5) % 13],
+        } as ImageEntity
+      ),
+    )
     : [];
 
   const coloredLines = allLines.map((l, i) => {
@@ -94,6 +94,7 @@ export type LoadedState = {
 export const loadState = createAsyncThunk<LoadedState, Payload, ThunkApi>(
   "loadState",
   async (data) => {
+    console.log(data);
     const stored = await loadStoredUpdates(data.id, data.version!);
 
     const changed = {

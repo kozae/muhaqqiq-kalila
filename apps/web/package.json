@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "deploy:dev": "sst deploy --stage dev",
+    "deploy:prod": "sst deploy --stage prod",
     "sst:dev": "sst dev"
   },
   "dependencies": {

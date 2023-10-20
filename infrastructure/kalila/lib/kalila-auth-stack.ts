@@ -9,15 +9,20 @@ import { Role, FederatedPrincipal } from "aws-cdk-lib/aws-iam";
 
 import { Construct } from "constructs";
 
+export interface IKalilaAuthStackProps extends StackProps {
+  readonly stage: string;
+}
 export class KalilaAuthStack extends Stack {
   public readonly userPoolId: string;
   public readonly userPoolClient: UserPoolClient;
   public readonly identityPool: CfnIdentityPool;
   public readonly authenticatedRole: Role;
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  public readonly stage: string;
+  constructor(scope: Construct, id: string, props: IKalilaAuthStackProps) {
     super(scope, id, props);
+    this.stage = props.stage;
     const userPool = new UserPool(this, "KalilaUserPool", {
-      userPoolName: "kalilaUserPool",
+      userPoolName: `kalilaUserPool_${this.stage}`,
       selfSignUpEnabled: false,
       signInAliases: {
         email: true,
@@ -71,7 +76,7 @@ export class KalilaAuthStack extends Stack {
             "cognito-identity.amazonaws.com:amr": "authenticated",
           },
         },
-        "sts:AssumeRoleWithWebIdentity"
+        "sts:AssumeRoleWithWebIdentity",
       ),
     });
 

@@ -60,3 +60,5 @@ amplifytools.xcconfig
 
 mk_pass.txt
 aws_cred.txt
+
+.sst/

@@ -7,7 +7,11 @@
   "scripts": {
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "synth:dev": "cdk synth --context environment=dev",
+    "synth:prod": "cdk synth --context environment=prod",
+    "deploy:dev": "cdk deploy --all --context environment=dev",
+    "deploy:prod": "cdk deploy --all --context environment=prod"
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",

@@ -108,6 +108,7 @@ export type Line = {
   region?: Array< number | null > | null,
   states?: Array< string | null > | null,
   tokens?: Array< string | null > | null,
+  lemmas?: Array< string | null > | null,
   version?: number | null,
 };
 
@@ -126,6 +127,7 @@ export type Segment = {
   lacuna?: boolean | null,
   tags?: Array< string | null > | null,
   type?: string | null,
+  content?: SegmentContent | null,
   version?: number | null,
 };
 
@@ -142,6 +144,14 @@ export type SegmentUnitConnection = {
   topics?: Array< string | null > | null,
   variant?: string | null,
   version?: number | null,
+};
+
+export type SegmentContent = {
+  __typename: "SegmentContent",
+  tokens?: Array< Array< string | null > | null > | null,
+  lines?: Array< number | null > | null,
+  pages?: Array< number | null > | null,
+  breaks?: Array< boolean | null > | null,
 };
 
 export type SegmentList = {
@@ -284,12 +294,15 @@ export enum Sources {
   units = "units",
   pages = "pages",
   segments = "segments",
+  segmentContents = "segmentContents",
   images = "images",
   textElements = "textElements",
   lines = "lines",
   chapterCollations = "chapterCollations",
   lineDetectionJobs = "lineDetectionJobs",
+  lemmas = "lemmas",
   mutation_lambda = "mutation_lambda",
+  search_lambda = "search_lambda",
 }
 
 
@@ -338,6 +351,20 @@ export type ChapterCollation = {
   mediumIds?: Array< string | null > | null,
   editor?: string | null,
   version?: number | null,
+};
+
+export type SearchResult = {
+  __typename: "SearchResult",
+  mediumId: string,
+  start?: Location | null,
+  end?: Location | null,
+};
+
+export type Location = {
+  __typename: "Location",
+  pageId: string,
+  line?: number | null,
+  token?: number | null,
 };
 
 export type CreateBookMutationVariables = {
@@ -507,6 +534,13 @@ export type CreateMediumMutation = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null >,
       nextToken?: string | null,
@@ -569,6 +603,7 @@ export type UpdatePageInfoMutation = {
           region?: Array< number | null > | null,
           states?: Array< string | null > | null,
           tokens?: Array< string | null > | null,
+          lemmas?: Array< string | null > | null,
           version?: number | null,
         } | null > | null,
         version?: number | null,
@@ -596,6 +631,7 @@ export type UpdatePageInfoMutation = {
         region?: Array< number | null > | null,
         states?: Array< string | null > | null,
         tokens?: Array< string | null > | null,
+        lemmas?: Array< string | null > | null,
         version?: number | null,
       } | null > | null,
       version?: number | null,
@@ -628,6 +664,13 @@ export type UpdatePageInfoMutation = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     openSegments?:  Array< {
@@ -658,6 +701,13 @@ export type UpdatePageInfoMutation = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     endingSegments?:  Array< {
@@ -688,6 +738,13 @@ export type UpdatePageInfoMutation = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     editor?: string | null,
@@ -943,6 +1000,13 @@ export type GetMediumQuery = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null >,
       nextToken?: string | null,
@@ -1051,6 +1115,7 @@ export type GetUnitQuery = {
           region?: Array< number | null > | null,
           states?: Array< string | null > | null,
           tokens?: Array< string | null > | null,
+          lemmas?: Array< string | null > | null,
           version?: number | null,
         } | null > | null,
         version?: number | null,
@@ -1144,6 +1209,13 @@ export type GetUnitQuery = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     version?: number | null,
@@ -1245,6 +1317,13 @@ export type ListUnitsQuery = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null > | null,
       version?: number | null,
@@ -1289,6 +1368,7 @@ export type GetPageQuery = {
           region?: Array< number | null > | null,
           states?: Array< string | null > | null,
           tokens?: Array< string | null > | null,
+          lemmas?: Array< string | null > | null,
           version?: number | null,
         } | null > | null,
         version?: number | null,
@@ -1316,6 +1396,7 @@ export type GetPageQuery = {
         region?: Array< number | null > | null,
         states?: Array< string | null > | null,
         tokens?: Array< string | null > | null,
+        lemmas?: Array< string | null > | null,
         version?: number | null,
       } | null > | null,
       version?: number | null,
@@ -1348,6 +1429,13 @@ export type GetPageQuery = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     openSegments?:  Array< {
@@ -1378,6 +1466,13 @@ export type GetPageQuery = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     endingSegments?:  Array< {
@@ -1408,6 +1503,13 @@ export type GetPageQuery = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null > | null,
     editor?: string | null,
@@ -1475,6 +1577,7 @@ export type ListMediumPagesQuery = {
           region?: Array< number | null > | null,
           states?: Array< string | null > | null,
           tokens?: Array< string | null > | null,
+          lemmas?: Array< string | null > | null,
           version?: number | null,
         } | null > | null,
         version?: number | null,
@@ -1507,6 +1610,13 @@ export type ListMediumPagesQuery = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null > | null,
       openSegments?:  Array< {
@@ -1537,6 +1647,13 @@ export type ListMediumPagesQuery = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null > | null,
       endingSegments?:  Array< {
@@ -1567,6 +1684,13 @@ export type ListMediumPagesQuery = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null > | null,
       editor?: string | null,
@@ -1609,6 +1733,13 @@ export type GetSegmentQuery = {
     lacuna?: boolean | null,
     tags?: Array< string | null > | null,
     type?: string | null,
+    content?:  {
+      __typename: "SegmentContent",
+      tokens?: Array< Array< string | null > | null > | null,
+      lines?: Array< number | null > | null,
+      pages?: Array< number | null > | null,
+      breaks?: Array< boolean | null > | null,
+    } | null,
     version?: number | null,
   } | null,
 };
@@ -1653,6 +1784,13 @@ export type ListMediumSegmentsQuery = {
       lacuna?: boolean | null,
       tags?: Array< string | null > | null,
       type?: string | null,
+      content?:  {
+        __typename: "SegmentContent",
+        tokens?: Array< Array< string | null > | null > | null,
+        lines?: Array< number | null > | null,
+        pages?: Array< number | null > | null,
+        breaks?: Array< boolean | null > | null,
+      } | null,
       version?: number | null,
     } | null >,
     nextToken?: string | null,
@@ -1714,6 +1852,31 @@ export type GetLineDetectionJobQuery = {
     finishedOn?: number | null,
     parameters?: string | null,
   } | null,
+};
+
+export type SearchByLemmaQueryVariables = {
+  phrase: Array< string >,
+  pageIds?: Array< string | null > | null,
+  mediumIds?: Array< string | null > | null,
+};
+
+export type SearchByLemmaQuery = {
+  searchByLemma?:  Array< {
+    __typename: "SearchResult",
+    mediumId: string,
+    start?:  {
+      __typename: "Location",
+      pageId: string,
+      line?: number | null,
+      token?: number | null,
+    } | null,
+    end?:  {
+      __typename: "Location",
+      pageId: string,
+      line?: number | null,
+      token?: number | null,
+    } | null,
+  } | null > | null,
 };
 
 export type OnCreateBookSubscription = {
@@ -1879,6 +2042,13 @@ export type OnCreateMediumSubscription = {
         lacuna?: boolean | null,
         tags?: Array< string | null > | null,
         type?: string | null,
+        content?:  {
+          __typename: "SegmentContent",
+          tokens?: Array< Array< string | null > | null > | null,
+          lines?: Array< number | null > | null,
+          pages?: Array< number | null > | null,
+          breaks?: Array< boolean | null > | null,
+        } | null,
         version?: number | null,
       } | null >,
       nextToken?: string | null,

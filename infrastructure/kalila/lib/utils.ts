@@ -3,11 +3,11 @@ import { parse, visit } from "graphql";
 import * as fs from "fs";
 import { ITable } from "aws-cdk-lib/aws-dynamodb";
 
-export function getSuffixFromStack(stack: Stack) {
-  const shortStackId = Fn.select(2, Fn.split("/", stack.stackId));
-  const suffix = Fn.select(4, Fn.split("-", shortStackId));
-  return suffix;
-}
+// export function getSuffixFromStack(stack: Stack) {
+//   const shortStackId = Fn.select(2, Fn.split("/", stack.stackId));
+//   const suffix = Fn.select(4, Fn.split("-", shortStackId));
+//   return suffix;
+// }
 
 export interface IKalilaTableInfo {
   itemCounts: string;
@@ -16,21 +16,24 @@ export interface IKalilaTableInfo {
   units: string;
   pages: string;
   segments: string;
+  segmentContents: string;
   images: string;
   textElements: string;
   lines: string;
   chapterCollations: string;
   lineDetectionJobs: string;
+  lemmas: string;
+  invertedLemmas: string;
 }
 export type KalilaTableConstructs = Record<keyof IKalilaTableInfo, ITable>;
 interface FieldWithSource {
   parent: string;
   name: string;
-  source: keyof IKalilaTableInfo;
+  source: (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda",
 }
 
 export function extractFieldsWithSource(
-  schemaFilePath: string
+  schemaFilePath: string,
 ): FieldWithSource[] {
   const schemaString = fs.readFileSync(schemaFilePath, "utf-8");
   const astNode = parse(schemaString);
@@ -43,12 +46,12 @@ export function extractFieldsWithSource(
 
       node.fields?.forEach((field) => {
         const sourceDirective = field.directives?.find(
-          (d) => d.name.value === "source"
+          (d) => d.name.value === "source",
         );
 
         if (sourceDirective) {
           const tableArg = sourceDirective.arguments?.find(
-            (arg) => arg.name.value === "value"
+            (arg) => arg.name.value === "value",
           );
           const table =
             tableArg && tableArg.value.kind === "EnumValue"
@@ -59,7 +62,7 @@ export function extractFieldsWithSource(
             fieldsWithSource.push({
               parent: parentType,
               name: field.name.value,
-              source: table as keyof IKalilaTableInfo,
+              source: table as (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda",
             });
           }
         }
@@ -72,7 +75,7 @@ export function extractFieldsWithSource(
 
 export function createSchemaFileWithoutSourceDirective(
   sourcePath: string,
-  destinationPath: string
+  destinationPath: string,
 ): void {
   // Read the file content from sourcePath
   const schema = fs.readFileSync(sourcePath, "utf-8");
@@ -80,7 +83,7 @@ export function createSchemaFileWithoutSourceDirective(
   // 1. Remove the directive definition
   let resultSchema = schema.replace(
     /directive @source\([^)]+\) on FIELD_DEFINITION/g,
-    ""
+    "",
   );
 
   // 2. Remove all usages of the @source directive

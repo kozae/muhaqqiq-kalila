@@ -9,7 +9,7 @@ import {
   CfnTable,
   CfnTableProps,
 } from "aws-cdk-lib/aws-dynamodb";
-import { IKalilaTableInfo, getSuffixFromStack } from "./utils";
+import { IKalilaTableInfo } from "./utils";
 
 const commonCfnTableOptions: Partial<CfnTableProps> = {
   tableClass: TableClass.STANDARD,
@@ -22,16 +22,24 @@ const commonCfnTableOptions: Partial<CfnTableProps> = {
   },
 };
 
+export interface IKalilaDataManagementStackProps extends StackProps {
+  readonly stage: string;
+}
+
 export class KalilaDataManagementStack extends Stack {
   public readonly tableArns: IKalilaTableInfo;
   public readonly tableStreamArns: IKalilaTableInfo;
   public readonly tableNames: IKalilaTableInfo;
-  private readonly suffix: string;
+  private readonly stage: string;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: IKalilaDataManagementStackProps,
+  ) {
     super(scope, id, props);
 
-    this.suffix = getSuffixFromStack(this);
+    this.stage = props.stage;
     const info: Record<
       keyof IKalilaTableInfo,
       { name: string; arn: string; streamArn: string }
@@ -45,8 +53,11 @@ export class KalilaDataManagementStack extends Stack {
       lines: this.createLinesTable(),
       images: this.createImageElementsTable(),
       segments: this.createSegmentsTable(),
+      segmentContents: this.createSegmentContentsTable(),
       chapterCollations: this.createChapterCollationsTable(),
       lineDetectionJobs: this.createLineDetectionJobsTable(),
+      lemmas: this.createLemmasTable(),
+      invertedLemmas: this.createInvertedLemmasTable(),
     };
     this.tableNames = Object.entries(info).reduce((acc, [key, { name }]) => {
       acc[key as keyof IKalilaTableInfo] = name;
@@ -70,7 +81,7 @@ export class KalilaDataManagementStack extends Stack {
     const cfnTable = new CfnTable(this, "ItemCountsTable", {
       ...commonCfnTableOptions,
 
-      tableName: `ItemCount_${this.suffix}`,
+      tableName: `ItemCount_${this.stage}`,
       keySchema: [
         {
           attributeName: "table",
@@ -83,13 +94,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.STRING,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/item_count/",
-        },
-      },
     });
 
     return {
@@ -103,7 +107,7 @@ export class KalilaDataManagementStack extends Stack {
     const cfnTable = new CfnTable(this, "BooksTable", {
       ...commonCfnTableOptions,
 
-      tableName: `Book_${this.suffix}`,
+      tableName: `Book_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -116,13 +120,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.STRING,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/book/",
-        },
-      },
     });
 
     return {
@@ -136,7 +133,7 @@ export class KalilaDataManagementStack extends Stack {
     const cfnTable = new CfnTable(this, "ChapterCollationsTable", {
       ...commonCfnTableOptions,
 
-      tableName: `ChapterCollation_${this.suffix}`,
+      tableName: `ChapterCollation_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -149,13 +146,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.STRING,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/chapter_collation/",
-        },
-      },
     });
 
     return {
@@ -168,7 +158,7 @@ export class KalilaDataManagementStack extends Stack {
   private createMediaTable() {
     const cfnTable = new CfnTable(this, "MediaTable", {
       ...commonCfnTableOptions,
-      tableName: `Medium_${this.suffix}`,
+      tableName: `Medium_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -207,13 +197,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.STRING,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/medium/",
-        },
-      },
     });
 
     return {
@@ -226,7 +209,7 @@ export class KalilaDataManagementStack extends Stack {
   private createUnitsTable() {
     const cfnTable = new CfnTable(this, "UnitsTable", {
       ...commonCfnTableOptions,
-      tableName: `Unit_${this.suffix}`,
+      tableName: `Unit_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -265,13 +248,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.NUMBER,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/unit/",
-        },
-      },
     });
 
     return {
@@ -284,7 +260,7 @@ export class KalilaDataManagementStack extends Stack {
   private createPagesTable() {
     const cfnTable = new CfnTable(this, "PagesTable", {
       ...commonCfnTableOptions,
-      tableName: `Page_${this.suffix}`,
+      tableName: `Page_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -323,13 +299,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.NUMBER,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/page/",
-        },
-      },
     });
 
     return {
@@ -342,7 +311,7 @@ export class KalilaDataManagementStack extends Stack {
   private createTextElementsTable() {
     const cfnTable = new CfnTable(this, "TextElementsTable", {
       ...commonCfnTableOptions,
-      tableName: `TextElement_${this.suffix}`,
+      tableName: `TextElement_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -381,13 +350,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.NUMBER,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/text/",
-        },
-      },
     });
 
     return {
@@ -399,7 +361,7 @@ export class KalilaDataManagementStack extends Stack {
   private createLinesTable() {
     const cfnTable = new CfnTable(this, "LinesTable", {
       ...commonCfnTableOptions,
-      tableName: `Line_${this.suffix}`,
+      tableName: `Line_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -438,13 +400,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.NUMBER,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/line/",
-        },
-      },
     });
 
     return {
@@ -457,7 +412,7 @@ export class KalilaDataManagementStack extends Stack {
   private createImageElementsTable() {
     const cfnTable = new CfnTable(this, "ImageElementsTable", {
       ...commonCfnTableOptions,
-      tableName: `ImageElement_${this.suffix}`,
+      tableName: `ImageElement_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -512,13 +467,6 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.NUMBER,
         },
       ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/image/",
-        },
-      },
     });
 
     return {
@@ -531,7 +479,7 @@ export class KalilaDataManagementStack extends Stack {
   private createSegmentsTable() {
     const cfnTable = new CfnTable(this, "SegmentsTable", {
       ...commonCfnTableOptions,
-      tableName: `Segment_${this.suffix}`,
+      tableName: `Segment_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -548,6 +496,22 @@ export class KalilaDataManagementStack extends Stack {
             },
             {
               attributeName: "startPage",
+              keyType: "RANGE",
+            },
+          ],
+          projection: {
+            projectionType: ProjectionType.ALL,
+          },
+        },
+        {
+          indexName: "segmentMediumIdVersionIndex",
+          keySchema: [
+            {
+              attributeName: "mediumId",
+              keyType: "HASH",
+            },
+            {
+              attributeName: "version",
               keyType: "RANGE",
             },
           ],
@@ -609,14 +573,37 @@ export class KalilaDataManagementStack extends Stack {
           attributeName: "endPage",
           attributeType: AttributeType.NUMBER,
         },
-      ],
-      importSourceSpecification: {
-        inputFormat: "DYNAMODB_JSON",
-        s3BucketSource: {
-          s3Bucket: "kalila-data",
-          s3KeyPrefix: "kalila_dynamo_imports/segment/",
+        {
+          attributeName: "version",
+          attributeType: AttributeType.NUMBER,
         },
-      },
+      ],
+    });
+
+    return {
+      name: cfnTable.tableName as string,
+      arn: cfnTable.attrArn as string,
+      streamArn: cfnTable.attrStreamArn as string,
+    };
+  }
+
+  private createSegmentContentsTable() {
+    const cfnTable = new CfnTable(this, "SegmentContentsTable", {
+      ...commonCfnTableOptions,
+
+      tableName: `SegmentContent_${this.stage}`,
+      keySchema: [
+        {
+          attributeName: "id",
+          keyType: "HASH",
+        },
+      ],
+      attributeDefinitions: [
+        {
+          attributeName: "id",
+          attributeType: AttributeType.STRING,
+        },
+      ],
     });
 
     return {
@@ -630,7 +617,7 @@ export class KalilaDataManagementStack extends Stack {
     const cfnTable = new CfnTable(this, "LineDetectionJobsTable2", {
       ...commonCfnTableOptions,
 
-      tableName: `LineDetectionJob_${this.suffix}`,
+      tableName: `LineDetectionJob_${this.stage}`,
       keySchema: [
         {
           attributeName: "id",
@@ -641,6 +628,108 @@ export class KalilaDataManagementStack extends Stack {
         {
           attributeName: "id",
           attributeType: AttributeType.STRING,
+        },
+      ],
+    });
+
+    return {
+      name: cfnTable.tableName as string,
+      arn: cfnTable.attrArn as string,
+      streamArn: cfnTable.attrStreamArn as string,
+    };
+  }
+
+  private createLemmasTable() {
+    const cfnTable = new CfnTable(this, "LemmassTable", {
+      ...commonCfnTableOptions,
+
+      tableName: `Lemma_${this.stage}`,
+      keySchema: [
+        {
+          attributeName: "id",
+          keyType: "HASH",
+        },
+      ],
+      globalSecondaryIndexes: [
+        {
+          indexName: "lemmaPageIdIndex",
+          keySchema: [
+            {
+              attributeName: "lemma",
+              keyType: "HASH",
+            },
+            {
+              attributeName: "pageId",
+              keyType: "RANGE",
+            },
+          ],
+          projection: {
+            projectionType: ProjectionType.ALL,
+          },
+        },
+        {
+          indexName: "pageIdIndex",
+          keySchema: [
+            {
+              attributeName: "pageId",
+              keyType: "HASH",
+            },
+            {
+              attributeName: "id",
+              keyType: "RANGE",
+            },
+          ],
+          projection: {
+            projectionType: ProjectionType.KEYS_ONLY,
+          },
+        },
+      ],
+      attributeDefinitions: [
+        {
+          attributeName: "id",
+          attributeType: AttributeType.STRING,
+        },
+        {
+          attributeName: "lemma",
+          attributeType: AttributeType.STRING,
+        },
+        {
+          attributeName: "pageId",
+          attributeType: AttributeType.STRING,
+        },
+      ],
+    });
+
+    return {
+      name: cfnTable.tableName as string,
+      arn: cfnTable.attrArn as string,
+      streamArn: cfnTable.attrStreamArn as string,
+    };
+  }
+
+  private createInvertedLemmasTable() {
+    const cfnTable = new CfnTable(this, "InvertedLemmasTable", {
+      ...commonCfnTableOptions,
+
+      tableName: `InvertedLemma_${this.stage}`,
+      keySchema: [
+        {
+          attributeName: "id",
+          keyType: "HASH",
+        },
+        {
+          attributeName: "line",
+          keyType: "RANGE",
+        },
+      ],
+      attributeDefinitions: [
+        {
+          attributeName: "id",
+          attributeType: AttributeType.STRING,
+        },
+        {
+          attributeName: "line",
+          attributeType: AttributeType.NUMBER,
         },
       ],
     });

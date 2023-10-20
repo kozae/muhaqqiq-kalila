@@ -14,12 +14,12 @@ const getGroupedLines = (lineList: any) => {
   return lodash.groupBy(lodash.orderBy(lineList, "order"), "elementId");
 };
 
-const getSegmentsInLine = (segments: SegmentEntity[], line: number) => {
+const getSegmentsInLine = (segments: SegmentEntity[], line: number, page: number) => {
   const segmentsStartInLine = segments.filter(
-    (segment) => segment.startLine === line,
+    (segment) => segment.startPage === page && segment.startLine === line,
   );
   const segmentsEndInLine = segments.filter(
-    (segment) => segment.endLine === line,
+    (segment) => segment.endPage === page && segment.endLine === line,
   );
   return { segmentsStartInLine, segmentsEndInLine };
 };
@@ -75,10 +75,26 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
         const { segmentsStartInLine, segmentsEndInLine } = getSegmentsInLine(
           segments,
           line.order,
+          state.info!.number,
         );
         let text: SegmentationToken[] = formatText(line);
 
         let markCount = 0;
+
+        if (line.order === 0) {
+          const segFromPrevPage = segments.find(seg => seg.startPage < state.info!.number);
+          if (segFromPrevPage) {
+            text = insertSegmentMarks(
+              text,
+              segFromPrevPage,
+              "endFromPrev",
+              0,
+              line.order,
+            );
+            markCount++;
+          }
+        }
+
         for (const segment of segmentsStartInLine) {
           text = insertSegmentMarks(
             text,
@@ -91,18 +107,6 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
         }
 
         for (const segment of segmentsEndInLine) {
-          if (segment.startPage !== state.info?.number) {
-            text = insertSegmentMarks(
-              text,
-              segment,
-              "endFromPrev",
-              0,
-              line.order,
-            );
-            markCount++;
-            continue;
-          }
-
           if (
             segmentsStartInLine.every(
               (s) => s.startToken !== segment.endToken! + 1,
@@ -113,7 +117,7 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
             }
             if (line.order !== lastLine) {
               const { segmentsStartInLine: segmentsStartInNextLine } =
-                getSegmentsInLine(segments, line.order + 1);
+                getSegmentsInLine(segments, line.order + 1, state.info!.number);
               if (segmentsStartInNextLine.some((s) => s.startToken === 0)) {
                 continue;
               }

@@ -1,7 +1,7 @@
 ---
 import SiteLayout from "./SiteLayout.astro";
 import Paginator from "@components/Paginator.astro";
-import { getEntry } from "astro:content";
+import { getDataEntryById, getCollection } from "astro:content";
 import lodash from "lodash";
 import TableCellsIcon from "@icons/TableCellsIcon.svelte";
 import GoToButton from "@client/pages/GoToButton.svelte";
@@ -16,7 +16,11 @@ const { mediumId, pageId, tool = "", transitions = false } = Astro.props;
 
 const {
   data: { siglum, pages },
-} = (await getEntry("mediaPages", mediumId))!;
+} = (await getCollection("media-pages")).find((p) => p.id === mediumId)!;
+
+// const {
+//   data: { siglum, pages },
+// } = (await getDataEntryById("media-pages", mediumId as const))!;
 const sortedPages = lodash.sortBy(pages, "number");
 const currentPageIndex = sortedPages.findIndex((p) => p.id === pageId);
 const ids = sortedPages.map((p) => p!.id) ?? [];

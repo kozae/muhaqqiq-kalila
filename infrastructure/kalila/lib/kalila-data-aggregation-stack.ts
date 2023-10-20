@@ -15,16 +15,19 @@ interface IKalilaDataAggregationStackProps extends StackProps {
   readonly tableArns: IKalilaTableInfo;
   readonly tableStreamArns: IKalilaTableInfo;
   readonly itemCountTableName: string;
+  readonly stage: string;
 }
 
 export class KalilaDataAggregationStack extends Stack {
   private readonly tables: KalilaTableConstructs;
+  private readonly stage: string;
   constructor(
     scope: Construct,
     id: string,
     props: IKalilaDataAggregationStackProps,
   ) {
     super(scope, id, props);
+    this.stage = props.stage;
     this.tables = this.createTableConstructs(
       props.tableArns,
       props.tableStreamArns,
@@ -42,7 +45,7 @@ export class KalilaDataAggregationStack extends Stack {
       runtime: Runtime.PROVIDED_AL2,
       handler: "does_not_matter",
 
-      functionName: "kalila-item-count-aggregator",
+      functionName: `kalila-count-aggregator_${this.stage}`,
       environment: {
         ITEM_COUNT_NAME: itemCountTableName,
         BOOK_ARN: itableArns.books,
