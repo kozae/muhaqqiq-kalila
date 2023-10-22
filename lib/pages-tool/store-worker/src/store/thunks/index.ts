@@ -1,3 +1,4 @@
+export * from "./discard-updates";
 export * from "./load-state";
 export * from "./save-updates";
 export * from "./add-line";

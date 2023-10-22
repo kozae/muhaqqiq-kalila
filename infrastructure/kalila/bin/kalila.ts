@@ -7,7 +7,6 @@ import { KalilaApiStack } from "../lib/kalila-api-stack";
 import { KalilaAuthStack } from "../lib/kalila-auth-stack";
 import { KalilaDataStorageStack } from "../lib/kalila-data-storage-stack";
 import { KalilaDataAggregationStack } from "../lib/kalila-data-aggregation-stack";
-import { KalilaLineDetectionStack } from "../lib/kalila-line-detection-stack";
 
 const environments: Record<string, { account: string; region: string }> = {
   dev: {
@@ -65,10 +64,3 @@ new KalilaDataAggregationStack(
   },
 );
 
-new KalilaLineDetectionStack(app, `KalilaLineDetectionStack-${environment}`, {
-  tableArns: dataStack.tableArns,
-  tableStreamArns: dataStack.tableStreamArns,
-  tableNames: dataStack.tableNames,
-  env,
-  stage: environment,
-});

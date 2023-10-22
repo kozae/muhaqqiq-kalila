@@ -11,6 +11,7 @@ export function attachAddLine(builder: ActionReducerMapBuilder<State>) {
       state.changed.lines = true;
 
       state.stateId = Date.now();
+      state.lastAction = 'addLine';
     }
   });
 }

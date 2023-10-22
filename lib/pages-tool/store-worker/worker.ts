@@ -93,6 +93,10 @@ stateIdListner
         await discardStoredUpdates(data.info!.id);
       }
     }
+
+    if (data.lastAction === "discardUpdates") {
+      self.postMessage('discard')
+    }
   });
 
 infoStateChangedListner

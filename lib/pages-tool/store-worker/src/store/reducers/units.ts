@@ -56,4 +56,6 @@ export const loadChapter = (
     }
   }
   unitsAdapter.setAll(state.units, unitEntities);
+
+  state.lastAction = "loadChapter";
 };

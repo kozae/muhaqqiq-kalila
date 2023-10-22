@@ -38,6 +38,7 @@ export const initialState = {
     units: false,
   } as IChangeTracker,
   stateId: -1,
+  lastAction: undefined as string | undefined,
 };
 
 export type WritableDraft<T> = { -readonly [K in keyof T]: Draft<T[K]> };

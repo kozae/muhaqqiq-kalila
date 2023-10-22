@@ -35,5 +35,6 @@ export function attachLoadState(builder: ActionReducerMapBuilder<State>) {
     state.fetched = action.payload.fetched;
     state.changed = action.payload.changed;
     state.stateId = info?.number!;
+    state.lastAction = 'loadState';
   });
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { derived, discard, requestState } from "../store";
+  import { derived, discardRequested, requestState } from "../store";
   import Panel from "./Panel.svelte";
   import { onDestroy, setContext } from "svelte";
   export let pageId: string;
@@ -13,7 +13,7 @@
     requestState("selectSegementationData");
   }
 
-  const sub = discard.subscribe(() => {
+  const sub = discardRequested.subscribe(() => {
     requestState("selectSegementationData");
     key = Date.now();
   });

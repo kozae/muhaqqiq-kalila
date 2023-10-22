@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { derived, discard, requestState } from "@client/pages/store";
+  import { derived, discardFinished, requestState } from "@client/pages/store";
   import CommandBar from "./CommandBar/CommandBar.svelte";
   import Editor from "./Editor/Editor.svelte";
   import AuxDisplay from "./AuxDisplay/AuxDisplay.svelte";
   import { getContext, onDestroy, onMount, setContext } from "svelte";
-  import { Subscription, filter, first } from "rxjs";
+  import { Subscription, first } from "rxjs";
 
   const id = getContext("id");
 
@@ -16,15 +16,12 @@
   );
   setContext("worker", worker);
   let sub: Subscription[] = [];
-  let render = Date.now();
   onMount(() => {
     sub = [
       derived.ready.pipe(first((v) => v === id)).subscribe(() => {
-        render = Date.now();
         requestState("selectTranscriptionPanelData");
       }),
-      discard.subscribe(() => {
-        render = Date.now();
+      discardFinished.subscribe(() => {
         requestState("selectTranscriptionPanelData");
       }),
     ];
@@ -34,10 +31,8 @@
   });
 </script>
 
-{#key render}
-  <CommandBar />
-  <div class="flex h-[calc(100vh-150px)] flex-col">
-    <Editor />
-    <AuxDisplay />
-  </div>
-{/key}
+<CommandBar />
+<div class="flex h-[calc(100vh-150px)] flex-col">
+  <Editor />
+  <AuxDisplay />
+</div>

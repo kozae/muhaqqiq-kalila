@@ -15,6 +15,7 @@ export function attachRemove(builder: ActionReducerMapBuilder<State>) {
       state.changed.lines = true;
 
       state.stateId = Date.now();
+      state.lastAction = 'removeLine';
     }
   });
 

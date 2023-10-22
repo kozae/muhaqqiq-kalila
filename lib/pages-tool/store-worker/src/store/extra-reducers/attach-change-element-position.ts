@@ -38,6 +38,7 @@ export function attachChangeLayoutElementPosition(
       }
 
       state.stateId = Date.now();
+      state.lastAction = 'changeLayoutElementPosition';
     },
   );
 }

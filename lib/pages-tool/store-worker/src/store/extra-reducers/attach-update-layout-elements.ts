@@ -23,5 +23,6 @@ export function attachUpdateLayoutElements(
     state.changed.lines = true;
 
     state.stateId = Date.now();
+    state.lastAction = 'updateLayoutElements';
   });
 }

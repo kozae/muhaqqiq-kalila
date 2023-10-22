@@ -1,24 +1,20 @@
 <script lang="ts">
   import CommandBarContainer from "@client/pages/common/CommandBarContainer.svelte";
   import Menu from "@client/reusable/Menu.svelte";
+  import SmallButton from "@client/reusable/SmallButton.svelte";
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import MagicIcon from "@icons/MagicIcon.svelte";
   import ChevronDownIcon from "@icons/ChevronDownIcon.svelte";
   import { createEventDispatcher } from "svelte";
-  import ScheduleDetectionJob from "./ScheduleDetectionJob.svelte";
-  import JobResults from "./JobResults.svelte";
+  import RunDetectionJob from "./RunDetectionJob.svelte";
 
   export let pageNumber: number = 0;
   export let presentElements: { display: string; id: string }[] | undefined =
     undefined;
   export let hasTextElementsRegions = false;
-  const automatedDetectionOptions: string[] = [
-    "Schedule a job ...",
-    "Load job results...",
-  ];
+
   const dispatch = createEventDispatcher();
-  let showScheduleJobModalModal = false;
-  let showJobResultsModal = false;
+  let showRunDetectionlModal = false;
 </script>
 
 <CommandBarContainer>
@@ -42,30 +38,18 @@
   </Menu>
 
   {#if hasTextElementsRegions}
-    <Menu
-      items={automatedDetectionOptions}
-      buttonText="Automated Detection"
-      on:itemClick={(event) => {
-        if (event.detail === "Schedule a job ...") {
-          showScheduleJobModalModal = true;
-        } else {
-          showJobResultsModal = true;
-        }
+    <SmallButton on:click={() => (showRunDetectionlModal = true)}>
+      <MagicIcon className="text-primary-700 -ml-0.5 h-5 w-5" />
+      Automated Detection
+    </SmallButton>
+
+    <RunDetectionJob
+      bind:showScheduleJobModalModal={showRunDetectionlModal}
+      on:loadLines={(e) => {
+        dispatch("previewLines", e.detail);
+        showRunDetectionlModal = false;
       }}
-    >
-      <MagicIcon
-        slot="prefixIcon"
-        className="text-primary-700 -ml-0.5 h-5 w-5"
-      />
-      <ChevronDownIcon
-        slot="suffixIcon"
-        className="-mr-1 h-5 w-5 text-gray-400"
-      />
-    </Menu>
-    <ScheduleDetectionJob bind:showScheduleJobModalModal {pageNumber} />
-    <JobResults
-      bind:showJobResultsModal
-      on:loadLines={(e) => dispatch("previewLines", e.detail)}
+      {pageNumber}
     />
   {/if}
 </CommandBarContainer>

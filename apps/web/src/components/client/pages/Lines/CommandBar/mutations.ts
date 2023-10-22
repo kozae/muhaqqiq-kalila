@@ -1,13 +1,13 @@
-import { type GraphQLQuery } from "@aws-amplify/api";
-import { API } from "aws-amplify";
-import {
-  type CreateLineDetectionJobMutation,
-  createLineDetectionJob,
-  type LineDetectionJobInput,
-} from "kalila-graphql";
 
-export const postJob = async (input: LineDetectionJobInput) =>
-  await API.graphql<GraphQLQuery<CreateLineDetectionJobMutation>>({
-    query: createLineDetectionJob,
-    variables: { input },
+
+export const postJob = async (input: any) => {
+  const response = await fetch('https://kraken.kalila-and-dimna.de/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(input)
   });
+  const data = await response.json();
+  return data;
+}

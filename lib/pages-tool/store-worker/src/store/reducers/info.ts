@@ -18,4 +18,5 @@ export const updatePageInfo = (
   state.info.tags = tags ? tags : state.info.tags;
   state.changed.info = true;
   state.stateId = Date.now();
+  state.lastAction = "updatePageInfo";
 };

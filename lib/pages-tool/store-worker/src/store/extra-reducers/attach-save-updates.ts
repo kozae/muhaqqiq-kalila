@@ -7,5 +7,6 @@ export function attachSaveUpdates(builder: ActionReducerMapBuilder<State>) {
     state.fetched = action.payload;
     state.changed = { ...initialState.changed };
     state.stateId = Date.now();
+    state.lastAction = 'saveUpdates';
   });
 }

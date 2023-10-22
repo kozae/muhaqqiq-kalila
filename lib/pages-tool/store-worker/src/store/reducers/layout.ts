@@ -47,6 +47,7 @@ export const addLayoutElement = (
   }
 
   state.stateId = Date.now();
+  state.lastAction = "addLayoutElement";
 };
 export const deleteLayoutElement = (
   state: WritableState,
@@ -77,6 +78,7 @@ export const deleteLayoutElement = (
   state.changed.images = true;
   state.changed.text = true;
   state.stateId = Date.now();
+  state.lastAction = "deleteLayoutElement";
 };
 
 export const defineElementFacsimileRegion = (
@@ -104,4 +106,5 @@ export const defineElementFacsimileRegion = (
   }
 
   state.stateId = Date.now();
+  state.lastAction = "defineElementFacsimileRegion";
 };

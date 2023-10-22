@@ -9,5 +9,6 @@ export function attachUpdateSegmentation(
     segmentsAdapter.setAll(state.segments, action.payload);
     state.changed.segments = true;
     state.stateId = Date.now();
+    state.lastAction = 'updateSegmentation';
   });
 }

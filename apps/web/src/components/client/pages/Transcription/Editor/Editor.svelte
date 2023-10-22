@@ -8,6 +8,7 @@
 
   const id = getContext("id");
   let ids: string[] = [];
+  let render = Date.now();
   const data = combineLatest([
     source.selectTranscriptionPanelData,
     selectedTextClass,
@@ -22,22 +23,27 @@
           },
     ),
   );
-  $: ids = $data?.ids;
+  $: {
+    ids = $data?.ids;
+    render = Date.now();
+  }
 
   const handleChanges = (e: any) => {
     requestAction("updateTranscription", { doc: e.detail, ids });
   };
 </script>
 
-{#if $data}
-  {#key $selectedTextClass}
-    <div class="editor-container">
-      <Codemirror doc={$data.doc} on:change={handleChanges} />
-    </div>
-  {/key}
-{:else}
-  <Loading />
-{/if}
+{#key render}
+  {#if $data}
+    {#key $selectedTextClass}
+      <div class="editor-container">
+        <Codemirror doc={$data.doc} on:change={handleChanges} />
+      </div>
+    {/key}
+  {:else}
+    <Loading />
+  {/if}
+{/key}
 
 <style>
   .editor-container {

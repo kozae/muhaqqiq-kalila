@@ -94,7 +94,6 @@ export type LoadedState = {
 export const loadState = createAsyncThunk<LoadedState, Payload, ThunkApi>(
   "loadState",
   async (data) => {
-    console.log(data);
     const stored = await loadStoredUpdates(data.id, data.version!);
 
     const changed = {

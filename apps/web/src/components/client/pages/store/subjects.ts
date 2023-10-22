@@ -34,4 +34,5 @@ export const derived = {
   ready: source.selectBasicInfo.pipe(map((info) => info?.id)),
 };
 
-export const discard = new Subject<void>();
+export const discardRequested = new Subject<void>();
+export const discardFinished = new Subject<void>();

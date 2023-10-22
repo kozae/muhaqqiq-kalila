@@ -1,6 +1,6 @@
 <script lang="ts">
   import Loading from "@client/reusable/Loading.svelte";
-  import { discard, requestAction, source } from "@client/pages/store";
+  import { discardRequested, requestAction, source } from "@client/pages/store";
   import ReceiptRefundIcon from "@icons/ReceiptRefundIcon.svelte";
   import BigButton from "@client/reusable/BigButton.svelte";
   import CloudArrowUpIcon from "@icons/CloudArrowUpIcon.svelte";
@@ -17,11 +17,15 @@
   );
   const handleDiscard = () => {
     source.selectBasicInfo.next(undefined);
-    discard.next();
+    discardRequested.next();
     resetRegionFacsimileCache();
     setTimeout(() => {
-      requestAction("discardUpdates", undefined);
+      requestAction("discardUpdates", {});
     }, 1000);
+  };
+
+  const handleSave = () => {
+    requestAction("saveUpdates", {});
   };
 </script>
 
@@ -34,7 +38,7 @@
     </h2>
     {#if $hasChanges$}
       <div class="grow flex justify-around">
-        <BigButton className="text-primary-900 ">
+        <BigButton className="text-primary-900" on:click={handleSave}>
           <CloudArrowUpIcon className="-ml-0.5 h-5 w-5 " />
           Save
         </BigButton>
