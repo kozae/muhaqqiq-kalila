@@ -2,19 +2,19 @@
   import { writable } from "svelte/store";
   import Tabs from "./Tabs.svelte";
   import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query";
-  import { Auth } from "aws-amplify";
+  import { fetchAuthSession } from "aws-amplify/auth";
   import LinkIcon from "@icons/LinkIcon.svelte";
 
   let current = writable("Pages");
   let tabNames = ["Collations", "Pages", "Media", "Books"];
   const queryClient = new QueryClient();
-  const sessionPromise = Auth.currentSession();
+  const sessionPromise = fetchAuthSession({ forceRefresh: true });
 </script>
 
 {#await sessionPromise}
   <div></div>
 {:then session}
-  {#if session && session.isValid()}
+  {#if session}
     <div class="w-1/2 mt-[10px] h-[calc(100vh-74px)] overflow-y-auto">
       <div class="bg-secondary-50 mx-auto w-full max-w-xl rounded-2xl p-2">
         <div class="text-secondary-900 flex justify-center align-baseline">

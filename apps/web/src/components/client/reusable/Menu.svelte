@@ -42,7 +42,7 @@
   });
 </script>
 
-<div class="{position} inline-block text-left {id}">
+<div class="{position} inline-block text-left {id} z-50">
   {#if iconButton}
     <button
       on:click={toggleMenu}

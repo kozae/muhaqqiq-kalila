@@ -8,16 +8,16 @@
     "lint": "eslint *.ts*"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.198",
-    "eslint": "^8.49.0",
+    "@types/lodash": "^4.17.0",
+    "eslint": "^8.57.0",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5",
-    "@types/uuid": "^9.0.4",
-    "dexie": "^3.2.4",
+    "@reduxjs/toolkit": "^2.2.1",
+    "@types/uuid": "^9.0.8",
+    "dexie": "^3.2.6",
     "dexie-observable": "4.0.1-beta.13",
     "kalila-graphql": "workspace:*",
     "lodash": "^4.17.21",

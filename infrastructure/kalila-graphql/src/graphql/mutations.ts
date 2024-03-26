@@ -172,6 +172,7 @@ export const createMedium = /* GraphQL */ `mutation CreateMedium($input: CreateM
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -204,197 +205,8 @@ export const createLineDetectionJob = /* GraphQL */ `mutation CreateLineDetectio
   APITypes.CreateLineDetectionJobMutationVariables,
   APITypes.CreateLineDetectionJobMutation
 >;
-export const updatePageInfo = /* GraphQL */ `mutation UpdatePageInfo($id: ID!, $input: PageInfoUpdateInput!) {
-  updatePageInfo(id: $id, input: $input) {
-    id
-    mediumId
-    number
-    image
-    commentary
-    foliation
-    pagination
-    tags
-    images {
-      id
-      pageId
-      unitId
-      legendId
-      legend {
-        id
-        pageId
-        order
-        position
-        region
-        lines {
-          id
-          elementId
-          order
-          region
-          states
-          tokens
-          lemmas
-          version
-          __typename
-        }
-        version
-        __typename
-      }
-      location
-      motifs
-      order
-      position
-      region
-      style
-      version
-      __typename
-    }
-    text {
-      id
-      pageId
-      order
-      position
-      region
-      lines {
-        id
-        elementId
-        order
-        region
-        states
-        tokens
-        lemmas
-        version
-        __typename
-      }
-      version
-      __typename
-    }
-    segments {
-      id
-      mediumId
-      unitId
-      unit {
-        bookId
-        id
-        commentary
-        divider
-        frame
-        motifs
-        order
-        title
-        topics
-        variant
-        version
-        __typename
-      }
-      startPage
-      startLine
-      startToken
-      endPage
-      endLine
-      endToken
-      lacuna
-      tags
-      type
-      content {
-        tokens
-        lines
-        pages
-        breaks
-        __typename
-      }
-      version
-      __typename
-    }
-    openSegments {
-      id
-      mediumId
-      unitId
-      unit {
-        bookId
-        id
-        commentary
-        divider
-        frame
-        motifs
-        order
-        title
-        topics
-        variant
-        version
-        __typename
-      }
-      startPage
-      startLine
-      startToken
-      endPage
-      endLine
-      endToken
-      lacuna
-      tags
-      type
-      content {
-        tokens
-        lines
-        pages
-        breaks
-        __typename
-      }
-      version
-      __typename
-    }
-    endingSegments {
-      id
-      mediumId
-      unitId
-      unit {
-        bookId
-        id
-        commentary
-        divider
-        frame
-        motifs
-        order
-        title
-        topics
-        variant
-        version
-        __typename
-      }
-      startPage
-      startLine
-      startToken
-      endPage
-      endLine
-      endToken
-      lacuna
-      tags
-      type
-      content {
-        tokens
-        lines
-        pages
-        breaks
-        __typename
-      }
-      version
-      __typename
-    }
-    editor
-    version
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.UpdatePageInfoMutationVariables,
-  APITypes.UpdatePageInfoMutation
->;
-export const updatePage = /* GraphQL */ `mutation UpdatePage(
-  $id: ID!
-  $mediumId: ID!
-  $number: Int!
-  $update: PageUpdateInput!
-) {
-  updatePage(id: $id, mediumId: $mediumId, number: $number, update: $update)
+export const updatePage = /* GraphQL */ `mutation UpdatePage($update: PageUpdateInput!) {
+  updatePage(update: $update)
 }
 ` as GeneratedMutation<
   APITypes.UpdatePageMutationVariables,
@@ -420,4 +232,18 @@ export const deleteUnit = /* GraphQL */ `mutation DeleteUnit($input: DeleteUnitI
 ` as GeneratedMutation<
   APITypes.DeleteUnitMutationVariables,
   APITypes.DeleteUnitMutation
+>;
+export const updateCollationUnits = /* GraphQL */ `mutation UpdateCollationUnits($units: String!) {
+  updateCollationUnits(units: $units)
+}
+` as GeneratedMutation<
+  APITypes.UpdateCollationUnitsMutationVariables,
+  APITypes.UpdateCollationUnitsMutation
+>;
+export const updateCollationSegments = /* GraphQL */ `mutation UpdateCollationSegments($segments: [String]!) {
+  updateCollationSegments(segments: $segments)
+}
+` as GeneratedMutation<
+  APITypes.UpdateCollationSegmentsMutationVariables,
+  APITypes.UpdateCollationSegmentsMutation
 >;

@@ -83,21 +83,17 @@ type Mutation {
   createLineDetectionJob(input: LineDetectionJobInput!): LineDetectionJob
     
 
-  updatePageInfo(id: ID!, input: PageInfoUpdateInput!): Page
-    
-
-  updatePage(
-    id: ID!
-    mediumId: ID!
-    number: Int!
-    update: PageUpdateInput!
-  ): String 
+  updatePage(update: PageUpdateInput!): String 
 
   createUnit(input: CreateUnitInput!): String 
 
   updateUnit(input: UpdateUnitInput!): String 
 
   deleteUnit(input: DeleteUnitInput!): String 
+
+  updateCollationUnits(units: String!): String 
+  updateCollationSegments(segments: [String]!): String
+    
 }
 
 type Subscription {
@@ -149,7 +145,7 @@ type Medium {
 type ChapterCollation {
   id: ID!
   chapter: String!
-  name: String
+  title: String
   mediumIds: [String]
   editor: String
   version: AWSTimestamp
@@ -201,6 +197,7 @@ type SegmentContent {
   lines: [Int]
   pages: [Int]
   breaks: [Boolean]
+  regions: [[Int]]
 }
 
 type SegmentUnitConnection {
@@ -332,6 +329,7 @@ enum Sources {
   lemmas
   mutation_lambda
   search_lambda
+  collation_lambda
 }
 enum MediaFormat {
   DIGITAL
@@ -407,6 +405,8 @@ input LineDetectionJobInput {
   state: Int!
 }
 
+# page update
+
 input PageInfoUpdateInput {
   foliation: String
   pagination: Int
@@ -415,51 +415,43 @@ input PageInfoUpdateInput {
   image: String
 }
 
-input PageUpdateInput {
-  image: String
-  commentary: [String]
-  foliation: String
-  pagination: Int
-  tags: [String]
-  images: [ImageUpdateInput]
-  text: [TextUpdateInput]
-  segments: [SegmentUpdateInput]
-  editor: String
-  version: AWSTimestamp
+input LemmaData {
+  id: ID!
+  lemmas: [String!]!
+  line: Int!
 }
 
-input TextUpdateInput {
+input TextElementInput {
   id: ID!
   order: Int!
   position: String!
-  region: [Int]
-  lines: [LineUpdateInput]
+  region: [Int!]!
 }
 
-input LineUpdateInput {
+input LineInput {
   id: ID!
   elementId: ID!
   order: Int!
-  region: [Int]
-  states: [String]
-  tokens: [String]
+  region: [Int!]!
+  states: [String!]!
+  tokens: [String!]!
 }
 
-input ImageUpdateInput {
+input ImageInput {
   id: ID!
   unitId: ID
   legendId: ID
-  location: [Int]
-  motifs: [String]
+  legend: String
+  location: [Int!]!
+  motifs: String
   order: Int!
   position: String!
-  region: [Int]
-  style: [String]
+  region: [Int!]!
+  style: String
 }
 
-input SegmentUpdateInput {
+input SegmentInput {
   id: ID!
-  mediumId: ID!
   unitId: ID!
   startPage: Int!
   startLine: Int!
@@ -467,7 +459,21 @@ input SegmentUpdateInput {
   endPage: Int!
   endLine: Int
   endToken: Int
-  lacuna: Boolean
-  tags: [String]
-  type: String
+  lacuna: Boolean!
+  tags: String
+  type: String!
+}
+
+input PageUpdateInput {
+  id: ID!
+  mediumId: ID!
+  number: Int!
+  info: PageInfoUpdateInput
+  lemmas: [LemmaData!]
+  text: [TextElementInput!]
+  images: [ImageInput!]
+  bodyLines: [LineInput!]
+  marginLines: [LineInput!]
+  segments: [SegmentInput!]
+  version: AWSTimestamp!
 }

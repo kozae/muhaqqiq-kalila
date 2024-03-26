@@ -8,15 +8,15 @@
     "lint": "eslint *.ts*"
   },
   "devDependencies": {
-    "eslint": "^8.49.0",
+    "eslint": "^8.57.0",
     "eslint-config-custom": "workspace:*",
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
-    "nanostores": "^0.9.3"
+    "clsx": "^2.1.0",
+    "nanostores": "^0.10.0"
   }
 }

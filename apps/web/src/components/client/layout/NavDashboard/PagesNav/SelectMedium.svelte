@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useQuery } from "@sveltestack/svelte-query";
-  import { API } from "aws-amplify";
-  import { type GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
+  import { generateClient } from "aws-amplify/api";
+  import { type GraphQLQuery } from "@aws-amplify/api";
   import { type GetBookQuery } from "kalila-graphql";
   import Loading from "@client/reusable/Loading.svelte";
 
@@ -27,10 +27,11 @@
   export let mediumId: string | undefined = undefined;
 
   const queryResult = useQuery(`get_${bookId}_media`, async () => {
-    const response = await API.graphql<GraphQLQuery<GetBookQuery>>({
+    const client = generateClient();
+    const response = await client.graphql<GraphQLQuery<GetBookQuery>>({
       query: getBook,
       variables: { id: bookId },
-      authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      authMode: "userPool",
     });
     return {
       media: response.data?.getBook?.media?.items,

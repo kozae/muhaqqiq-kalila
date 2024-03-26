@@ -17,7 +17,7 @@
   const dispatch = createEventDispatcher();
   const pageId: string = getContext("id");
   const url = regionUrl.pipe(
-    filter((v) => v.pageId === pageId && v.id.startsWith("preview")),
+    filter((v) => v.pageId === pageId && v.id.includes("preview")),
     map((v) => v.region),
   );
 

@@ -214,6 +214,7 @@ export const getMedium = /* GraphQL */ `query GetMedium($id: ID!) {
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -421,6 +422,7 @@ export const getUnit = /* GraphQL */ `query GetUnit($id: ID!) {
         lines
         pages
         breaks
+        regions
         __typename
       }
       version
@@ -533,6 +535,7 @@ export const listUnits = /* GraphQL */ `query ListUnits(
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -642,6 +645,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
         lines
         pages
         breaks
+        regions
         __typename
       }
       version
@@ -679,6 +683,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
         lines
         pages
         breaks
+        regions
         __typename
       }
       version
@@ -716,6 +721,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
         lines
         pages
         breaks
+        regions
         __typename
       }
       version
@@ -827,6 +833,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -864,6 +871,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -901,6 +909,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
           lines
           pages
           breaks
+          regions
           __typename
         }
         version
@@ -951,6 +960,7 @@ export const getSegment = /* GraphQL */ `query GetSegment($id: ID!) {
       lines
       pages
       breaks
+      regions
       __typename
     }
     version
@@ -1009,6 +1019,7 @@ export const listMediumSegments = /* GraphQL */ `query ListMediumSegments(
         lines
         pages
         breaks
+        regions
         __typename
       }
       version
@@ -1026,7 +1037,7 @@ export const getChapterCollation = /* GraphQL */ `query GetChapterCollation($id:
   getChapterCollation(id: $id) {
     id
     chapter
-    name
+    title
     mediumIds
     editor
     version
@@ -1041,7 +1052,7 @@ export const listChapterCollations = /* GraphQL */ `query ListChapterCollations 
   listChapterCollations {
     id
     chapter
-    name
+    title
     mediumIds
     editor
     version

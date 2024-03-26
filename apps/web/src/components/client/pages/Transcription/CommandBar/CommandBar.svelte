@@ -16,8 +16,14 @@
   import { selectedTextClass } from "../selected-text-class";
   import { editorStats, actions } from "../event-hubs";
   import Menu from "@client/reusable/Menu.svelte";
+  import { segmentsEnabledToggle } from "../segment-markers-toggle";
 
-  let isEnabled = false;
+  export let segmentsChangable = true;
+
+  let previewEnabled = false;
+  let segmentsEnabled = segmentsChangable ? false : true;
+
+  $: segmentsEnabledToggle.update(() => segmentsEnabled);
 
   let previewTraget: HTMLElement | null = null;
   const throttleDrag = 1;
@@ -93,13 +99,20 @@
     >
   </div>
 
-  <Switch labelLeft="Previews" bind:isEnabled>
+  <Switch labelLeft="Previews" bind:isEnabled={previewEnabled}>
     <EyeSlashIcon slot="disabled" className="h-4 w-4 text-gray-500" />
     <EyeIcon slot="enabled" className="h-4 w-4 text-primary-600" />
   </Switch>
+
+  {#if segmentsChangable}
+    <Switch labelLeft="Segments" bind:isEnabled={segmentsEnabled}>
+      <EyeSlashIcon slot="disabled" className="h-4 w-4 text-gray-500" />
+      <EyeIcon slot="enabled" className="h-4 w-4 text-primary-600" />
+    </Switch>
+  {/if}
 </CommandBarContainer>
 
-{#if isEnabled}
+{#if previewEnabled}
   <div
     bind:this={previewTraget}
     class="fixed top-0 left-0 z-50 h-fit w-fit"
@@ -108,7 +121,7 @@
     <RegionPreview
       element={$el$}
       image={$url}
-      on:close={() => (isEnabled = false)}
+      on:close={() => (previewEnabled = false)}
     />
   </div>
   <Moveable

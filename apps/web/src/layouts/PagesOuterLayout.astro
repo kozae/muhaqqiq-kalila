@@ -5,6 +5,9 @@ import { getDataEntryById, getCollection } from "astro:content";
 import lodash from "lodash";
 import TableCellsIcon from "@icons/TableCellsIcon.svelte";
 import GoToButton from "@client/pages/GoToButton.svelte";
+import FullPageLoadingIndicator from "@client/reusable/FullPageLoadingIndicator.svelte";
+import UserControls from "@client/layout/TopNav/UserControls.svelte";
+import ArrowLeftFromBox from "@icons/ArrowLeftFromBox.svelte";
 interface Props {
   mediumId: string;
   pageId?: string;
@@ -27,6 +30,7 @@ const ids = sortedPages.map((p) => p!.id) ?? [];
 ---
 
 <SiteLayout title={`Edit ${siglum} Pages`} transitions={transitions}>
+  <FullPageLoadingIndicator client:only />
   <nav
     class="bg-secondary-50 fixed left-0 top-0 z-10 flex h-full w-[80px] flex-col items-center"
   >
@@ -58,6 +62,16 @@ const ids = sortedPages.map((p) => p!.id) ?? [];
       hrefSuffix={tool}
       ids={ids}
     />
+
+    <div class="flex-grow"></div>
+    <div
+      class="flex items-center justify-center h-[70px] w-[70px] rounded-full bg-cover bg-center bg-no-repeat mb-10"
+      style="background-image: url('/avatars/mk.png')"
+    >
+    </div>
+    <div class="mb-10">
+      <ArrowLeftFromBox />
+    </div>
   </nav>
   <main
     class="flex flex-col w-[calc(100%-80px)] grow rounded bg-white p-1 ml-[80px]"

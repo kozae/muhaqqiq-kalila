@@ -38,7 +38,7 @@ interface IKalilaApiStackProps extends StackProps {
 }
 
 type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
-type KalilaLamdas = Record<"mutationHandler" | 'searchHandler', LambdaFunction>;
+type KalilaLamdas = Record<"mutationHandler" | 'searchHandler' | 'collationHandler', LambdaFunction>;
 
 export class KalilaApiStack extends Stack {
   private readonly schemaPath: string;
@@ -77,6 +77,11 @@ export class KalilaApiStack extends Stack {
       this.lambdas.searchHandler,
     );
 
+    const collationLambdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
+      "CollationHandler",
+      this.lambdas.collationHandler,
+    );
+
     for (const { parent, name, source } of extractFieldsWithSource(
       this.schemaPath,
     )) {
@@ -84,6 +89,8 @@ export class KalilaApiStack extends Stack {
         this.createLambdaResolver(parent, name, mutationLambdaDataSource);
       } else if (source === 'search_lambda') {
         this.createLambdaResolver(parent, name, searchLambdaDataSource);
+      } else if (source === 'collation_lambda') {
+        this.createLambdaResolver(parent, name, collationLambdaDataSource);
       } else {
         this.createResolver(parent, name, this.dataSources[source]);
       }
@@ -98,7 +105,9 @@ export class KalilaApiStack extends Stack {
     createSchemaFileWithoutSourceDirective(this.schemaPath, "schema.graphql");
     return new GraphqlApi(this, "KalilaApi", {
       name: `kalila-api_${this.stage}`,
-      schema: SchemaFile.fromAsset("schema.graphql"),
+      definition: {
+        schema: SchemaFile.fromAsset("schema.graphql"),
+      },
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.USER_POOL,
@@ -133,7 +142,8 @@ export class KalilaApiStack extends Stack {
       architecture: Architecture.ARM_64,
       runtime: Runtime.PROVIDED_AL2,
       handler: "does_not_matter",
-
+      timeout: Duration.seconds(10),
+      memorySize: 512,
       functionName: `kalila-mutation-handler_${this.stage}`,
       environment: {
         PAGES: names.pages,
@@ -142,6 +152,9 @@ export class KalilaApiStack extends Stack {
         IMAGES: names.images,
         UNITS: names.units,
         SEGMENTS: names.segments,
+        SEGMENT_CONTENTS: names.segmentContents,
+        LEMMAS: names.lemmas,
+        INVERTED_LEMMAS: names.invertedLemmas,
       },
     });
     for (const table of Object.values(this.tables)) {
@@ -186,7 +199,44 @@ export class KalilaApiStack extends Stack {
       );
     }
 
-    return { mutationHandler, searchHandler };
+    const collationHandler = this.createCollationContentUpdater(names);
+    return { mutationHandler, searchHandler, collationHandler };
+  }
+
+  private createCollationContentUpdater(tableNames: IKalilaTableInfo) {
+    const handler = new LambdaFunction(this, "KalilaCollationContentUpdater", {
+      code: LambdaCode.fromAsset("../../../kalila-rs/target/lambda/collation_content_updater"),
+      architecture: Architecture.ARM_64,
+      runtime: Runtime.PROVIDED_AL2,
+      timeout: Duration.seconds(10),
+      memorySize: 1024,
+      handler: "does_not_matter",
+      functionName: `kalila-collation-content-updater_${this.stage}`,
+      environment: {
+        UNIT: tableNames.units,
+        SEGMENT: tableNames.segments,
+        PAGE: tableNames.pages,
+        MEDIUM: tableNames.media,
+        COLLATION: tableNames.chapterCollations,
+        STAGE: this.stage,
+      },
+    });
+
+    handler.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["s3:*"],
+        resources: ["arn:aws:s3:::*"],
+      }),
+    );
+
+    handler.addToRolePolicy(
+      new PolicyStatement({
+        actions: ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+        resources: ["*"],
+      }),
+    );
+
+    return handler;
   }
 
   private createDataSources() {

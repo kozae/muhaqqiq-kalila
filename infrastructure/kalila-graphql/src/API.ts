@@ -152,6 +152,7 @@ export type SegmentContent = {
   lines?: Array< number | null > | null,
   pages?: Array< number | null > | null,
   breaks?: Array< boolean | null > | null,
+  regions?: Array< Array< number | null > | null > | null,
 };
 
 export type SegmentList = {
@@ -186,6 +187,20 @@ export type LineDetectionJob = {
   parameters?: string | null,
 };
 
+export type PageUpdateInput = {
+  id: string,
+  mediumId: string,
+  number: number,
+  info?: PageInfoUpdateInput | null,
+  lemmas?: Array< LemmaData > | null,
+  text?: Array< TextElementInput > | null,
+  images?: Array< ImageInput > | null,
+  bodyLines?: Array< LineInput > | null,
+  marginLines?: Array< LineInput > | null,
+  segments?: Array< SegmentInput > | null,
+  version: number,
+};
+
 export type PageInfoUpdateInput = {
   foliation?: string | null,
   pagination?: number | null,
@@ -194,51 +209,43 @@ export type PageInfoUpdateInput = {
   image?: string | null,
 };
 
-export type PageUpdateInput = {
-  image?: string | null,
-  commentary?: Array< string | null > | null,
-  foliation?: string | null,
-  pagination?: number | null,
-  tags?: Array< string | null > | null,
-  images?: Array< ImageUpdateInput | null > | null,
-  text?: Array< TextUpdateInput | null > | null,
-  segments?: Array< SegmentUpdateInput | null > | null,
-  editor?: string | null,
-  version?: number | null,
+export type LemmaData = {
+  id: string,
+  lemmas: Array< string >,
+  line: number,
 };
 
-export type ImageUpdateInput = {
+export type TextElementInput = {
+  id: string,
+  order: number,
+  position: string,
+  region: Array< number >,
+};
+
+export type ImageInput = {
   id: string,
   unitId?: string | null,
   legendId?: string | null,
-  location?: Array< number | null > | null,
-  motifs?: Array< string | null > | null,
+  legend?: string | null,
+  location: Array< number >,
+  motifs?: string | null,
   order: number,
   position: string,
-  region?: Array< number | null > | null,
-  style?: Array< string | null > | null,
+  region: Array< number >,
+  style?: string | null,
 };
 
-export type TextUpdateInput = {
-  id: string,
-  order: number,
-  position: string,
-  region?: Array< number | null > | null,
-  lines?: Array< LineUpdateInput | null > | null,
-};
-
-export type LineUpdateInput = {
+export type LineInput = {
   id: string,
   elementId: string,
   order: number,
-  region?: Array< number | null > | null,
-  states?: Array< string | null > | null,
-  tokens?: Array< string | null > | null,
+  region: Array< number >,
+  states: Array< string >,
+  tokens: Array< string >,
 };
 
-export type SegmentUpdateInput = {
+export type SegmentInput = {
   id: string,
-  mediumId: string,
   unitId: string,
   startPage: number,
   startLine: number,
@@ -246,9 +253,9 @@ export type SegmentUpdateInput = {
   endPage: number,
   endLine?: number | null,
   endToken?: number | null,
-  lacuna?: boolean | null,
-  tags?: Array< string | null > | null,
-  type?: string | null,
+  lacuna: boolean,
+  tags?: string | null,
+  type: string,
 };
 
 export type CreateUnitInput = {
@@ -303,6 +310,7 @@ export enum Sources {
   lemmas = "lemmas",
   mutation_lambda = "mutation_lambda",
   search_lambda = "search_lambda",
+  collation_lambda = "collation_lambda",
 }
 
 
@@ -347,7 +355,7 @@ export type ChapterCollation = {
   __typename: "ChapterCollation",
   id: string,
   chapter: string,
-  name?: string | null,
+  title?: string | null,
   mediumIds?: Array< string | null > | null,
   editor?: string | null,
   version?: number | null,
@@ -540,6 +548,7 @@ export type CreateMediumMutation = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null >,
@@ -566,196 +575,7 @@ export type CreateLineDetectionJobMutation = {
   } | null,
 };
 
-export type UpdatePageInfoMutationVariables = {
-  id: string,
-  input: PageInfoUpdateInput,
-};
-
-export type UpdatePageInfoMutation = {
-  updatePageInfo?:  {
-    __typename: "Page",
-    id: string,
-    mediumId: string,
-    number: number,
-    image?: string | null,
-    commentary?: Array< string | null > | null,
-    foliation?: string | null,
-    pagination?: number | null,
-    tags?: Array< string | null > | null,
-    images?:  Array< {
-      __typename: "Image",
-      id: string,
-      pageId: string,
-      unitId?: string | null,
-      legendId?: string | null,
-      legend?:  {
-        __typename: "TextElement",
-        id: string,
-        pageId: string,
-        order: number,
-        position?: string | null,
-        region?: Array< number | null > | null,
-        lines?:  Array< {
-          __typename: "Line",
-          id: string,
-          elementId: string,
-          order: number,
-          region?: Array< number | null > | null,
-          states?: Array< string | null > | null,
-          tokens?: Array< string | null > | null,
-          lemmas?: Array< string | null > | null,
-          version?: number | null,
-        } | null > | null,
-        version?: number | null,
-      } | null,
-      location?: Array< number | null > | null,
-      motifs?: Array< string | null > | null,
-      order: number,
-      position?: string | null,
-      region?: Array< number | null > | null,
-      style?: Array< string | null > | null,
-      version?: number | null,
-    } | null > | null,
-    text?:  Array< {
-      __typename: "TextElement",
-      id: string,
-      pageId: string,
-      order: number,
-      position?: string | null,
-      region?: Array< number | null > | null,
-      lines?:  Array< {
-        __typename: "Line",
-        id: string,
-        elementId: string,
-        order: number,
-        region?: Array< number | null > | null,
-        states?: Array< string | null > | null,
-        tokens?: Array< string | null > | null,
-        lemmas?: Array< string | null > | null,
-        version?: number | null,
-      } | null > | null,
-      version?: number | null,
-    } | null > | null,
-    segments?:  Array< {
-      __typename: "Segment",
-      id: string,
-      mediumId: string,
-      unitId: string,
-      unit?:  {
-        __typename: "SegmentUnitConnection",
-        bookId: string,
-        id: string,
-        commentary?: string | null,
-        divider?: boolean | null,
-        frame?: string | null,
-        motifs?: Array< string | null > | null,
-        order: number,
-        title: string,
-        topics?: Array< string | null > | null,
-        variant?: string | null,
-        version?: number | null,
-      } | null,
-      startPage: number,
-      startLine: number,
-      startToken: number,
-      endPage: number,
-      endLine?: number | null,
-      endToken?: number | null,
-      lacuna?: boolean | null,
-      tags?: Array< string | null > | null,
-      type?: string | null,
-      content?:  {
-        __typename: "SegmentContent",
-        tokens?: Array< Array< string | null > | null > | null,
-        lines?: Array< number | null > | null,
-        pages?: Array< number | null > | null,
-        breaks?: Array< boolean | null > | null,
-      } | null,
-      version?: number | null,
-    } | null > | null,
-    openSegments?:  Array< {
-      __typename: "Segment",
-      id: string,
-      mediumId: string,
-      unitId: string,
-      unit?:  {
-        __typename: "SegmentUnitConnection",
-        bookId: string,
-        id: string,
-        commentary?: string | null,
-        divider?: boolean | null,
-        frame?: string | null,
-        motifs?: Array< string | null > | null,
-        order: number,
-        title: string,
-        topics?: Array< string | null > | null,
-        variant?: string | null,
-        version?: number | null,
-      } | null,
-      startPage: number,
-      startLine: number,
-      startToken: number,
-      endPage: number,
-      endLine?: number | null,
-      endToken?: number | null,
-      lacuna?: boolean | null,
-      tags?: Array< string | null > | null,
-      type?: string | null,
-      content?:  {
-        __typename: "SegmentContent",
-        tokens?: Array< Array< string | null > | null > | null,
-        lines?: Array< number | null > | null,
-        pages?: Array< number | null > | null,
-        breaks?: Array< boolean | null > | null,
-      } | null,
-      version?: number | null,
-    } | null > | null,
-    endingSegments?:  Array< {
-      __typename: "Segment",
-      id: string,
-      mediumId: string,
-      unitId: string,
-      unit?:  {
-        __typename: "SegmentUnitConnection",
-        bookId: string,
-        id: string,
-        commentary?: string | null,
-        divider?: boolean | null,
-        frame?: string | null,
-        motifs?: Array< string | null > | null,
-        order: number,
-        title: string,
-        topics?: Array< string | null > | null,
-        variant?: string | null,
-        version?: number | null,
-      } | null,
-      startPage: number,
-      startLine: number,
-      startToken: number,
-      endPage: number,
-      endLine?: number | null,
-      endToken?: number | null,
-      lacuna?: boolean | null,
-      tags?: Array< string | null > | null,
-      type?: string | null,
-      content?:  {
-        __typename: "SegmentContent",
-        tokens?: Array< Array< string | null > | null > | null,
-        lines?: Array< number | null > | null,
-        pages?: Array< number | null > | null,
-        breaks?: Array< boolean | null > | null,
-      } | null,
-      version?: number | null,
-    } | null > | null,
-    editor?: string | null,
-    version?: number | null,
-  } | null,
-};
-
 export type UpdatePageMutationVariables = {
-  id: string,
-  mediumId: string,
-  number: number,
   update: PageUpdateInput,
 };
 
@@ -785,6 +605,22 @@ export type DeleteUnitMutationVariables = {
 
 export type DeleteUnitMutation = {
   deleteUnit?: string | null,
+};
+
+export type UpdateCollationUnitsMutationVariables = {
+  units: string,
+};
+
+export type UpdateCollationUnitsMutation = {
+  updateCollationUnits?: string | null,
+};
+
+export type UpdateCollationSegmentsMutationVariables = {
+  segments: Array< string | null >,
+};
+
+export type UpdateCollationSegmentsMutation = {
+  updateCollationSegments?: string | null,
 };
 
 export type GetItemCountQueryVariables = {
@@ -835,6 +671,9 @@ export type GetBookQuery = {
     editor?: string | null,
     version?: number | null,
   } | null,
+};
+
+export type ListBooksQueryVariables = {
 };
 
 export type ListBooksQuery = {
@@ -1006,6 +845,7 @@ export type GetMediumQuery = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null >,
@@ -1215,6 +1055,7 @@ export type GetUnitQuery = {
         lines?: Array< number | null > | null,
         pages?: Array< number | null > | null,
         breaks?: Array< boolean | null > | null,
+        regions?: Array< Array< number | null > | null > | null,
       } | null,
       version?: number | null,
     } | null > | null,
@@ -1323,6 +1164,7 @@ export type ListUnitsQuery = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null > | null,
@@ -1435,6 +1277,7 @@ export type GetPageQuery = {
         lines?: Array< number | null > | null,
         pages?: Array< number | null > | null,
         breaks?: Array< boolean | null > | null,
+        regions?: Array< Array< number | null > | null > | null,
       } | null,
       version?: number | null,
     } | null > | null,
@@ -1472,6 +1315,7 @@ export type GetPageQuery = {
         lines?: Array< number | null > | null,
         pages?: Array< number | null > | null,
         breaks?: Array< boolean | null > | null,
+        regions?: Array< Array< number | null > | null > | null,
       } | null,
       version?: number | null,
     } | null > | null,
@@ -1509,6 +1353,7 @@ export type GetPageQuery = {
         lines?: Array< number | null > | null,
         pages?: Array< number | null > | null,
         breaks?: Array< boolean | null > | null,
+        regions?: Array< Array< number | null > | null > | null,
       } | null,
       version?: number | null,
     } | null > | null,
@@ -1616,6 +1461,7 @@ export type ListMediumPagesQuery = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null > | null,
@@ -1653,6 +1499,7 @@ export type ListMediumPagesQuery = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null > | null,
@@ -1690,6 +1537,7 @@ export type ListMediumPagesQuery = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null > | null,
@@ -1739,6 +1587,7 @@ export type GetSegmentQuery = {
       lines?: Array< number | null > | null,
       pages?: Array< number | null > | null,
       breaks?: Array< boolean | null > | null,
+      regions?: Array< Array< number | null > | null > | null,
     } | null,
     version?: number | null,
   } | null,
@@ -1790,6 +1639,7 @@ export type ListMediumSegmentsQuery = {
         lines?: Array< number | null > | null,
         pages?: Array< number | null > | null,
         breaks?: Array< boolean | null > | null,
+        regions?: Array< Array< number | null > | null > | null,
       } | null,
       version?: number | null,
     } | null >,
@@ -1806,11 +1656,14 @@ export type GetChapterCollationQuery = {
     __typename: "ChapterCollation",
     id: string,
     chapter: string,
-    name?: string | null,
+    title?: string | null,
     mediumIds?: Array< string | null > | null,
     editor?: string | null,
     version?: number | null,
   } | null,
+};
+
+export type ListChapterCollationsQueryVariables = {
 };
 
 export type ListChapterCollationsQuery = {
@@ -1818,11 +1671,14 @@ export type ListChapterCollationsQuery = {
     __typename: "ChapterCollation",
     id: string,
     chapter: string,
-    name?: string | null,
+    title?: string | null,
     mediumIds?: Array< string | null > | null,
     editor?: string | null,
     version?: number | null,
   } | null > | null,
+};
+
+export type ListLineDetectionJobsQueryVariables = {
 };
 
 export type ListLineDetectionJobsQuery = {
@@ -1877,6 +1733,9 @@ export type SearchByLemmaQuery = {
       token?: number | null,
     } | null,
   } | null > | null,
+};
+
+export type OnCreateBookSubscriptionVariables = {
 };
 
 export type OnCreateBookSubscription = {
@@ -2048,6 +1907,7 @@ export type OnCreateMediumSubscription = {
           lines?: Array< number | null > | null,
           pages?: Array< number | null > | null,
           breaks?: Array< boolean | null > | null,
+          regions?: Array< Array< number | null > | null > | null,
         } | null,
         version?: number | null,
       } | null >,

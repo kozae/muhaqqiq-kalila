@@ -29,9 +29,10 @@
   onDestroy(() => {
     sub.forEach((s) => s.unsubscribe());
   });
+  export let segmentsChangable = true;
 </script>
 
-<CommandBar />
+<CommandBar {segmentsChangable} />
 <div class="flex h-[calc(100vh-150px)] flex-col">
   <Editor />
   <AuxDisplay />

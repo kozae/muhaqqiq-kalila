@@ -5,7 +5,7 @@
   import CircleSlashIcon from "@icons/CircleSlashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
   import { selectedUnit, showEditModal } from "../modal-states";
-  import { insertSegment } from "../../segment-watcher";
+  import { insertSegment } from "../../../Transcription/segment-watcher";
 
   export let unit: UnitEntity;
   export let hasEnd: boolean = false;

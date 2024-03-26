@@ -1,5 +1,5 @@
-import { API } from "aws-amplify";
-import { GRAPHQL_AUTH_MODE, type GraphQLQuery } from "@aws-amplify/api";
+import { generateClient } from "aws-amplify/api";
+import { type GraphQLQuery } from "@aws-amplify/api";
 import {
   deleteUnit,
   createUnit,
@@ -12,26 +12,29 @@ import {
   type UpdateUnitInput,
 } from "kalila-graphql";
 
+const client = generateClient();
+
+
 export async function requestDelete(input: DeleteUnitInput) {
-  await API.graphql<GraphQLQuery<DeleteUnitMutation>>({
+  await client.graphql<GraphQLQuery<DeleteUnitMutation>>({
     query: deleteUnit,
     variables: { input },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool",
   });
 }
 
 export async function requestCreate(input: CreateUnitInput) {
-  await API.graphql<GraphQLQuery<CreateUnitMutation>>({
+  await client.graphql<GraphQLQuery<CreateUnitMutation>>({
     query: createUnit,
     variables: { input },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool",
   });
 }
 
 export async function requestUpdate(input: UpdateUnitInput) {
-  await API.graphql<GraphQLQuery<UpdateUnitMutation>>({
+  await client.graphql<GraphQLQuery<UpdateUnitMutation>>({
     query: updateUnit,
     variables: { input },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool",
   });
 }

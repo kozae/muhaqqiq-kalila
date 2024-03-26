@@ -1,15 +1,16 @@
 <script lang="ts">
   import { useQuery } from "@sveltestack/svelte-query";
-  import { API } from "aws-amplify";
-  import { type GraphQLQuery, GRAPHQL_AUTH_MODE } from "@aws-amplify/api";
+  import { generateClient } from "aws-amplify/api";
+  import { type GraphQLQuery } from "@aws-amplify/api";
   import { listBooks, type ListBooksQuery } from "kalila-graphql";
   import Selector from "../Selector.svelte";
   import Loading from "@client/reusable/Loading.svelte";
   export let bookId: string | undefined = undefined;
   const queryResult = useQuery("listBooks", async () => {
-    const response = await API.graphql<GraphQLQuery<ListBooksQuery>>({
+    const client = generateClient();
+    const response = await client.graphql<GraphQLQuery<ListBooksQuery>>({
       query: listBooks,
-      authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      authMode: "userPool",
     });
     return response.data?.listBooks;
   });

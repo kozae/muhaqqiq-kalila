@@ -1,16 +1,16 @@
 <script lang="ts">
   import LockClosedIcon from "@icons/LockClosedIcon.svelte";
   import XCircleIcon from "@icons/XCircleIcon.svelte";
-  import { Auth } from "aws-amplify";
+  import { signIn as amplifySignIn } from "aws-amplify/auth";
 
   let username: string = "";
   let password: string = "";
   let error: boolean = false;
 
-  async function signIn(u: string, p: string): Promise<void> {
+  async function signIn(username: string, password: string): Promise<void> {
     error = false;
     try {
-      await Auth.signIn(u, p);
+      await amplifySignIn({ username, password });
       window.location.href = "/";
     } catch (e) {
       error = true;

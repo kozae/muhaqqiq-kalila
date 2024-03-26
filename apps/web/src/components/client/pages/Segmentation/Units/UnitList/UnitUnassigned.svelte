@@ -5,13 +5,13 @@
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import TrashIcon from "@icons/TrashIcon.svelte";
   import type { UnitEntity, UnitSegmentInfo } from "pages-tool-store-worker";
-  import { insertSegment } from "../../segment-watcher";
+  import { insertSegment } from "../../../Transcription/segment-watcher";
   import {
     selectedUnit,
     showDeleteModal,
     showEditModal,
   } from "../modal-states";
-  import { segmentWatcher } from "../../segment-watcher";
+  import { segmentWatcher } from "../../../Transcription/segment-watcher";
 
   export let unit: UnitEntity;
   let segments: (UnitSegmentInfo & { key: string })[] = [];

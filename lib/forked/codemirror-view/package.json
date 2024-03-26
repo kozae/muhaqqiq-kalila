@@ -26,12 +26,12 @@
   "sideEffects": false,
   "license": "MIT",
   "dependencies": {
-    "@codemirror/state": "^6.1.4",
+    "@codemirror/state": "^6.4.1",
     "style-mod": "workspace:*",
-    "w3c-keyname": "^2.2.4"
+    "w3c-keyname": "^2.2.8"
   },
   "devDependencies": {
-    "@codemirror/buildhelper": "^1.0.0"
+    "@codemirror/buildhelper": "^1.0.1"
   },
   "repository": {
     "type": "git",

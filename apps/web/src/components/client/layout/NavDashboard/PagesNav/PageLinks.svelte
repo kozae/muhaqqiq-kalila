@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { API, GRAPHQL_AUTH_MODE, type GraphQLQuery } from "@aws-amplify/api";
+  import { type GraphQLQuery } from "@aws-amplify/api";
   import { type GetMediumQuery, type Page } from "kalila-graphql";
   import { useQuery } from "@sveltestack/svelte-query";
   import InfoAlert from "@client/reusable/InfoAlert.svelte";
@@ -11,6 +11,7 @@
   import RectangleGroupIcon from "@icons/RectangleGroupIcon.svelte";
   import SquaresPlusIcon from "@icons/SquaresPlusIcon.svelte";
   import Loading from "@client/reusable/Loading.svelte";
+  import { generateClient } from "aws-amplify/api";
 
   const getMedium = /* GraphQL */ `
     query GetMedium($id: ID!) {
@@ -28,10 +29,11 @@
   export let mediumId: string = "";
 
   const queryResult = useQuery(`getMediumPages_${mediumId}`, async () => {
-    const response = await API.graphql<GraphQLQuery<GetMediumQuery>>({
+    const client = generateClient();
+    const response = await client.graphql<GraphQLQuery<GetMediumQuery>>({
       query: getMedium,
       variables: { id: mediumId },
-      authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+      authMode: "userPool",
     });
     return response.data?.getMedium;
   });

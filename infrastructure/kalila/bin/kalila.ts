@@ -58,7 +58,7 @@ new KalilaDataAggregationStack(
   {
     tableArns: dataStack.tableArns,
     tableStreamArns: dataStack.tableStreamArns,
-    itemCountTableName: dataStack.tableNames.itemCounts,
+    tableNames: dataStack.tableNames,
     env,
     stage: environment,
   },

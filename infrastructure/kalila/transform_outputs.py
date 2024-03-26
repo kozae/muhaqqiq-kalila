@@ -11,13 +11,15 @@ outputs = {item["OutputKey"]: item["OutputValue"] for item in all_outputs}
 
 config = {
     "Auth": {
-        "region": "eu-central-1",
-        "userPoolId": outputs.get("UserPoolId", ""),
-        "userPoolWebClientId": outputs.get("UserPoolClientId", ""),
-        "identityPoolId": outputs.get("IdentityPoolId", ""),
+        "Cognito": {
+            "region": "eu-central-1",
+            "userPoolId": outputs.get("UserPoolId", ""),
+            "userPoolClientId": outputs.get("UserPoolClientId", ""),
+            "identityPoolId": outputs.get("IdentityPoolId", ""),
+        }
     },
     "Storage": {
-        "AWSS3": {
+        "S3": {
             "bucket": outputs.get("BucketName", "kalila-pages"),
             "region": "eu-central-1",
         },

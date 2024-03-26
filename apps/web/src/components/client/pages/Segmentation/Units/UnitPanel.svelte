@@ -8,7 +8,7 @@
   import InfoAlert from "@client/reusable/InfoAlert.svelte";
   import UnitList from "./UnitList/UnitList.svelte";
   import { getContext } from "svelte";
-  import { segmentWatcher } from "../segment-watcher";
+  import { segmentWatcher } from "../../Transcription/segment-watcher";
   import { selectedUnit } from "./modal-states";
   import type { UnitEntity } from "pages-tool-store-worker";
   import CommandBar from "./CommandBar/CommandBar.svelte";
@@ -17,6 +17,7 @@
   import UpdateUnit from "./Modals/UpdateUnit.svelte";
 
   let currentChapter: IChapter | undefined = undefined;
+
   const mediumId: string = getContext("mediumId");
   const selector = source.selectUnits;
 
@@ -70,13 +71,11 @@
         return u;
       };
       if (filter && filter.length > 0) {
-        return units
-          .filter((u) =>
-            u.title.toLowerCase().includes(filter.toLocaleLowerCase()),
-          )
-          .map(attachSegment);
+        return units.filter((u) =>
+          u.title.toLowerCase().includes(filter.toLocaleLowerCase()),
+        );
       } else {
-        return units.map(attachSegment);
+        return units;
       }
     }),
   );

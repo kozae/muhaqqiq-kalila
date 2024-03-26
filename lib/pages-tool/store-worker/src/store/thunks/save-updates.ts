@@ -23,24 +23,8 @@ export const saveUpdates = createAsyncThunk<FetchedState, {}, ThunkApi>(
       openSegments: selectAllSegments(state.openSegments),
     };
 
-    const lemmas = await postPageForLemmatization({ page: { info: payload.info, lines: payload.lines } });
-
-    console.log(lemmas);
-
 
     return payload;
   }
 );
 
-async function postPageForLemmatization(data: any) {
-  const url = 'https://camel.kalila-and-dimna.de/lemmatize_page';
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
-
-  return await response.json();
-}

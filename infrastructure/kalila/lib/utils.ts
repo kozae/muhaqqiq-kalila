@@ -29,7 +29,7 @@ export type KalilaTableConstructs = Record<keyof IKalilaTableInfo, ITable>;
 interface FieldWithSource {
   parent: string;
   name: string;
-  source: (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda",
+  source: (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda" | "collation_lambda",
 }
 
 export function extractFieldsWithSource(

@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { rootSelector } from "./root-selector";
-import { selectAllSegments, selectAllUnits } from "../base-selectors";
+import { selectAllOpenSegments, selectAllSegments, selectAllUnits } from "../base-selectors";
 import lodash from "lodash";
 import {
   formatTokens,
@@ -42,6 +42,7 @@ const insertSegmentMarks = (
   tokenIndex: number,
   line: number,
 ) => {
+
   return [
     ...text.slice(0, tokenIndex),
     {
@@ -88,6 +89,18 @@ export const selectSegementationData = createSelector(rootSelector, (state) => {
               text,
               segFromPrevPage,
               "endFromPrev",
+              0,
+              line.order,
+            );
+            markCount++;
+          }
+          const openSegments = selectAllOpenSegments(state.openSegments).sort((a, b) => a.startPage - b.startPage).filter((seg) => seg.startPage < state.info!.number);
+          if (openSegments.length != 0) {
+            const nearestOpenSegment = openSegments[openSegments.length - 1];
+            text = insertSegmentMarks(
+              text,
+              nearestOpenSegment,
+              "open",
               0,
               line.order,
             );

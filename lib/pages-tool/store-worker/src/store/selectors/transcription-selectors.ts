@@ -1,8 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 import lodash from "lodash";
 import { formatTokens, toTitleCase, type LineEntity } from "..";
-import { selectAllLines, selectAllTextElements } from "../base-selectors";
+import { selectAllLines, selectAllSegments, selectAllTextElements } from "../base-selectors";
 import { rootSelector } from "./root-selector";
+import type { Segment } from "kalila-graphql";
 
 interface TranscriptionData {
   text: string[];
@@ -12,11 +13,15 @@ interface TranscriptionData {
   rotations: number[];
 }
 
+
 export const selectTranscriptionPanelData = createSelector(
   rootSelector,
   (state) => {
     const lineList = selectAllLines(state.lines);
     const textList = selectAllTextElements(state.text);
+    const segments = selectAllSegments(state.segments);
+    const segFromPrevPage = segments.find(seg => seg.startPage < state.info!.number && seg.endPage === state.info!.number);
+    const pageSegments = segments.filter(seg => seg.startPage === state.info!.number);
 
     const grouped = lodash.groupBy(
       lodash.orderBy(lineList, "order"),
@@ -30,15 +35,20 @@ export const selectTranscriptionPanelData = createSelector(
       rotations: [] as number[],
     };
 
+    const lineLens: Record<number, number> = {};
+    const tokenLens: Record<number, number[]> = {};
     const glosses: Record<string, TranscriptionData> = {};
     for (const el of textList) {
       if (el?.position?.startsWith("main") && grouped[el.id]) {
         for (const line of grouped[el.id]) {
+          tokenLens[line.order] = line.tokens!.map((t) => t!.length);
+          const lineText = formatTokens(
+            line!.tokens! as string[],
+            line!.states! as string[],
+          ).join(" ");
+          lineLens[line.order] = lineText.length;
           body.text.push(
-            formatTokens(
-              line!.tokens! as string[],
-              line!.states! as string[],
-            ).join(" "),
+            lineText
           );
           body.colors.push(line?.color ?? "#fff");
           body.ids.push(line?.id ?? "");
@@ -76,12 +86,27 @@ export const selectTranscriptionPanelData = createSelector(
         lines[l!.id] = l;
       });
 
+    const segmenstWithPositions: (Segment & { position: number })[] = []
+    for (const segment of pageSegments) {
+      let position = 0;
+      for (let lineOrder = 0; lineOrder < segment.startLine; lineOrder++) {
+        position += lineLens[lineOrder] ?? 0;
+        position += 1; // for the line break
+      }
+      for (let tokenOrder = 0; tokenOrder < segment.startToken; tokenOrder++) {
+        position += tokenLens[segment.startLine][tokenOrder] ?? 0;
+        position += 1; // for the space
+      }
+      segmenstWithPositions.push({ ...segment, position })
+    }
     return {
       body,
       glosses,
       id: state.info!.id,
       lines,
       hasGloss: Object.keys(glosses).length > 0,
+      segFromPrevPage,
+      segments: segmenstWithPositions
     };
   },
 );

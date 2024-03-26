@@ -36,3 +36,26 @@ export const selectElementLines = createSelector(
     return lineList.filter((l) => l.elementId === id);
   },
 );
+
+export const selectGroupedLines = createSelector(
+  rootSelector,
+  (state) => {
+    const textList = selectAllTextElements(state.text)
+    const lines = {
+      body: [] as LineEntity[],
+      margin: [] as LineEntity[],
+    }
+
+    for (const el of textList) {
+      const elementLines = selectElementLines(state, el.id);
+      if (el.position?.includes('main')) {
+        lines.body = [...lines.body, ...elementLines]
+      } else {
+        lines.margin = [...lines.margin, ...elementLines]
+      }
+    }
+
+    return lines;
+  },
+);
+

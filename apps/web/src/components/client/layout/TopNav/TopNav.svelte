@@ -1,21 +1,41 @@
-<script type="ts">
-  import { Auth } from "aws-amplify";
+<script lang="ts">
+  import {
+    fetchUserAttributes,
+    fetchAuthSession,
+    type AuthSession,
+    type FetchUserAttributesOutput,
+  } from "aws-amplify/auth";
   import UserControls from "./UserControls.svelte";
   import Loading from "../../reusable/Loading.svelte";
 
-  const sessionPromise = Auth.currentUserInfo();
+  function transform([{ tokens }, attributes]: [
+    AuthSession,
+    FetchUserAttributesOutput,
+  ]) {
+    return {
+      roles: tokens ? tokens.accessToken.payload["cognito:groups"] : [],
+      ...attributes,
+    };
+  }
+
+  const userPromise = Promise.all([
+    fetchAuthSession({ forceRefresh: true }),
+    fetchUserAttributes(),
+  ]);
 </script>
 
-{#await sessionPromise}
+{#await userPromise}
   <Loading classes="mr-3" />
-{:then session}
-  {#if session !== undefined && session !== null}
-    <UserControls session={session.attributes} />
+{:then user}
+  {#if user !== undefined && user !== null}
+    <UserControls user={transform(user)} />
   {:else}
     <a href="/sign-in" class="text-primary-500 p-4 font-bold">
       Sign in <span aria-hidden="true">&rarr;</span>
     </a>
   {/if}
 {:catch}
-  <p>error</p>
+  <a href="/sign-in" class="text-primary-500 p-4 font-bold">
+    Sign in <span aria-hidden="true">&rarr;</span>
+  </a>
 {/await}

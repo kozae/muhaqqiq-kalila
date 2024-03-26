@@ -172,6 +172,7 @@ export const onCreateMedium = /* GraphQL */ `subscription OnCreateMedium($bookId
           lines
           pages
           breaks
+          regions
           __typename
         }
         version

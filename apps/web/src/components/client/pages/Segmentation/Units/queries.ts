@@ -1,9 +1,8 @@
 import {
   type GraphQLQuery,
-  GRAPHQL_AUTH_MODE,
   type GraphQLResult,
 } from "@aws-amplify/api";
-import { API } from "aws-amplify";
+import { generateClient } from "aws-amplify/api";
 import type { ListUnitsQuery } from "kalila-graphql";
 import { Subject } from "rxjs";
 
@@ -84,10 +83,12 @@ const query = /* GraphQL */ `
 `;
 
 export async function listUnits(parentId: string, mediumId: string) {
-  const response = await API.graphql<GraphQLQuery<ListUnitsQuery>>({
+  const client = generateClient();
+
+  const response = await client.graphql<GraphQLQuery<ListUnitsQuery>>({
     query,
     variables: { parentId, mediumIds: [mediumId] },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool"
   });
   return (response as GraphQLResult<ListUnitsQuery>).data?.listUnits;
 }

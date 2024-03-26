@@ -9,7 +9,7 @@ import type {
   OpenSegmentPreviousPageMark,
 } from "..";
 import lodash from "lodash";
-import { selectSegmentById, selectUnitById } from "../base-selectors";
+import { selectAllOpenSegments, selectOpenSegmentById, selectSegmentById, selectUnitById } from "../base-selectors";
 import type { SegmentUnitConnection } from "kalila-graphql";
 
 type Mark = {
@@ -32,7 +32,7 @@ const createSegment = (
     | null
     | undefined;
   if (!unit) {
-    const segment = selectSegmentById(state.segments, lastOpenMark.id);
+    const segment = selectSegmentById(state.segments, lastOpenMark.id) || selectOpenSegmentById(state.openSegments, lastOpenMark.id);
     unit = segment?.unit;
   }
   return {
@@ -55,6 +55,7 @@ const updateLastOpenMark = (
     | SegmentStartMark
     | SegmentEndFromPreviousPageMark
     | OpenSegmentPreviousPageMark,
+
   currentLineTokenCount: number,
   state: RootState,
 ) => {
@@ -64,6 +65,14 @@ const updateLastOpenMark = (
   let page = state.info!.number;
   if (token.type === "endFromPrev") {
     const original = selectSegmentById(state.segments, id);
+    if (original) {
+      line = original.startLine;
+      tokenNumber = original.startToken;
+      page = original.startPage;
+    }
+  }
+  if (token.type === "open") {
+    const original = selectOpenSegmentById(state.openSegments, id);
     if (original) {
       line = original.startLine;
       tokenNumber = original.startToken;
@@ -80,7 +89,7 @@ const updateLastOpenMark = (
 };
 
 export const updateSegmentation = createAsyncThunk<
-  SegmentEntity[],
+  { segments: SegmentEntity[], openSegments: SegmentEntity[] },
   SegmentationToken[][],
   ThunkApi
 >("updateSegmentation", async (tokens, { getState }) => {
@@ -90,7 +99,7 @@ export const updateSegmentation = createAsyncThunk<
     currentLineTokenCount = 0,
     lastOpenMark: Mark | null = null;
   const lineLastToken: Record<number, number> = {};
-  const segments: SegmentEntity[] = [];
+  const segments: Record<string, SegmentEntity> = {};
 
   for (const token of body) {
     if (currentLine !== token.line) {
@@ -102,7 +111,7 @@ export const updateSegmentation = createAsyncThunk<
       currentLineTokenCount++;
     } else if (token.type !== "end") {
       if (!lastOpenMark) {
-        lastOpenMark = updateLastOpenMark(token, currentLineTokenCount, state);
+        lastOpenMark = updateLastOpenMark({ ...token }, currentLineTokenCount, state);
       } else {
         const endLine =
           currentLineTokenCount === 0 ? token.line - 1 : token.line;
@@ -110,28 +119,43 @@ export const updateSegmentation = createAsyncThunk<
           currentLineTokenCount === 0
             ? lineLastToken[endLine]
             : currentLineTokenCount - 1;
-        segments.push(createSegment(lastOpenMark, endLine, endToken, state));
-        lastOpenMark = updateLastOpenMark(token, currentLineTokenCount, state);
+        segments[lastOpenMark.id] = createSegment(lastOpenMark, endLine, endToken, state);
+        lastOpenMark = updateLastOpenMark({ ...token }, currentLineTokenCount, state);
       }
     } else if (lastOpenMark) {
-      segments.push(
-        createSegment(lastOpenMark, token.line, currentLineTokenCount, state),
-      );
+
+      segments[lastOpenMark.id] =
+        createSegment(lastOpenMark, token.line, currentLineTokenCount, state)
       lastOpenMark = null;
     }
   }
 
   if (lastOpenMark) {
     const original = selectSegmentById(state.segments, lastOpenMark.id);
-    const endLine = original ? original.endLine : -1;
-    const endToken = original ? original.endToken : -1;
-    const endPage = original ? original.endPage : -1;
-    segments.push(
-      createSegment(lastOpenMark, endLine!, endToken!, state, endPage),
-    );
+    let endLine = -1 as number,
+      endToken = -1 as number | null | undefined,
+      endPage = -1 as number | undefined;
+    if (original && (original.endPage !== state.info!.number || (original.endPage === state.info!.number && (original.endLine ?? -1) >= lastOpenMark.line))) {
+      endLine = original ? original.endLine! : -1;
+      endToken = original ? original.endToken : -1;
+      endPage = original ? original.endPage : -1;
+    }
+    segments[lastOpenMark.id] =
+      createSegment(lastOpenMark, endLine!, endToken!, state, endPage)
+  }
+  const previouslyOpenSegments = selectAllOpenSegments(state.openSegments);
+  const openSegments = [] as SegmentEntity[];
+
+  for (const segment of previouslyOpenSegments) {
+    let item = segments[segment.id];
+    if (item && item.startPage !== state.info!.number && item.endPage === -1) {
+      openSegments.push(segments[segment.id]);
+      delete segments[segment.id];
+    }
   }
 
-  console.log(segments);
+  console.log(Object.values(segments));
+  console.log(openSegments);
 
-  return segments;
+  return { segments: Object.values(segments), openSegments };
 });

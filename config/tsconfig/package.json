@@ -8,6 +8,6 @@
     "react-library.json"
   ],
   "dependencies": {
-    "astro": "^3.0.12"
+    "astro": "^4.5.5"
   }
 }

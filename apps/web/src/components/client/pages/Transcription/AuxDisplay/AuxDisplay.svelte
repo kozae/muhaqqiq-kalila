@@ -69,7 +69,7 @@
           </h3>
           <div class="mt-2 text-sm text-red-700">
             <ul role="list" class="list-disc space-y-1 pl-5">
-              {#each lodash.orderBy( error, ["line", "from", "to"], ) as item, index (item.line + item.from + item.to + index)}
+              {#each lodash.orderBy( error, ["line", "from", "to"], ) as item, index (`${item.line}_${item.from}_${item.to}_${index}`)}
                 <li>
                   <p>
                     <strong class="font-extrabold">

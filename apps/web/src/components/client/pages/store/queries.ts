@@ -1,11 +1,14 @@
 import {
   type GraphQLQuery,
-  GRAPHQL_AUTH_MODE,
   type GraphQLResult,
 } from "@aws-amplify/api";
-import { API, Storage } from "aws-amplify";
-import type { GetMediumQuery, GetPageQuery } from "kalila-graphql";
+import { getUrl } from 'aws-amplify/storage';
+import { updatePage, type GetMediumQuery, type GetPageQuery, type LemmaData, type UpdatePageMutation, type PageUpdateInput } from "kalila-graphql";
 import { loadImageAsDataUrl } from "../StateControls/helpers";
+import { generateClient } from "aws-amplify/api";
+
+
+const client = generateClient();
 
 export async function getMedium(id: string) {
   const query = /* GraphQL */ `
@@ -16,10 +19,10 @@ export async function getMedium(id: string) {
       }
     }
   `;
-  const response = await API.graphql<GraphQLQuery<GetMediumQuery>>({
+  const response = await client.graphql<GraphQLQuery<GetMediumQuery>>({
     query,
     variables: { id },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool",
   });
   return (response as GraphQLResult<GetMediumQuery>).data?.getMedium?.siglum;
 }
@@ -177,18 +180,18 @@ export async function getPage(id: string) {
     }
   `;
 
-  const response = await API.graphql<GraphQLQuery<GetPageQuery>>({
+  const response = await client.graphql<GraphQLQuery<GetPageQuery>>({
     query,
     variables: { id },
-    authMode: GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS,
+    authMode: "userPool",
   });
 
   return (response as GraphQLResult<GetPageQuery>).data?.getPage;
 }
 
 export async function getImage(url: string) {
-  const signedUrl = await Storage.get(`pages/${url}`);
-  return loadImageAsDataUrl(signedUrl);
+  const { url: signedUrl } = await getUrl({ key: `pages/${url}` });
+  return loadImageAsDataUrl(signedUrl.toString());
 }
 
 export async function getPageData(mediumId: string, pageId: string) {
@@ -197,4 +200,29 @@ export async function getPageData(mediumId: string, pageId: string) {
   const imageDataUrl = await getImage(page!.image!);
 
   return { siglum, page, imageDataUrl };
+}
+
+export async function postPageForLemmatization(data: any) {
+  const url = 'https://camel.kalila-and-dimna.de/lemmatize_page';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+
+  return (await response.json()) as LemmaData[];
+}
+
+export async function postPageUpdate(update: PageUpdateInput) {
+
+  console.log(update);
+
+  const response = await client.graphql<GraphQLQuery<UpdatePageMutation>>({
+    query: updatePage,
+    variables: { update },
+    authMode: "userPool",
+  });
+  return (response as GraphQLResult<UpdatePageMutation>).data;
 }

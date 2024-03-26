@@ -1,10 +1,11 @@
 <script lang="ts">
   import Codemirror from "./CodeMirror.svelte";
   import { requestAction, source } from "@client/pages/store";
-  import { combineLatest, filter, first, map } from "rxjs";
+  import { combineLatest, filter, map } from "rxjs";
   import { getContext } from "svelte";
   import { selectedTextClass } from "../selected-text-class";
   import Loading from "@client/reusable/Loading.svelte";
+  import { segmentsEnabledToggle } from "../segment-markers-toggle";
 
   const id = getContext("id");
   let ids: string[] = [];
@@ -16,7 +17,12 @@
     filter(([data, _]) => data.id === id),
     map(([data, selected]) =>
       selected === "Body"
-        ? { doc: data.body.text.join("\n"), ids: data.body.ids }
+        ? {
+            doc: data.body.text.join("\n"),
+            ids: data.body.ids,
+            segFromPrevPage: data.segFromPrevPage,
+            segments: data.segments,
+          }
         : {
             doc: data.glosses[selected].text.join("\n"),
             ids: data.glosses[selected].ids,
@@ -35,9 +41,15 @@
 
 {#key render}
   {#if $data}
-    {#key $selectedTextClass}
+    {#key `${$selectedTextClass}_${$segmentsEnabledToggle ? "withSegments" : "noSegments"}`}
       <div class="editor-container">
-        <Codemirror doc={$data.doc} on:change={handleChanges} />
+        <Codemirror
+          doc={$data.doc}
+          on:change={handleChanges}
+          segFromPrevPage={$data.segFromPrevPage}
+          segments={$data.segments}
+          segmentsEnabled={$segmentsEnabledToggle}
+        />
       </div>
     {/key}
   {:else}

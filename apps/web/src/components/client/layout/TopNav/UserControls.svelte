@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Auth } from "aws-amplify";
+  import { signOut } from "aws-amplify/auth";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
 
-  export let session: any | undefined = undefined;
+  export let user: any | undefined = undefined;
 
   let active: boolean = false;
   let menuItems: { name: string; href: string; action?: () => void }[] = [
@@ -13,14 +13,14 @@
       name: "Sign out",
       href: "#",
       action: async () => {
-        await Auth.signOut({ global: true });
+        await signOut({ global: true });
         window.location.href = "/";
       },
     },
   ];
 
   onMount(() => {
-    if (session?.roles && session.roles.includes("admin")) {
+    if (user?.roles && user.roles.includes("admin")) {
       menuItems.push({ name: "Administration", href: "/administration" });
     }
   });
@@ -36,7 +36,7 @@
     class="bg-secondary-800 focus:ring-offset-secondary-800 flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
   >
     <span class="sr-only">Open user menu</span>
-    <img class="h-10 w-10 rounded-full" src={session?.picture} alt="" />
+    <img class="h-10 w-10 rounded-full" src={user?.picture} alt="" />
   </button>
   {#if active}
     <div

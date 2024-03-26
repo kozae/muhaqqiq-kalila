@@ -240,7 +240,7 @@ function findInvalidAsteriskSequence(s: string): Array<SyntaxError> {
           error.to = i - 1;
           error.line = u32(s.substring(0, start).split("\n").length);
           error.message =
-            "wrong symbol use: a single astrisk must be used as a suffix";
+            "wrong symbol use: a single astrisk must be used as a prefix";
           errors.push(error);
         }
         if (start - 1 !== 0 && s.charCodeAt(start - 1) !== " ".charCodeAt(0)) {
@@ -318,7 +318,7 @@ function findInvalidBraces(s: string): Array<SyntaxError> {
         if (
           bracketStack.length == 0 ||
           s.charCodeAt(bracketStack[bracketStack.length - 1]) !=
-            "(".charCodeAt(0)
+          "(".charCodeAt(0)
         ) {
           const error = new SyntaxError();
           error.from = u32(i);
@@ -334,7 +334,7 @@ function findInvalidBraces(s: string): Array<SyntaxError> {
         if (
           bracketStack.length == 0 ||
           s.charCodeAt(bracketStack[bracketStack.length - 1]) !=
-            "[".charCodeAt(0)
+          "[".charCodeAt(0)
         ) {
           const error = new SyntaxError();
           error.from = u32(i);
@@ -350,7 +350,7 @@ function findInvalidBraces(s: string): Array<SyntaxError> {
         if (
           bracketStack.length == 0 ||
           s.charCodeAt(bracketStack[bracketStack.length - 1]) !=
-            "{".charCodeAt(0)
+          "{".charCodeAt(0)
         ) {
           const error = new SyntaxError();
           error.from = u32(i);
@@ -366,7 +366,7 @@ function findInvalidBraces(s: string): Array<SyntaxError> {
         if (
           bracketStack.length == 0 ||
           s.charCodeAt(bracketStack[bracketStack.length - 1]) !=
-            "<".charCodeAt(0)
+          "<".charCodeAt(0)
         ) {
           const error = new SyntaxError();
           error.from = u32(i);

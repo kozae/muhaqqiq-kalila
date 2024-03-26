@@ -1,0 +1,117 @@
+---
+import Layout from "@layouts/SiteLayout.astro";
+import BaseNav from "@components/BaseNav.astro";
+import Wrapper from "@client/collations/Wrapper.svelte";
+import StateControls from "@client/collations/StateControls.svelte";
+
+const { id, page = "0" } = Astro.params;
+
+const lastPage = "20";
+---
+
+<Layout title="Kalila" transitions>
+  <BaseNav>
+    <div class="flex">
+      <a
+        href={page === "0" ? "#" : `/collations/${id}/0`}
+        class={`p-2 ${
+          page === "0"
+            ? "bg-gray-300  text-gray-200 cursor-default"
+            : "bg-secondary-900  text-white"
+        } rounded-full mr-2`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="currentColor"
+          class="bi bi-chevron-bar-right"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M11.854 3.646a.5.5 0 0 1 0 .708L8.207 8l3.647 3.646a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0M4.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 1 0v-13a.5.5 0 0 0-.5-.5"
+          ></path>
+        </svg>
+      </a>
+      <a
+        href={page === "0" ? "#" : `/collations/${id}/${parseInt(page) - 1}`}
+        class={`p-2 ${
+          page === "0"
+            ? "bg-gray-300  text-gray-200 cursor-default"
+            : "bg-secondary-900 text-white"
+        }  rounded-full mr-2`}
+        aria-disabled={page === "0"}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-6 w-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <StateControls client:only />
+
+    <div class="flex">
+      <a
+        href={page === lastPage
+          ? "#"
+          : `/collations/${id}/${parseInt(page) + 1}`}
+        class={`p-2 ${
+          page === lastPage
+            ? "bg-gray-300 text-gray-200 cursor-default"
+            : "bg-secondary-900 text-white"
+        } rounded-full mr-2`}
+        aria-disabled={page === lastPage}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-6 w-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+      <a
+        href={page === lastPage ? "#" : `/collations/${id}/${lastPage}`}
+        class={`p-2 ${
+          page === lastPage
+            ? "bg-gray-300 text-gray-200 cursor-default"
+            : "bg-secondary-900 text-white"
+        } rounded-full`}
+        aria-disabled={page === lastPage}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="currentColor"
+          class="bi bi-chevron-bar-right"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.146 3.646a.5.5 0 0 0 0 .708L7.793 8l-3.647 3.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0M11.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  </BaseNav>
+
+  <main class="w-[100vw] flex justify-center grow">
+    <Wrapper id={id!} page={parseInt(page)} client:only />
+  </main>
+</Layout>

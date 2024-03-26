@@ -12,13 +12,22 @@
   import { editorKeymap } from "./editor-keymap";
   import { editorHighlights } from "./editor-highlights";
   import { getStatistics } from "../utils";
-  import { actions, editorStats } from "../event-hubs";
+  import { actions, editorStats, sgementWidgetEvents } from "../event-hubs";
   import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
   import { Subscription } from "rxjs";
+  import type { Segment } from "kalila-graphql";
+
+  import { unitFromPreviousPageWidgetField } from "./prev-page-unit-widget";
+  import { unitInsertionExtension } from "./unit-insertion-extension";
+  import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
+
   let klass = "";
   export { klass as class };
 
+  export let segmentsEnabled = false;
   export let doc = "";
+  export let segFromPrevPage: Segment | undefined = undefined;
+  export let segments: (Segment & { position: number })[] = [];
 
   let parent: HTMLDivElement;
 
@@ -47,17 +56,29 @@
   });
 
   let sub: Subscription | undefined = undefined;
+  let widgetEventSub: Subscription | undefined = undefined;
   onMount(() => {
+    const extensions = [
+      minimalSetup,
+      editorTheme,
+      editorKeymap,
+      editorHighlights,
+      updateListener,
+    ];
+
+    if (segmentsEnabled) {
+      if (segFromPrevPage) {
+        extensions.push(unitFromPreviousPageWidgetField(segFromPrevPage));
+      }
+      extensions.push(unitsInTextFields(segments));
+      extensions.push(unitInsertionExtension);
+    }
+
     const state = EditorState.create({
       doc,
-      extensions: [
-        minimalSetup,
-        editorTheme,
-        editorKeymap,
-        editorHighlights,
-        updateListener,
-      ],
+      extensions,
     });
+
     view = new EditorView({
       state,
       parent,
@@ -72,6 +93,16 @@
       type: TranscriptionWorkerEvent.VALUE_CHANGE,
       payload: doc,
     });
+
+    if (segmentsEnabled) {
+      widgetEventSub = sgementWidgetEvents.subscribe((e) => {
+        if (e.type === "delete") {
+          view.dispatch({
+            effects: deleteWidgetEffect.of({ id: e.payload.id }),
+          });
+        }
+      });
+    }
 
     sub = actions.subscribe((a) => {
       if (a.type === "insert") {
@@ -101,6 +132,9 @@
     view.destroy();
     if (sub) {
       sub.unsubscribe();
+    }
+    if (widgetEventSub) {
+      widgetEventSub.unsubscribe();
     }
   });
 </script>
@@ -143,8 +177,5 @@
   :global(.edition-symbol) {
     color: #767015;
     font-weight: bold;
-  }
-  :global(.cm-line:nth-child(odd)) {
-    background-color: rgb(243 244 246) !important;
   }
 </style>
