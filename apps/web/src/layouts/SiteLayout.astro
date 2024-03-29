@@ -6,6 +6,7 @@ import "@fontsource/noto-sans-display/latin-ext-700.css";
 import "@fontsource/noto-sans-display/latin-400.css";
 import "@fontsource/noto-sans-display/latin-700.css";
 import { ViewTransitions } from "astro:transitions";
+import Alerts from "@client/Alert";
 
 interface Props {
   title: string;
@@ -34,6 +35,7 @@ const { title, transitions } = Astro.props;
   <body class="bg-secondary-50 flex min-h-screen flex-col overflow-hidden">
     <slot />
 
+    <Alerts client:load />
     <style is:global>
       @import "animate.css";
       @tailwind base;

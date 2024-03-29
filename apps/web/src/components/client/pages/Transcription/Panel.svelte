@@ -30,9 +30,10 @@
     sub.forEach((s) => s.unsubscribe());
   });
   export let segmentsChangable = true;
+  export let withMarginalia = true;
 </script>
 
-<CommandBar {segmentsChangable} />
+<CommandBar {segmentsChangable} {withMarginalia} />
 <div class="flex h-[calc(100vh-150px)] flex-col">
   <Editor />
   <AuxDisplay />

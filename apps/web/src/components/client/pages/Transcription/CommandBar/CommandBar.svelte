@@ -19,6 +19,7 @@
   import { segmentsEnabledToggle } from "../segment-markers-toggle";
 
   export let segmentsChangable = true;
+  export let withMarginalia = true;
 
   let previewEnabled = false;
   let segmentsEnabled = segmentsChangable ? false : true;
@@ -65,7 +66,7 @@
 </script>
 
 <CommandBarContainer>
-  {#if $hasMarginalia}
+  {#if withMarginalia && $hasMarginalia}
     <div>
       <SmallButton
         bgcolor={$selectedTextClass === "Body"

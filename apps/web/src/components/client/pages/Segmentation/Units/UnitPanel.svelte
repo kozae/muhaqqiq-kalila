@@ -71,11 +71,13 @@
         return u;
       };
       if (filter && filter.length > 0) {
-        return units.filter((u) =>
-          u.title.toLowerCase().includes(filter.toLocaleLowerCase()),
-        );
+        return units
+          .filter((u) =>
+            u.title.toLowerCase().includes(filter.toLocaleLowerCase()),
+          )
+          .map(attachSegment);
       } else {
-        return units;
+        return units.map(attachSegment);
       }
     }),
   );

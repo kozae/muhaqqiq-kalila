@@ -37,11 +37,5 @@
     <IconButton on:click={handleEdit}>
       <PencilSquareIcon />
     </IconButton>
-
-    {#if !hasEnd}
-      <IconButton on:click={handleClose}>
-        <CircleSlashIcon />
-      </IconButton>
-    {/if}
   </div>
 </div>

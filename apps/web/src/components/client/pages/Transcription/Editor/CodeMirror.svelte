@@ -18,8 +18,13 @@
   import type { Segment } from "kalila-graphql";
 
   import { unitFromPreviousPageWidgetField } from "./prev-page-unit-widget";
-  import { unitInsertionExtension } from "./unit-insertion-extension";
+  import {
+    cleanUpExtension,
+    unitInsertionExtension,
+  } from "./unit-insertion-extension";
   import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
+
+  import type { UnitEntity } from "pages-tool-store-worker";
 
   let klass = "";
   export { klass as class };
@@ -27,7 +32,8 @@
   export let segmentsEnabled = false;
   export let doc = "";
   export let segFromPrevPage: Segment | undefined = undefined;
-  export let segments: (Segment & { position: number })[] = [];
+  export let segments: (Segment & { position: number; close?: number })[] = [];
+  export let units: UnitEntity[] = [];
 
   let parent: HTMLDivElement;
 
@@ -64,6 +70,7 @@
       editorKeymap,
       editorHighlights,
       updateListener,
+      cleanUpExtension(),
     ];
 
     if (segmentsEnabled) {
@@ -71,7 +78,7 @@
         extensions.push(unitFromPreviousPageWidgetField(segFromPrevPage));
       }
       extensions.push(unitsInTextFields(segments));
-      extensions.push(unitInsertionExtension);
+      extensions.push(unitInsertionExtension(units));
     }
 
     const state = EditorState.create({

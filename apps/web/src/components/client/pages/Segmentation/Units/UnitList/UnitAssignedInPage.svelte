@@ -42,12 +42,6 @@
       <PencilSquareIcon />
     </IconButton>
 
-    {#if !hasEnd}
-      <IconButton on:click={handleClose}>
-        <CircleSlashIcon />
-      </IconButton>
-    {/if}
-
     <IconButton
       color="red-700"
       class="hover:bg-red-700"

@@ -19,7 +19,7 @@
   </QueryClientProvider>
   {#if $data}
     <div class="animate-fade-in w-1/2 scale-90 rounded bg-white opacity-0">
-      <TranscriptionPanel segmentsChangable={false} />
+      <TranscriptionPanel segmentsChangable={false} withMarginalia={false} />
     </div>
   {:else}
     <div class="w-6/12">
