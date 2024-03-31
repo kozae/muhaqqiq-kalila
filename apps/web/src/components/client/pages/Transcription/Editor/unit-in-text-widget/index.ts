@@ -4,11 +4,13 @@ import type { Segment } from "kalila-graphql";
 import { sgementWidgetEvents } from "../../event-hubs";
 import { alertSubject } from "@client/Alert";
 import { UnitClosingWidget, UnitOpeningWidget } from "./widgets";
-import { addWidgetEffect, updateWidgetEffect, deleteWidgetEffect, dropInCloseWidgetEffect } from "./effects";
+import { addWidgetEffect, updateWidgetEffect, deleteWidgetEffect, dropInCloseWidgetEffect, deleteClosingWidgetEffect } from "./effects";
 import { findLast, orderBy } from "lodash";
+import type { UnitMark } from "pages-tool-store-worker";
 
 
 const onDelete = (id: string) => { sgementWidgetEvents.next({ type: "delete", payload: { id } }); };
+const onDeleteEnd = (id: string) => { sgementWidgetEvents.next({ type: "deleteEnd", payload: { id } }); };
 
 function createInitialDecorations(segments: (Segment & { position: number, close?: number })[]) {
 
@@ -17,7 +19,7 @@ function createInitialDecorations(segments: (Segment & { position: number, close
         const widget = new UnitOpeningWidget(segment.unit!, onDelete);
         decorations.push(Decoration.widget({ widget: widget, side: -1, id: segment.id }).range(segment.position));
         if (segment.close !== undefined) {
-            const widget = new UnitClosingWidget(segment.unit!, onDelete);
+            const widget = new UnitClosingWidget(segment.unit!, onDeleteEnd);
             decorations.push(Decoration.widget({ widget: widget, side: -1, id: segment.id }).range(segment.close));
         }
     }
@@ -53,6 +55,14 @@ function applyAddWidgetEffect(decorations: any[], effect: StateEffect<any>) {
         if (!anotherUnitHere) {
             const widget = new UnitOpeningWidget(segment, onDelete);
             decorations = [...decorations, Decoration.widget({ widget, side: -1 }).range(position)];
+            const firstTagAfter = decorations.find(deco => deco.from > position);
+            if (firstTagAfter && firstTagAfter.value.spec.widget instanceof UnitClosingWidget) {
+                console.log(firstTagAfter);
+                const closingWidget = new UnitClosingWidget(segment, onDeleteEnd);
+
+                decorations = [...decorations, Decoration.widget({ widget: closingWidget, side: -1 }).range(firstTagAfter.from)]
+                    .filter(deco => !(deco.value.spec.widget instanceof UnitClosingWidget && deco.value.spec.widget.id === firstTagAfter.value.spec.widget.id));
+            }
         } else {
             alertSubject.next({ type: "warning", message: `Unit '${segment.title}' must be at least one word apart from the nearest unit.` });
         }
@@ -74,8 +84,22 @@ function applyUpdateWidgetEffect(decorations: any[], effect: any) {
     });
 }
 function applyDeleteWidgetEffect(decorations: any[], effect: any) {
-    return [...decorations.filter(deco => deco.value.spec.id !== effect.value.id)];
+    return [...decorations.filter(deco => deco.value.spec.widget.id !== effect.value.id)];
 }
+
+function applyDeleteClosingWidgetEffect(decorations: any[], effect: any) {
+    const newDecorations = [];
+    for (const deco of decorations) {
+        if (deco.value.spec.widget instanceof UnitClosingWidget) {
+            if (deco.value.spec.widget.id === effect.value.id) {
+                continue;
+            }
+        }
+        newDecorations.push(deco);
+    }
+    return newDecorations;
+}
+
 
 
 function applyDropInCloseWidgetEffect(decorations: any[], effect: any) {
@@ -83,8 +107,13 @@ function applyDropInCloseWidgetEffect(decorations: any[], effect: any) {
     const { position } = effect.value;
     const unitToClose = findLast(decorations, deco => deco.from < position && deco.value.spec.widget instanceof UnitOpeningWidget);
     if (unitToClose) {
-        const widget = new UnitClosingWidget(unitToClose.value.spec.widget.segment, onDelete);
-        newDecorations = [...decorations, Decoration.widget({ widget, side: -1 }).range(position)];
+        const widget = new UnitClosingWidget(unitToClose.value.spec.widget.segment, onDeleteEnd);
+        newDecorations = [...decorations
+            .filter(
+                deco => deco.value.spec.widget instanceof UnitOpeningWidget
+                    || (deco.value.spec.widget instanceof UnitClosingWidget && deco.value.spec.widget.id !== unitToClose.value.spec.widget.id)
+            ),
+        Decoration.widget({ widget, side: -1 }).range(position)];
     }
     return newDecorations;
 }
@@ -103,6 +132,9 @@ function processEffects(decorations: any[], tr: Transaction) {
             case effect.is(deleteWidgetEffect):
                 newDecorations = applyDeleteWidgetEffect(decorations, effect);
                 break;
+            case effect.is(deleteClosingWidgetEffect):
+                newDecorations = applyDeleteClosingWidgetEffect(decorations, effect);
+                break;
             case effect.is(dropInCloseWidgetEffect):
                 newDecorations = applyDropInCloseWidgetEffect(decorations, effect);
                 break;
@@ -113,8 +145,10 @@ function processEffects(decorations: any[], tr: Transaction) {
 }
 
 
+const hasWidgetEffects = (tr: Transaction) => tr.effects.some(e => e.is(addWidgetEffect) || e.is(updateWidgetEffect) || e.is(deleteWidgetEffect) || e.is(dropInCloseWidgetEffect) || e.is(deleteClosingWidgetEffect));
+
 // Define a state field to manage multiple widget decorations with dynamic positioning
-const unitsInTextFields = (segments: (Segment & { position: number, close?: number })[]) => {
+const unitsInTextFields = (segments: (Segment & { position: number, close?: number })[], onUpdate: (marks: UnitMark[], doc: string) => void) => {
 
     let decorations = createInitialDecorations(segments);
 
@@ -130,8 +164,20 @@ const unitsInTextFields = (segments: (Segment & { position: number, close?: numb
             decorations.sort((a, b) => a.from - b.from);
 
 
-            if (tr.docChanged || tr.effects.some(e => e.is(addWidgetEffect) || e.is(updateWidgetEffect) || e.is(deleteWidgetEffect))) {
-                // TODO inform the store of the changes
+
+            if (tr.docChanged || hasWidgetEffects(tr)) {
+
+                const marks: UnitMark[] = decorations.map(deco => {
+                    const widget = deco.value.spec.widget;
+                    return {
+                        unit: widget.segment,
+                        position: deco.from,
+                        type: widget instanceof UnitOpeningWidget ? "open" : "close"
+                    }
+                });
+
+                onUpdate(marks, tr.newDoc.toString());
+
                 return Decoration.set(decorations);
             }
             return deco;

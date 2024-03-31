@@ -31,6 +31,8 @@
   });
   export let segmentsChangable = true;
   export let withMarginalia = true;
+
+  console.log("panel loaded");
 </script>
 
 <CommandBar {segmentsChangable} {withMarginalia} />

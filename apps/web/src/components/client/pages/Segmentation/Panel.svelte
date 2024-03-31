@@ -7,9 +7,6 @@
   import Loading from "@client/reusable/Loading.svelte";
   import TranscriptionPanel from "../Transcription/Panel.svelte";
 
-  const id: string = getContext("id");
-  const data = source.selectSegementationData.pipe(filter((d) => d.id === id));
-
   const queryClient = new QueryClient();
 </script>
 
@@ -17,13 +14,7 @@
   <QueryClientProvider client={queryClient}>
     <UnitPanel />
   </QueryClientProvider>
-  {#if $data}
-    <div class="animate-fade-in w-1/2 scale-90 rounded bg-white opacity-0">
-      <TranscriptionPanel segmentsChangable={false} withMarginalia={false} />
-    </div>
-  {:else}
-    <div class="w-6/12">
-      <Loading />
-    </div>
-  {/if}
+  <div class="animate-fade-in w-1/2 scale-90 rounded bg-white opacity-0">
+    <TranscriptionPanel segmentsChangable={false} withMarginalia={false} />
+  </div>
 </div>

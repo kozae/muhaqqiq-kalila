@@ -5,6 +5,7 @@ import {
   type Segment,
   type Image,
   type Unit,
+  type SegmentUnitConnection,
 } from "kalila-graphql";
 
 export interface IColoredRegion {
@@ -86,52 +87,9 @@ export interface IChangeTracker {
   segments: boolean;
 }
 
-export interface TextToken {
-  raw: string;
-  id: number;
-  type: "token";
-  line: number;
-}
 
-export interface SegmentStartMark {
-  id: string;
-  unitId: string;
-  title: string;
-  display: string;
-  type: "start";
-  line: number;
+export interface UnitMark {
+  unit: SegmentUnitConnection,
+  position: number,
+  type: "open" | "close"
 }
-
-export interface SegmentEndMark {
-  id: string;
-  unitId: string;
-  title: string;
-  display: string;
-  type: "end";
-  line: number;
-}
-
-export interface SegmentEndFromPreviousPageMark {
-  id: string;
-  unitId: string;
-  title: string;
-  display: string;
-  type: "endFromPrev";
-  line: number;
-}
-
-export interface OpenSegmentPreviousPageMark {
-  id: string;
-  unitId: string;
-  title: string;
-  display: string;
-  type: "open";
-  line: number;
-}
-
-export type SegmentationToken =
-  | TextToken
-  | SegmentStartMark
-  | SegmentEndMark
-  | SegmentEndFromPreviousPageMark
-  | OpenSegmentPreviousPageMark;

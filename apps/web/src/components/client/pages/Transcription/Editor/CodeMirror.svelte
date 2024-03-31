@@ -18,13 +18,12 @@
   import type { Segment } from "kalila-graphql";
 
   import { unitFromPreviousPageWidgetField } from "./prev-page-unit-widget";
-  import {
-    cleanUpExtension,
-    unitInsertionExtension,
-  } from "./unit-insertion-extension";
+  import { unitInsertionExtension } from "./unit-insertion-extension";
   import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
 
   import type { UnitEntity } from "pages-tool-store-worker";
+  import { cleanUpExtension } from "./cleanup-extension";
+  import { deleteClosingWidgetEffect } from "./unit-in-text-widget/effects";
 
   let klass = "";
   export { klass as class };
@@ -46,7 +45,7 @@
     if (vu.docChanged) {
       const doc = vu.state.doc;
       const value = doc.toString();
-      dispatch("change", value);
+      dispatch("docChange", value);
       worker.postMessage({
         type: TranscriptionWorkerEvent.VALUE_CHANGE,
         payload: value,
@@ -77,7 +76,11 @@
       if (segFromPrevPage) {
         extensions.push(unitFromPreviousPageWidgetField(segFromPrevPage));
       }
-      extensions.push(unitsInTextFields(segments));
+      extensions.push(
+        unitsInTextFields(segments, (marks, doc) => {
+          dispatch("segmentationChange", { marks, doc });
+        }),
+      );
       extensions.push(unitInsertionExtension(units));
     }
 
@@ -106,6 +109,10 @@
         if (e.type === "delete") {
           view.dispatch({
             effects: deleteWidgetEffect.of({ id: e.payload.id }),
+          });
+        } else if (e.type === "deleteEnd") {
+          view.dispatch({
+            effects: deleteClosingWidgetEffect.of({ id: e.payload.id }),
           });
         }
       });

@@ -43,8 +43,12 @@
     render = Date.now();
   }
 
-  const handleChanges = (e: any) => {
+  const handleDocChanges = (e: any) => {
     requestAction("updateTranscription", { doc: e.detail, ids });
+  };
+
+  const handleSegmentationChange = (e: any) => {
+    requestAction("updateSegmentation", e.detail);
   };
 </script>
 
@@ -54,7 +58,8 @@
       <div class="editor-container">
         <Codemirror
           doc={$data.doc}
-          on:change={handleChanges}
+          on:docChange={handleDocChanges}
+          on:segmentationChange={handleSegmentationChange}
           segFromPrevPage={$data.segFromPrevPage}
           segments={$data.segments}
           segmentsEnabled={$segmentsEnabledToggle}

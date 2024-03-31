@@ -74,13 +74,13 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
     }
 
     segmenstWithStartPositions.forEach((segment, index, array) => {
-
-        if (segment.endLine === undefined || segment.endLine === null || segment.endToken === undefined || segment.endToken === null) {
+        if (segment.endLine === undefined || segment.endLine === null || segment.endToken === undefined || segment.endToken === null || segment.endLine === -1 || segment.endToken === -1) {
             segmenstWithPositionsAndCloseFlag.push({ ...segment, position: segment.position });
             return;
         }
 
         const nextSegment = array[index + 1];
+
         const endTokenIsLastInLine = segment.endToken === tokenLens[segment.endLine].length - 1;
         if (nextSegment) {
             const isSameLine = segment.endLine === nextSegment.startLine;
