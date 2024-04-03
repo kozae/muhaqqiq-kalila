@@ -12,7 +12,6 @@ outputs = {item["OutputKey"]: item["OutputValue"] for item in all_outputs}
 config = {
     "Auth": {
         "Cognito": {
-            "region": "eu-central-1",
             "userPoolId": outputs.get("UserPoolId", ""),
             "userPoolClientId": outputs.get("UserPoolClientId", ""),
             "identityPoolId": outputs.get("IdentityPoolId", ""),
@@ -24,9 +23,13 @@ config = {
             "region": "eu-central-1",
         },
     },
-    "aws_appsync_graphqlEndpoint": outputs.get("ApiUrl", ""),
-    "aws_appsync_region": "eu-central-1",
-    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
+    "API": {
+        "GraphQL": {
+            "region": "eu-central-1",
+            "defaultAuthMode": "userPool",
+            "endpoint": outputs.get("ApiUrl", ""),
+        }
+    },
 }
 
 with open("../kalila-config/index.ts", "w") as f:

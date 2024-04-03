@@ -175,6 +175,11 @@ export const getMedium = /* GraphQL */ `query GetMedium($id: ID!) {
           __typename
         }
         editor
+        bodyElements
+        marginElements
+        imageElements
+        lineCount
+        tokenCount
         version
         __typename
       }
@@ -252,6 +257,11 @@ export const listBookMedia = /* GraphQL */ `query ListBookMedia(
           pagination
           tags
           editor
+          bodyElements
+          marginElements
+          imageElements
+          lineCount
+          tokenCount
           version
           __typename
         }
@@ -728,6 +738,11 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
       __typename
     }
     editor
+    bodyElements
+    marginElements
+    imageElements
+    lineCount
+    tokenCount
     version
     __typename
   }
@@ -916,6 +931,11 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
         __typename
       }
       editor
+      bodyElements
+      marginElements
+      imageElements
+      lineCount
+      tokenCount
       version
       __typename
     }

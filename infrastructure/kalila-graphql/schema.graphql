@@ -229,6 +229,11 @@ type Page {
   openSegments: [Segment] @source(value: segments)
   endingSegments: [Segment] @source(value: segments)
   editor: String
+  bodyElements: Int
+  marginElements: Int
+  imageElements: Int
+  lineCount: Int
+  tokenCount: Int
   version: AWSTimestamp
 }
 

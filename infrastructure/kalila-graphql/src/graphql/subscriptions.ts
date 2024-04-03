@@ -133,6 +133,11 @@ export const onCreateMedium = /* GraphQL */ `subscription OnCreateMedium($bookId
           __typename
         }
         editor
+        bodyElements
+        marginElements
+        imageElements
+        lineCount
+        tokenCount
         version
         __typename
       }

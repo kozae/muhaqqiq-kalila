@@ -229,6 +229,11 @@ type Page {
   openSegments: [Segment] 
   endingSegments: [Segment] 
   editor: String
+  bodyElements: Int
+  marginElements: Int
+  imageElements: Int
+  lineCount: Int
+  tokenCount: Int
   version: AWSTimestamp
 }
 

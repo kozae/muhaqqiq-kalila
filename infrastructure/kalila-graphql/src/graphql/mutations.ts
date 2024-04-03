@@ -133,6 +133,11 @@ export const createMedium = /* GraphQL */ `mutation CreateMedium($input: CreateM
           __typename
         }
         editor
+        bodyElements
+        marginElements
+        imageElements
+        lineCount
+        tokenCount
         version
         __typename
       }

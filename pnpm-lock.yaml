@@ -337,6 +337,10 @@ importers:
         version: 5.4.2
 
   infrastructure/kalila-config:
+    dependencies:
+      aws-amplify:
+        specifier: ^6.0.20
+        version: 6.0.20
     devDependencies:
       '@typescript-eslint/parser':
         specifier: ^7.2.0
@@ -553,6 +557,24 @@ importers:
       typescript:
         specifier: ^5.4.2
         version: 5.4.2
+
+  tests:
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.42.1
+        version: 1.42.1
+      '@types/node':
+        specifier: 20.11.28
+        version: 20.11.28
+
+  tests/web-e2e-tests:
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.42.1
+        version: 1.42.1
+      '@types/node':
+        specifier: 20.11.28
+        version: 20.11.28
 
 packages:
 
@@ -1203,7 +1225,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
@@ -1397,7 +1419,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       '@smithy/util-waiter': 2.2.0
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -1495,7 +1517,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
@@ -1749,7 +1771,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
@@ -1839,7 +1861,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       fast-xml-parser: 4.2.5
       tslib: 2.6.2
     transitivePeerDependencies:
@@ -2429,7 +2451,7 @@ packages:
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
       '@smithy/util-retry': 2.2.0
-      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
@@ -4257,6 +4279,14 @@ packages:
     engines: {node: '>=14'}
     requiresBuild: true
     optional: true
+
+  /@playwright/test@1.42.1:
+    resolution: {integrity: sha512-Gq9rmS54mjBL/7/MvBaNOBwbfnh7beHvS6oS4srqXFcQHpQCV1+c8JXWE8VLPyRDhgS3H8x8A7hztqI9VnwrAQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dependencies:
+      playwright: 1.42.1
+    dev: true
 
   /@reduxjs/toolkit@2.2.1:
     resolution: {integrity: sha512-8CREoqJovQW/5I4yvvijm/emUiCCmcs4Ev4XPWd4mizSO+dD3g5G6w34QK5AGeNrSH7qM8Fl66j4vuV7dpOdkw==}
@@ -11608,6 +11638,22 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       find-up: 3.0.0
+    dev: true
+
+  /playwright-core@1.42.1:
+    resolution: {integrity: sha512-mxz6zclokgrke9p1vtdy/COWBH+eOZgYUVVU34C73M+4j4HLlQJHtfcqiqqxpP0o8HhMkflvfbquLX5dg6wlfA==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dev: true
+
+  /playwright@1.42.1:
+    resolution: {integrity: sha512-PgwB03s2DZBcNRoW+1w9E+VkLBxweib6KTXM0M3tkiT4jVxKSi6PmVJ591J+0u10LUrgxB7dLRbiJqO5s2QPMg==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dependencies:
+      playwright-core: 1.42.1
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: true
 
   /possible-typed-array-names@1.0.0:

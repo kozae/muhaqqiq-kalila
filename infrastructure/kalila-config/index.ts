@@ -1,10 +1,11 @@
-export const awsConfig = {
+import type { ResourcesConfig } from "aws-amplify";
+
+export const awsConfig: ResourcesConfig = {
   "Auth": {
-    Cognito: {
-      "region": "eu-central-1",
-      "userPoolId": "eu-central-1_qd0ilnSEg",
-      "userPoolClientId": "1knr6jorruj5dlqhfjd217b1jp",
-      "identityPoolId": "eu-central-1:c53a1611-ea3e-4706-94bb-a2fddddf3086"
+    "Cognito": {
+      "userPoolId": "eu-central-1_YkB2BvVhf",
+      "userPoolClientId": "7fjdp9q38g8v5k3jgu459bt7t1",
+      "identityPoolId": "eu-central-1:a9393bce-1b3b-47d8-a031-de0d01168b11"
     }
   },
   "Storage": {
@@ -16,8 +17,8 @@ export const awsConfig = {
   "API": {
     "GraphQL": {
       "region": "eu-central-1",
-      "defaultAuthMode": "AMAZON_COGNITO_USER_POOLS",
-      "endpoint": "https://6d6azgco2zcw7m7glyzvhbgbii.appsync-api.eu-central-1.amazonaws.com/graphql",
+      "defaultAuthMode": "userPool",
+      "endpoint": "https://t2lactjjbfctbhdd4zfo5ajd5e.appsync-api.eu-central-1.amazonaws.com/graphql"
     }
   }
 };

@@ -63,7 +63,7 @@
           segFromPrevPage={$data.segFromPrevPage}
           segments={$data.segments}
           segmentsEnabled={$segmentsEnabledToggle}
-          units={$units.units.filter((u) => u.segment === undefined)}
+          units={$units?.units.filter((u) => u.segment === undefined) ?? []}
         />
       </div>
     {/key}

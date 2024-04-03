@@ -1,5 +1,6 @@
 packages:
   - "apps/*"
+  - "tests/*"
   - "config/*"
   - "lib/common/*"
   - "lib/forked/*"
