@@ -261,7 +261,6 @@ type Line {
 type Image {
   id: ID!
   pageId: ID!
-  unitId: ID
   legendId: ID
   legend: TextElement @source(value: textElements)
   location: [Int]
@@ -426,33 +425,39 @@ input LemmaData {
   line: Int!
 }
 
+input TextConnectionInput {
+  withElement: String!
+  atLine: Int!
+  atToken: Int!
+}
+
 input TextElementInput {
   id: ID!
   order: Int!
   position: String!
-  region: [Int!]!
+  region: [Int!]
+  nested: TextConnectionInput
 }
 
 input LineInput {
   id: ID!
   elementId: ID!
   order: Int!
-  region: [Int!]!
-  states: [String!]!
-  tokens: [String!]!
+  region: [Int!]
+  states: [String!]
+  tokens: [String!]
 }
 
 input ImageInput {
   id: ID!
-  unitId: ID
   legendId: ID
   legend: String
-  location: [Int!]!
-  motifs: String
+  location: [Int!]
+  motifs: [String]
   order: Int!
   position: String!
-  region: [Int!]!
-  style: String
+  region: [Int!]
+  style: [String]
 }
 
 input SegmentInput {
@@ -465,7 +470,7 @@ input SegmentInput {
   endLine: Int
   endToken: Int
   lacuna: Boolean!
-  tags: String
+  tags: [String]
   type: String!
 }
 

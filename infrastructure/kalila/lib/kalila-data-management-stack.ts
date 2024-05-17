@@ -52,6 +52,7 @@ export class KalilaDataManagementStack extends Stack {
       textElements: this.createTextElementsTable(),
       lines: this.createLinesTable(),
       images: this.createImageElementsTable(),
+      depictions: this.createDepictionsTable(),
       segments: this.createSegmentsTable(),
       segmentContents: this.createSegmentContentsTable(),
       chapterCollations: this.createChapterCollationsTable(),
@@ -436,12 +437,51 @@ export class KalilaDataManagementStack extends Stack {
             projectionType: ProjectionType.ALL,
           },
         },
+      ],
+      attributeDefinitions: [
         {
-          indexName: "imageUnitIdIndex",
+          attributeName: "id",
+          attributeType: AttributeType.STRING,
+        },
+        {
+          attributeName: "pageId",
+          attributeType: AttributeType.STRING,
+        },
+        {
+          attributeName: "order",
+          attributeType: AttributeType.NUMBER,
+        },
+      ],
+    });
+
+    return {
+      name: cfnTable.tableName as string,
+      arn: cfnTable.attrArn as string,
+      streamArn: cfnTable.attrStreamArn as string,
+    };
+  }
+
+  private createDepictionsTable() {
+    const cfnTable = new CfnTable(this, "DepictionsTable", {
+      ...commonCfnTableOptions,
+      tableName: `Depictions_${this.stage}`,
+      keySchema: [
+        {
+          attributeName: "id",
+          keyType: "HASH",
+        },
+      ],
+      globalSecondaryIndexes: [
+        {
+          indexName: "depictionUnitIdIndex",
           keySchema: [
             {
               attributeName: "unitId",
               keyType: "HASH",
+            },
+            {
+              attributeName: "mediumId",
+              keyType: "RANGE",
             },
           ],
           projection: {
@@ -455,16 +495,12 @@ export class KalilaDataManagementStack extends Stack {
           attributeType: AttributeType.STRING,
         },
         {
-          attributeName: "pageId",
-          attributeType: AttributeType.STRING,
-        },
-        {
           attributeName: "unitId",
           attributeType: AttributeType.STRING,
         },
         {
-          attributeName: "order",
-          attributeType: AttributeType.NUMBER,
+          attributeName: "mediumId",
+          attributeType: AttributeType.STRING,
         },
       ],
     });

@@ -106,7 +106,6 @@ export const getMedium = /* GraphQL */ `query GetMedium($id: ID!) {
         images {
           id
           pageId
-          unitId
           legendId
           location
           motifs
@@ -316,7 +315,6 @@ export const getUnit = /* GraphQL */ `query GetUnit($id: ID!) {
     images {
       id
       pageId
-      unitId
       legendId
       legend {
         id
@@ -363,7 +361,6 @@ export const getUnit = /* GraphQL */ `query GetUnit($id: ID!) {
         images {
           id
           pageId
-          unitId
           legendId
           location
           motifs
@@ -474,7 +471,6 @@ export const listUnits = /* GraphQL */ `query ListUnits(
       images {
         id
         pageId
-        unitId
         legendId
         legend {
           id
@@ -572,7 +568,6 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
     images {
       id
       pageId
-      unitId
       legendId
       legend {
         id
@@ -776,7 +771,6 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
       images {
         id
         pageId
-        unitId
         legendId
         legend {
           id

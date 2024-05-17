@@ -18,6 +18,7 @@ export interface IKalilaTableInfo {
   segments: string;
   segmentContents: string;
   images: string;
+  depictions: string;
   textElements: string;
   lines: string;
   chapterCollations: string;
@@ -92,3 +93,40 @@ export function createSchemaFileWithoutSourceDirective(
   // Write the modified schema to the destinationPath
   fs.writeFileSync(destinationPath, resultSchema);
 }
+
+export function createCommonEnvironmentVariablesRecord(env: string, tableNames: IKalilaTableInfo): Record<string, string> {
+  return {
+    'PAGES_TABLE': tableNames.pages,
+    'MEDIA_TABLE': tableNames.media,
+    'BOOKS_TABLE': tableNames.books,
+    'TEXT_TABLE': tableNames.textElements,
+    'IMAGES_TABLE': tableNames.images,
+    'DEPICTIONS_TABLE': tableNames.depictions,
+    'LINES_TABLE': tableNames.lines,
+    'UNITS_TABLE': tableNames.units,
+    'SEGMENTS_TABLE': tableNames.segments,
+    'SEGMENT_CONTENTS_TABLE': tableNames.segmentContents,
+    'CHAPTER_COLLATIONS_TABLE': tableNames.chapterCollations,
+    'LEMMAS_TABLE': tableNames.lemmas,
+    'INVERTED_LEMMAS_TABLE': tableNames.invertedLemmas,
+
+    'BUCKET_NAME': "kalila-pages",
+    'ENV': env,
+    'DEFAULT_REGION': 'eu-central-1',
+
+    'PAGES_MEDIUM_ID_INDEX': 'pageMediumIdIndex',
+    'UNITS_PARENT_ID_INDEX': 'parentIdOrderIndex',
+    'MEDIUM_BOOK_ID_INDEX': "mediumBookIdIndex",
+    'TEXT_PAGE_ID_INDEX': "textPageIdIndex",
+    'LINE_ELEMENT_ID_INDEX': 'lineElementIdIndex',
+    'IMAGE_PAGE_ID_INDEX': 'imagePageIdIndex',
+    'DEPICTION_UNIT_ID_INDEX': 'depictionUnitIdIndex',
+    'SEGMENTS_UNIT_ID_INDEX': 'segmentUnitIdIndex',
+    'SEGMENT_MEDIUM_ID_INDEX': 'segmentMediumIdIndex',
+    'SEGMENT_MEDIUM_ID_VERSION_INDEX': 'segmentMediumIdVersionIndex',
+    'SEGMENT_MEDIUM_ID_END_PAGE_INDEX': 'segmentMediumIdEndPageIndex',
+    'LEMMA_PAGE_ID_INDEX': 'lemmaPageIdIndex',
+    'PAGE_ID_LEMMA_INDEX': 'pageIdIndex',
+  }
+}
+

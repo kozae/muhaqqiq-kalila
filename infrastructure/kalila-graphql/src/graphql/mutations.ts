@@ -64,7 +64,6 @@ export const createMedium = /* GraphQL */ `mutation CreateMedium($input: CreateM
         images {
           id
           pageId
-          unitId
           legendId
           location
           motifs

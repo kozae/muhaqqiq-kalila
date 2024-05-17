@@ -42,7 +42,6 @@ export async function getPage(id: string) {
         images {
           id
           pageId
-          unitId
           legendId
           legend {
             id

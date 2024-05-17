@@ -1,22 +1,21 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, SecretValue, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { IKalilaTableInfo, KalilaTableConstructs } from "./utils";
-import {
-  Code,
-  Architecture,
-  Runtime,
-  Function as LambdaFunction,
-  StartingPosition,
-} from "aws-cdk-lib/aws-lambda";
-import { Table } from "aws-cdk-lib/aws-dynamodb";
-import { DynamoEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import { KalilaTableConstructs } from "./utils";
 import * as iam from "aws-cdk-lib/aws-iam";
+import { AwsLogDriver, Cluster, ContainerImage, CpuArchitecture, FargateTaskDefinition, OperatingSystemFamily } from "aws-cdk-lib/aws-ecs";
+import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+
 
 interface IKalilaDataAggregationStackProps extends StackProps {
-  readonly tableArns: IKalilaTableInfo;
-  readonly tableStreamArns: IKalilaTableInfo;
-  readonly tableNames: IKalilaTableInfo;
+  // readonly tableArns: IKalilaTableInfo;
+  // readonly tableStreamArns: IKalilaTableInfo;
+  // readonly tableNames: IKalilaTableInfo;
   readonly stage: string;
+  readonly vars: Record<string, string>;
 }
 
 export class KalilaDataAggregationStack extends Stack {
@@ -29,115 +28,171 @@ export class KalilaDataAggregationStack extends Stack {
   ) {
     super(scope, id, props);
     this.stage = props.stage;
-    this.tables = this.createTableConstructs(
-      props.tableArns,
-      props.tableStreamArns,
-    );
-    this.createCountAggregator(props.tableArns, props.tableNames.itemCounts);
-    this.createS3DocWriter(props.tableArns, props.tableNames);
+    this.createDataTransformationTask(props.vars);
+    this.createEditionDataGithubPipeline();
   }
 
-  private createCountAggregator(
-    itableArns: IKalilaTableInfo,
-    itemCountTableName: string,
-  ) {
-    const handler = new LambdaFunction(this, "KalilaCountAggregator", {
-      code: Code.fromAsset("../../../kalila-rs/target/lambda/count_handler"),
-      architecture: Architecture.ARM_64,
-      runtime: Runtime.PROVIDED_AL2,
-      handler: "does_not_matter",
+  private createEditionDataGithubPipeline() {
+    const bucket = s3.Bucket.fromBucketName(this, 'ExistingBucket', 'kalila-pages');
 
-      functionName: `kalila-count-aggregator_${this.stage}`,
-      environment: {
-        ITEM_COUNT_NAME: itemCountTableName,
-        BOOK_ARN: itableArns.books,
-        MEDIUM_ARN: itableArns.media,
-      },
+    const sourceOutput = new codepipeline.Artifact();
+    const sourceAction = new codepipeline_actions.GitHubSourceAction({
+      actionName: 'GitHub_Source',
+      owner: 'kalila-and-dimna',
+      repo: 'edition-data',
+      oauthToken: SecretValue.unsafePlainText("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"),
+      output: sourceOutput,
+      branch: 'main',
     });
-    this.tables.itemCounts.grantWriteData(handler);
-    Object.entries(this.tables)
-      .filter(([key, _]) => key !== "itemCounts")
-      .forEach(([_, table]) => {
-        handler.addEventSource(
-          new DynamoEventSource(table, {
-            startingPosition: StartingPosition.TRIM_HORIZON,
-          }),
-        );
-      });
-  }
 
-  private createS3DocWriter(itableArns: IKalilaTableInfo, tableNames: IKalilaTableInfo) {
-    const handler = new LambdaFunction(this, "KalilaS3DocWriter", {
-      code: Code.fromAsset("../../../kalila-rs/target/lambda/s3_doc_writer"),
-      architecture: Architecture.ARM_64,
-      runtime: Runtime.PROVIDED_AL2,
-      handler: "does_not_matter",
-
-      functionName: `kalila-s3-doc-writer${this.stage}`,
-      environment: {
-        BOOK: itableArns.books,
-        MEDIUM: itableArns.media,
-        PAGE: itableArns.pages,
-        TEXT: itableArns.textElements,
-        LINE: itableArns.lines,
-        IMAGE: itableArns.images,
-        UNIT: itableArns.units,
-        SEGMENT: itableArns.segments,
-        SEGMENT_CONTENT: itableArns.segmentContents,
-        CHAPTER_COLLATION: itableArns.chapterCollations,
-        LEMMA: itableArns.lemmas,
-        INVERTED_LEMMA: itableArns.invertedLemmas,
-        UNIT_TABLE: tableNames.units,
-        STAGE: this.stage,
-      },
-    });
-    Object.entries(this.tables)
-      .filter(([key, _]) => key !== "itemCounts")
-      .forEach(([_, table]) => {
-        handler.addEventSource(
-          new DynamoEventSource(table, {
-            startingPosition: StartingPosition.LATEST,
-          }),
-        );
-      });
-
-    handler.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ["s3:*"],
-        resources: ["arn:aws:s3:::*"],
-      }),
-    );
-
-    handler.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
-        resources: ["*"],
-      }),
-    );
-
-  }
-
-
-
-
-  private createTableConstructs(
-    arns: IKalilaTableInfo,
-    streamArns: IKalilaTableInfo,
-  ) {
-    return Object.entries(arns).reduce(
-      (acc, [key, tableArn]: [string, string]) => {
-        const table = Table.fromTableAttributes(
-          this,
-          `${key}Table_Lambda_Construct`,
-          {
-            tableArn,
-            tableStreamArn: streamArns[key as keyof IKalilaTableInfo],
+    const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
+      buildSpec: codebuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: {
+            commands: [
+              'npm install -g aws-cli',
+            ],
           },
-        );
-        acc[key as keyof IKalilaTableInfo] = table;
-        return acc;
+          build: {
+            commands: [
+              'aws s3 sync data s3://kalila-pages/public/data_dev/edition_data',
+              'aws s3 sync images s3://kalila-pages/public/data_dev/edition_data/images',
+            ],
+          },
+        },
+      }),
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
       },
-      {} as KalilaTableConstructs,
-    );
+    });
+
+    const buildAction = new codepipeline_actions.CodeBuildAction({
+      actionName: 'Build',
+      project: buildProject,
+      input: sourceOutput,
+    });
+
+    new codepipeline.Pipeline(this, 'GitHubToS3Pipeline', {
+      pipelineName: 'GitHubToS3Pipeline',
+      stages: [
+        {
+          stageName: 'Source',
+          actions: [sourceAction],
+        },
+        {
+          stageName: 'Build',
+          actions: [buildAction],
+        },
+      ],
+    });
+
+    // Grant the necessary permissions for CodeBuild to access S3
+    bucket.grantReadWrite(buildProject.role!);
+
   }
+
+
+  private createDataTransformationTask(vars: Record<string, string>) {
+
+
+
+    const taskRole = new iam.Role(this, 'DataTransformationTaskRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+
+    const executionRole = new iam.Role(this, 'DataTransformationExecutionRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+
+
+
+    executionRole.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: [
+        'ecr:*',
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+      ],
+      resources: ['*'],
+    }));
+
+    const parameterStorePolicy = new iam.PolicyStatement({
+      actions: ['ssm:GetParameter', 'ssm:GetParameters'],
+      resources: [
+        `arn:aws:ssm:${this.region}:${this.account}:parameter/kalila/${this.stage}/*`,
+      ],
+    });
+
+    taskRole.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: [
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+        's3:GetObject',
+        's3:PutObject',
+        'dynamodb:BatchGetItem',
+        'dynamodb:GetRecords',
+        'dynamodb:GetShardIterator',
+        'dynamodb:Query',
+        'dynamodb:GetItem',
+        'dynamodb:Scan',
+      ],
+      resources: ['*'],
+    }));
+
+    taskRole.addToPrincipalPolicy(parameterStorePolicy);
+
+    const taskDefinition = new FargateTaskDefinition(this, 'KalilaDataTransformationTask', {
+      memoryLimitMiB: 512,
+      cpu: 256,
+      runtimePlatform: {
+        operatingSystemFamily: OperatingSystemFamily.LINUX,
+        cpuArchitecture: CpuArchitecture.ARM64
+      },
+      taskRole,
+      executionRole
+    });
+
+    const logging = new AwsLogDriver({
+      streamPrefix: "kalila-edition-data-transformation",
+    })
+
+    taskDefinition.addContainer('KalilaDataTransformationTask', {
+      image: ContainerImage.fromRegistry('557976691964.dkr.ecr.eu-central-1.amazonaws.com/edition_data_service-dev:latest'),
+      logging,
+      environment: { ...vars, FILE_SYSTEM_PATH: "/usr/src/app" },
+    });
+
+
+    taskDefinition.taskRole.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: ['dynamodb:GetItem', 'dynamodb:Query', 'dynamodb:Scan', 's3:*'],
+      resources: ['*'],
+    }));
+
+    const vpc = Vpc.fromLookup(this, "KalilaVpc", {
+      vpcId: "vpc-02a0a94756a3ace7c"
+    })
+
+
+
+
+    new Cluster(this, 'KalilaDataTransformationCluster', {
+      vpc,
+    });
+
+    const securityGroup = new SecurityGroup(this, 'KalilaDataAggregationSecurityGroup', {
+      securityGroupName: 'KalilaDataTransformationTaskSecurityGroup',
+      vpc,
+      description: 'Allow all TCP connections',
+      allowAllOutbound: true,
+    });
+
+    securityGroup.addIngressRule(Peer.anyIpv4(), Port.tcpRange(0, 65535), 'Allow all TCP connections');
+
+    new CfnOutput(this, 'SecurityGroupArn', {
+      value: securityGroup.securityGroupId,
+      exportName: 'KalilaDataAggregationSecurityGroupId',
+    });
+
+  }
+
 }

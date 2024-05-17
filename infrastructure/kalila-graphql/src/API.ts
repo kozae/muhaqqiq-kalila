@@ -82,7 +82,6 @@ export type Image = {
   __typename: "Image",
   id: string,
   pageId: string,
-  unitId?: string | null,
   legendId?: string | null,
   legend?: TextElement | null,
   location?: Array< number | null > | null,
@@ -224,29 +223,35 @@ export type TextElementInput = {
   id: string,
   order: number,
   position: string,
-  region: Array< number >,
+  region?: Array< number > | null,
+  nested?: TextConnectionInput | null,
+};
+
+export type TextConnectionInput = {
+  withElement: string,
+  atLine: number,
+  atToken: number,
 };
 
 export type ImageInput = {
   id: string,
-  unitId?: string | null,
   legendId?: string | null,
   legend?: string | null,
-  location: Array< number >,
-  motifs?: string | null,
+  location?: Array< number > | null,
+  motifs?: Array< string | null > | null,
   order: number,
   position: string,
-  region: Array< number >,
-  style?: string | null,
+  region?: Array< number > | null,
+  style?: Array< string | null > | null,
 };
 
 export type LineInput = {
   id: string,
   elementId: string,
   order: number,
-  region: Array< number >,
-  states: Array< string >,
-  tokens: Array< string >,
+  region?: Array< number > | null,
+  states?: Array< string > | null,
+  tokens?: Array< string > | null,
 };
 
 export type SegmentInput = {
@@ -259,7 +264,7 @@ export type SegmentInput = {
   endLine?: number | null,
   endToken?: number | null,
   lacuna: boolean,
-  tags?: string | null,
+  tags?: Array< string | null > | null,
   type: string,
 };
 
@@ -445,7 +450,6 @@ export type CreateMediumMutation = {
           __typename: "Image",
           id: string,
           pageId: string,
-          unitId?: string | null,
           legendId?: string | null,
           location?: Array< number | null > | null,
           motifs?: Array< string | null > | null,
@@ -747,7 +751,6 @@ export type GetMediumQuery = {
           __typename: "Image",
           id: string,
           pageId: string,
-          unitId?: string | null,
           legendId?: string | null,
           location?: Array< number | null > | null,
           motifs?: Array< string | null > | null,
@@ -958,7 +961,6 @@ export type GetUnitQuery = {
       __typename: "Image",
       id: string,
       pageId: string,
-      unitId?: string | null,
       legendId?: string | null,
       legend?:  {
         __typename: "TextElement",
@@ -1007,7 +1009,6 @@ export type GetUnitQuery = {
           __typename: "Image",
           id: string,
           pageId: string,
-          unitId?: string | null,
           legendId?: string | null,
           location?: Array< number | null > | null,
           motifs?: Array< string | null > | null,
@@ -1112,7 +1113,6 @@ export type ListUnitsQuery = {
         __typename: "Image",
         id: string,
         pageId: string,
-        unitId?: string | null,
         legendId?: string | null,
         legend?:  {
           __typename: "TextElement",
@@ -1213,7 +1213,6 @@ export type GetPageQuery = {
       __typename: "Image",
       id: string,
       pageId: string,
-      unitId?: string | null,
       legendId?: string | null,
       legend?:  {
         __typename: "TextElement",
@@ -1413,7 +1412,6 @@ export type ListMediumPagesQuery = {
         __typename: "Image",
         id: string,
         pageId: string,
-        unitId?: string | null,
         legendId?: string | null,
         legend?:  {
           __typename: "TextElement",
@@ -1829,7 +1827,6 @@ export type OnCreateMediumSubscription = {
           __typename: "Image",
           id: string,
           pageId: string,
-          unitId?: string | null,
           legendId?: string | null,
           location?: Array< number | null > | null,
           motifs?: Array< string | null > | null,

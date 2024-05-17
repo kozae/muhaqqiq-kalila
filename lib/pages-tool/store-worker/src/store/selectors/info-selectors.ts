@@ -4,7 +4,6 @@ import { rootSelector } from "./root-selector";
 import type { ImageInput, LineInput, PageUpdateInput, SegmentInput } from "kalila-graphql";
 import {
   selectAllImageElements,
-  selectAllLines,
   selectAllSegments,
   selectAllTextElements,
 } from "../base-selectors";
@@ -82,7 +81,7 @@ export const selectUpdatePayload = createSelector(rootSelector, (state) => {
       order: image.order,
       position: image.position!,
       region: image.region! as number[],
-      unitId: image.unitId,
+      // unitId: image.unitId,
       location: image.location,
       legendId: image.legendId,
       legend: image.legend,
@@ -91,7 +90,7 @@ export const selectUpdatePayload = createSelector(rootSelector, (state) => {
     } as ImageInput));
   }
 
-  if (state.changed.segments) {
+  if (state.changed.segments || state.changed.lines) {
     update.segments = selectAllSegments(state.segments).map((segment) => ({
       id: segment.id,
       unitId: segment.unitId,

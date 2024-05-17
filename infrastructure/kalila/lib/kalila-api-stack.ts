@@ -32,9 +32,9 @@ import {
 
 interface IKalilaApiStackProps extends StackProps {
   readonly tableArns: IKalilaTableInfo;
-  readonly tableNames: IKalilaTableInfo;
   readonly userPoolId: string;
   readonly stage: string;
+  readonly vars: Record<string, string>;
 }
 
 type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
@@ -65,7 +65,7 @@ export class KalilaApiStack extends Stack {
     );
     this.tables = this.createTableConstructs(props.tableArns);
     this.dataSources = this.createDataSources();
-    this.lambdas = this.createLambdas(props.tableNames);
+    this.lambdas = this.createLambdas(props.vars);
 
     const mutationLambdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
       "MutationHandler",
@@ -134,7 +134,14 @@ export class KalilaApiStack extends Stack {
     );
   }
 
-  private createLambdas(names: IKalilaTableInfo) {
+  private createLambdas(vars: Record<string, string>) {
+
+    const parameterStorePolicy = new PolicyStatement({
+      actions: ['ssm:GetParameter', 'ssm:GetParameters'],
+      resources: [
+        `arn:aws:ssm:${this.region}:${this.account}:parameter/kalila/${this.stage}/*`,
+      ],
+    });
     const mutationHandler = new LambdaFunction(this, "KalilaMutationHandler", {
       code: LambdaCode.fromAsset(
         "../../../kalila-rs/target/lambda/mutation_handler",
@@ -145,20 +152,10 @@ export class KalilaApiStack extends Stack {
       timeout: Duration.seconds(10),
       memorySize: 512,
       functionName: `kalila-mutation-handler_${this.stage}`,
-      environment: {
-        PAGES: names.pages,
-        LINES: names.lines,
-        TEXT: names.textElements,
-        IMAGES: names.images,
-        UNITS: names.units,
-        SEGMENTS: names.segments,
-        SEGMENT_CONTENTS: names.segmentContents,
-        LEMMAS: names.lemmas,
-        INVERTED_LEMMAS: names.invertedLemmas,
-      },
+      environment: { ...vars },
     });
     for (const table of Object.values(this.tables)) {
-      mutationHandler.grantPrincipal.addToPrincipalPolicy(
+      mutationHandler.addToRolePolicy(
         new PolicyStatement({
           actions: ["dynamodb:*"],
           resources: [table.tableArn, `${table.tableArn}/index/*`],
@@ -166,6 +163,8 @@ export class KalilaApiStack extends Stack {
         }),
       );
     }
+
+    mutationHandler.addToRolePolicy(parameterStorePolicy);
 
     const searchHandler = new LambdaFunction(this, "KalilaSearchHandler", {
       code: LambdaCode.fromAsset(
@@ -178,19 +177,10 @@ export class KalilaApiStack extends Stack {
       handler: "does_not_matter",
 
       functionName: `kalila-search-handler_${this.stage}`,
-      environment: {
-        PAGES: names.pages,
-        LINES: names.lines,
-        TEXT: names.textElements,
-        IMAGES: names.images,
-        UNITS: names.units,
-        LEMMAS: names.lemmas,
-        INVERTED_LEMMAS: names.invertedLemmas,
-        SEGMENTS: names.segments,
-      },
+      environment: { ...vars },
     });
     for (const table of Object.values(this.tables)) {
-      searchHandler.grantPrincipal.addToPrincipalPolicy(
+      searchHandler.addToRolePolicy(
         new PolicyStatement({
           actions: ["dynamodb:*"],
           resources: [table.tableArn, `${table.tableArn}/index/*`],
@@ -199,11 +189,19 @@ export class KalilaApiStack extends Stack {
       );
     }
 
-    const collationHandler = this.createCollationContentUpdater(names);
+    searchHandler.addToRolePolicy(parameterStorePolicy);
+
+    const collationHandler = this.createCollationContentUpdater(vars);
     return { mutationHandler, searchHandler, collationHandler };
   }
 
-  private createCollationContentUpdater(tableNames: IKalilaTableInfo) {
+  private createCollationContentUpdater(vars: Record<string, string>) {
+    const parameterStorePolicy = new PolicyStatement({
+      actions: ['ssm:GetParameter', 'ssm:GetParameters'],
+      resources: [
+        `arn:aws:ssm:${this.region}:${this.account}:parameter/kalila/${this.stage}/*`,
+      ],
+    });
     const handler = new LambdaFunction(this, "KalilaCollationContentUpdater", {
       code: LambdaCode.fromAsset("../../../kalila-rs/target/lambda/collation_content_updater"),
       architecture: Architecture.ARM_64,
@@ -212,14 +210,7 @@ export class KalilaApiStack extends Stack {
       memorySize: 1024,
       handler: "does_not_matter",
       functionName: `kalila-collation-content-updater_${this.stage}`,
-      environment: {
-        UNIT: tableNames.units,
-        SEGMENT: tableNames.segments,
-        PAGE: tableNames.pages,
-        MEDIUM: tableNames.media,
-        COLLATION: tableNames.chapterCollations,
-        STAGE: this.stage,
-      },
+      environment: { ...vars },
     });
 
     handler.addToRolePolicy(
@@ -235,6 +226,8 @@ export class KalilaApiStack extends Stack {
         resources: ["*"],
       }),
     );
+
+    handler.addToRolePolicy(parameterStorePolicy);
 
     return handler;
   }

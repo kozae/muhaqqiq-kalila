@@ -20,7 +20,7 @@ export default {
     app.stack(function Site({ stack }) {
 
       const bucket = s3.Bucket.fromBucketName(stack, "KalilaAssetsBucket", "kalila-pages");
-      const longTeemCachePolicy = new CachePolicy(
+      const longTermCachePolicy = new CachePolicy(
         stack,
         "KalilaFrontendCachePolicy",
         {
@@ -67,12 +67,17 @@ export default {
         }),
       }) as IFunction;
 
+      const pageRemapFunction = new Function(stack, "PageRemapFunction", {
+        code: FunctionCode.fromFile({
+          filePath: "functions/page-scan-remap.function.js",
+        }),
+      }) as IFunction;
 
 
 
       const site = new AstroSite(stack, "site", {
         cdk: {
-          serverCachePolicy: longTeemCachePolicy,
+          serverCachePolicy: longTermCachePolicy,
           distribution: {
             additionalBehaviors: {
               "/srv/data/*": {
@@ -85,6 +90,17 @@ export default {
                   },
                 ],
                 cachePolicy: noCachePolicy,
+              },
+              "/srv/page/*": {
+                origin: new S3Origin(bucket, { originAccessIdentity }),
+                viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                functionAssociations: [
+                  {
+                    eventType: FunctionEventType.VIEWER_REQUEST,
+                    function: pageRemapFunction,
+                  },
+                ],
+                cachePolicy: longTermCachePolicy,
               }
             }
           }

@@ -64,7 +64,6 @@ export const onCreateMedium = /* GraphQL */ `subscription OnCreateMedium($bookId
         images {
           id
           pageId
-          unitId
           legendId
           location
           motifs

@@ -7,6 +7,7 @@ import { KalilaApiStack } from "../lib/kalila-api-stack";
 import { KalilaAuthStack } from "../lib/kalila-auth-stack";
 import { KalilaDataStorageStack } from "../lib/kalila-data-storage-stack";
 import { KalilaDataAggregationStack } from "../lib/kalila-data-aggregation-stack";
+import { createCommonEnvironmentVariablesRecord } from "../lib/utils";
 
 const environments: Record<string, { account: string; region: string }> = {
   dev: {
@@ -39,12 +40,14 @@ const dataStack = new KalilaDataManagementStack(
   { env, stage: environment },
 );
 
+const envVariables = createCommonEnvironmentVariablesRecord(environment, dataStack.tableNames);
+
 new KalilaApiStack(app, `KalilaApiStack-${environment}`, {
   tableArns: dataStack.tableArns,
-  tableNames: dataStack.tableNames,
   userPoolId: authStack.userPoolId,
   env,
   stage: environment,
+  vars: envVariables,
 });
 new KalilaDataStorageStack(app, `KalilaDataStorageStack-${environment}`, {
   authenticatedRole: authStack.authenticatedRole,
@@ -56,11 +59,12 @@ new KalilaDataAggregationStack(
   app,
   `KalilaDataAggregationStack-${environment}`,
   {
-    tableArns: dataStack.tableArns,
-    tableStreamArns: dataStack.tableStreamArns,
-    tableNames: dataStack.tableNames,
+    // tableArns: dataStack.tableArns,
+    // tableStreamArns: dataStack.tableStreamArns,
+    // tableNames: dataStack.tableNames,
     env,
     stage: environment,
+    vars: envVariables,
   },
 );
 
