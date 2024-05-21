@@ -44,8 +44,7 @@
   };
 
   const sub = save.subscribe({
-    next: (message) => {
-      console.log(message);
+    next: () => {
       saveRequested = false;
       saveSuccess = true;
       showFullPageLoading.set(false);

@@ -15,31 +15,34 @@ const { pageId, mediumId, tool } = Astro.params;
     tool !== "segmentation" && (
       <div class="animate-fade-in w-1/2 grow scale-90 rounded bg-white opacity-0">
         {tool === "info" && (
-          <Info pageId={pageId!} mediumId={mediumId!} client:only />
+          <Info pageId={pageId!} mediumId={mediumId!} client:only="svelte" />
         )}
         {tool === "layout" && (
-          <Layout pageId={pageId!} mediumId={mediumId!} client:only />
+          <Layout pageId={pageId!} mediumId={mediumId!} client:only="svelte" />
         )}
         {tool === "lines" && (
-          <Lines pageId={pageId!} mediumId={mediumId!} client:only />
+          <Lines pageId={pageId!} mediumId={mediumId!} client:only="svelte" />
         )}
         {tool === "transcription" && (
           <TranscriptionPanel
             pageId={pageId!}
             mediumId={mediumId!}
-            client:only
+            client:only="svelte"
           />
         )}
-        {tool === "images" && <Loading soon client:only />}
+        {tool === "images" && <Loading soon client:only="svelte" />}
       </div>
     )
   }
   {
     tool === "segmentation" && (
       <div class="w-full grow  rounded bg-white">
-        <SegmentationPanel pageId={pageId!} mediumId={mediumId!} client:only />
+        <SegmentationPanel
+          pageId={pageId!}
+          mediumId={mediumId!}
+          client:only="svelte"
+        />
       </div>
     )
   }
 </ToolLayout>
-@client/pages/Segmentation_OLD

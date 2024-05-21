@@ -1,11 +1,57 @@
 ---
 import Layout from "@layouts/PagesOuterLayout.astro";
+import { getCollection } from "astro:content";
+
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { BatchGetCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import Summary from "@client/pages/Summary";
+
+import lodash from "lodash";
 
 const { mediumId } = Astro.params;
+const {
+  data: { siglum, pages },
+} = (await getCollection("media-pages")).find((p) => p.id === mediumId)!;
+
+const db = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const STAGE = process.env.STAGE || "dev";
+const TABLE_NAME = `Page_${STAGE}`;
+const CHUNK_SIZE = 100;
+
+const chunkArray = (array: any[], size: number): any[][] => {
+  const result: any[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+};
+
+const fetchPagesInChunks = async (pages: any[]): Promise<any[]> => {
+  const chunks = chunkArray(pages, CHUNK_SIZE);
+  const fetchedPages: any[] = [];
+
+  for (const chunk of chunks) {
+    const params = {
+      RequestItems: {
+        [TABLE_NAME]: {
+          Keys: chunk.map((page: any) => ({ id: page.id })),
+        },
+      },
+    };
+
+    const command = new BatchGetCommand(params);
+    const response = await db.send(command);
+    if (response.Responses && response.Responses[TABLE_NAME]) {
+      fetchedPages.push(...response.Responses[TABLE_NAME]);
+    }
+  }
+
+  return lodash.sortBy(fetchedPages, "number");
+};
+
+const pagesData = await fetchPagesInChunks(pages);
 ---
 
 <Layout mediumId={mediumId!}>
-  <h1>Manuscript</h1>
-
-  <p>{mediumId}</p>
+  <Summary siglum={siglum} pages={pagesData} client:only="react" />
 </Layout>

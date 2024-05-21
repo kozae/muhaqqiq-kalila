@@ -7,11 +7,16 @@
   let password: string = "";
   let error: boolean = false;
 
+  function getRedirectUri(): string {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("redirect") || "/";
+  }
+
   async function signIn(username: string, password: string): Promise<void> {
     error = false;
     try {
       await amplifySignIn({ username, password });
-      window.location.href = "/";
+      window.location.href = getRedirectUri();
     } catch (e) {
       error = true;
     }

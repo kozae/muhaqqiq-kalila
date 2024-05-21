@@ -3,7 +3,7 @@ import {
   type GraphQLResult,
 } from "@aws-amplify/api";
 import { getUrl } from 'aws-amplify/storage';
-import { updatePage, type GetMediumQuery, type GetPageQuery, type LemmaData, type UpdatePageMutation, type PageUpdateInput } from "kalila-graphql";
+import { updatePage, changeMediumEditor, type GetMediumQuery, type GetPageQuery, type LemmaData, type UpdatePageMutation, type PageUpdateInput, type ChangeMediumEditorMutation } from "kalila-graphql";
 import { loadImageAsDataUrl } from "../StateControls/helpers";
 import { generateClient } from "aws-amplify/api";
 
@@ -24,7 +24,11 @@ export async function getMedium(id: string) {
     variables: { id },
     authMode: "userPool",
   });
-  return (response as GraphQLResult<GetMediumQuery>).data?.getMedium?.siglum;
+
+  const siglum = (response as GraphQLResult<GetMediumQuery>).data?.getMedium?.siglum;
+  const editor = (response as GraphQLResult<GetMediumQuery>).data?.getMedium?.editor;
+
+  return { siglum, editor };
 }
 
 export async function getPage(id: string) {
@@ -193,12 +197,11 @@ export async function getImage(url: string) {
   return loadImageAsDataUrl(signedUrl.toString());
 }
 
-export async function getPageData(mediumId: string, pageId: string) {
-  const siglum = await getMedium(mediumId);
+export async function getPageData(pageId: string) {
   const page = await getPage(pageId);
   const imageDataUrl = await getImage(page!.image!);
 
-  return { siglum, page, imageDataUrl };
+  return { page, imageDataUrl };
 }
 
 export async function postPageForLemmatization(data: any) {
@@ -216,7 +219,6 @@ export async function postPageForLemmatization(data: any) {
 
 export async function postPageUpdate(update: PageUpdateInput) {
 
-  console.log(update);
 
   const response = await client.graphql<GraphQLQuery<UpdatePageMutation>>({
     query: updatePage,
@@ -225,3 +227,13 @@ export async function postPageUpdate(update: PageUpdateInput) {
   });
   return (response as GraphQLResult<UpdatePageMutation>).data;
 }
+
+export async function postChangeMediumEditor(mediumId: string, editor: string) {
+  const response = await client.graphql<GraphQLQuery<ChangeMediumEditorMutation>>({
+    query: changeMediumEditor,
+    variables: { mediumId, editor },
+    authMode: "userPool",
+  });
+  return (response as GraphQLResult<ChangeMediumEditorMutation>).data;
+}
+

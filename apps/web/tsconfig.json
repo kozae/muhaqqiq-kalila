@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "moduleResolution": "Node",
+    "jsx": "react-jsx",
     "paths": {
       "@components/*": [
         "src/components/server/*"

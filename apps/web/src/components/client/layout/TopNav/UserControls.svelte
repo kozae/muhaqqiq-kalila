@@ -4,6 +4,12 @@
   import { slide } from "svelte/transition";
 
   export let user: any | undefined = undefined;
+  export let menuDirection: "right" | "down" = "down";
+
+  const menuClass =
+    menuDirection === "down"
+      ? "absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      : "absolute left-[90%] bottom-[90%] z-10 mt-2 w-48 origin-bottom-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none";
 
   let active: boolean = false;
   let menuItems: { name: string; href: string; action?: () => void }[] = [
@@ -41,7 +47,7 @@
   {#if active}
     <div
       transition:slide={{ delay: 0, duration: 300, axis: "y" }}
-      class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class={menuClass}
     >
       {#each menuItems as item (item.name)}
         <a

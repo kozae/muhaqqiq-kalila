@@ -621,6 +621,15 @@ export type DeleteUnitMutation = {
   deleteUnit?: string | null,
 };
 
+export type ChangeMediumEditorMutationVariables = {
+  mediumId: string,
+  editor: string,
+};
+
+export type ChangeMediumEditorMutation = {
+  changeMediumEditor?: string | null,
+};
+
 export type UpdateCollationUnitsMutationVariables = {
   units: string,
 };

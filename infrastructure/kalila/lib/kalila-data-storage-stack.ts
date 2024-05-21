@@ -1,4 +1,5 @@
 import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+
 import { Role } from "aws-cdk-lib/aws-iam";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
@@ -22,5 +23,8 @@ export class KalilaDataStorageStack extends Stack {
     );
     pagesBucket.grantReadWrite(props.authenticatedRole);
     new CfnOutput(this, "StorageBucketName", { value: pagesBucket.bucketName });
+
+
+
   }
 }

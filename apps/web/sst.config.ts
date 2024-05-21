@@ -111,13 +111,16 @@ export default {
             resources: ["arn:aws:s3:::*"],
           }),
           new iam.PolicyStatement({
-            actions: ["dynamodb:Scan", "dynamodb:Query"],
-            resources: ["arn:aws:dynamodb:*:*:table/*"],
+            actions: ["dynamodb:Scan", "dynamodb:Query", "dynamodb:GetItem", "dynamodb:BatchGetItem"],
+            resources: [
+              "arn:aws:dynamodb:*:*:table/*",
+              "arn:aws:dynamodb:*:*:table/*/index/*",
+            ],
           }),
         ],
         bind: [api],
         environment: {
-          SRAGE: stack.stage,
+          STAGE: stack.stage,
         },
       });
 

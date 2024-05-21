@@ -19,7 +19,7 @@ const { mediumId, pageId, tool = "" } = Astro.props;
       transition:persist={pageId}
       transition:animate="fade"
     >
-      <StateControls client:only />
+      <StateControls client:only="svelte" />
     </div>
     <ToolNav tool={tool} mediumId={mediumId} pageId={pageId ?? ""} />
   </div>
@@ -27,7 +27,7 @@ const { mediumId, pageId, tool = "" } = Astro.props;
     {
       tool !== "segmentation" && (
         <div class="w-1/2 h-[calc(100vh-90px)] flex justify-center">
-          <FacsimileSpace id={pageId!} client:only />
+          <FacsimileSpace id={pageId!} client:only="svelte" />
         </div>
       )
     }

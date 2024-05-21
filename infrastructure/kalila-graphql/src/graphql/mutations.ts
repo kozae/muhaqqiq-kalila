@@ -237,6 +237,13 @@ export const deleteUnit = /* GraphQL */ `mutation DeleteUnit($input: DeleteUnitI
   APITypes.DeleteUnitMutationVariables,
   APITypes.DeleteUnitMutation
 >;
+export const changeMediumEditor = /* GraphQL */ `mutation ChangeMediumEditor($mediumId: ID!, $editor: String!) {
+  changeMediumEditor(mediumId: $mediumId, editor: $editor)
+}
+` as GeneratedMutation<
+  APITypes.ChangeMediumEditorMutationVariables,
+  APITypes.ChangeMediumEditorMutation
+>;
 export const updateCollationUnits = /* GraphQL */ `mutation UpdateCollationUnits($units: String!) {
   updateCollationUnits(units: $units)
 }

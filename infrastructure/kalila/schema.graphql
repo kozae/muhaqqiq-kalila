@@ -91,6 +91,9 @@ type Mutation {
 
   deleteUnit(input: DeleteUnitInput!): String 
 
+  changeMediumEditor(mediumId: ID!, editor: String!): String
+    
+
   updateCollationUnits(units: String!): String 
   updateCollationSegments(segments: [String]!): String
     

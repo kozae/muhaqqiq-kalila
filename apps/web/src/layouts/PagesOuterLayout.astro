@@ -1,13 +1,12 @@
 ---
 import SiteLayout from "./SiteLayout.astro";
 import Paginator from "@components/Paginator.astro";
-import { getDataEntryById, getCollection } from "astro:content";
+import { getCollection } from "astro:content";
 import lodash from "lodash";
 import TableCellsIcon from "@icons/TableCellsIcon.svelte";
 import GoToButton from "@client/pages/GoToButton.svelte";
 import FullPageLoadingIndicator from "@client/reusable/FullPageLoadingIndicator.svelte";
-import UserControls from "@client/layout/TopNav/UserControls.svelte";
-import ArrowLeftFromBox from "@icons/ArrowLeftFromBox.svelte";
+import UserControlsWrapper from "@client/reusable/UserControlsWrapper.svelte";
 interface Props {
   mediumId: string;
   pageId?: string;
@@ -21,16 +20,13 @@ const {
   data: { siglum, pages },
 } = (await getCollection("media-pages")).find((p) => p.id === mediumId)!;
 
-// const {
-//   data: { siglum, pages },
-// } = (await getDataEntryById("media-pages", mediumId as const))!;
 const sortedPages = lodash.sortBy(pages, "number");
 const currentPageIndex = sortedPages.findIndex((p) => p.id === pageId);
 const ids = sortedPages.map((p) => p!.id) ?? [];
 ---
 
 <SiteLayout title={`Edit ${siglum} Pages`} transitions={transitions}>
-  <FullPageLoadingIndicator client:only />
+  <FullPageLoadingIndicator client:only="svelte" />
   <nav
     class="bg-secondary-50 fixed left-0 top-0 z-10 flex h-full w-[80px] flex-col items-center"
   >
@@ -43,7 +39,7 @@ const ids = sortedPages.map((p) => p!.id) ?? [];
       class="hover:bg-secondary-200 text-primary-500 focus-visible:outline-primary-600 mt-1 hidden items-center gap-x-1.5 rounded-md px-2.5 py-1.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:inline-flex sm:flex-col"
     >
       <TableCellsIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-       Summary
+      Summary
     </a>
 
     <div transition:persist>
@@ -64,14 +60,8 @@ const ids = sortedPages.map((p) => p!.id) ?? [];
     />
 
     <div class="flex-grow"></div>
-    <div
-      class="flex items-center justify-center h-[70px] w-[70px] rounded-full bg-cover bg-center bg-no-repeat mb-10"
-      style="background-image: url('/avatars/mk.png')"
-    >
-    </div>
-    <div class="mb-10">
-      <ArrowLeftFromBox />
-    </div>
+    <UserControlsWrapper client:only="svelte" />
+    <div class="h-[10px]"></div>
   </nav>
   <main
     class="flex flex-col w-[calc(100%-80px)] grow rounded bg-white p-1 ml-[80px]"

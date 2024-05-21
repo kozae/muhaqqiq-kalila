@@ -4,6 +4,7 @@ import svelte from "@astrojs/svelte";
 import tailwindcss from "@astrojs/tailwind";
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
+import react from "@astrojs/react";
 
 export default defineConfig({
   output: "server",
@@ -11,7 +12,7 @@ export default defineConfig({
     deployment: "regional",
     serverRoutes: ["/api/*"],
   }),
-  integrations: [svelte(), tailwindcss()],
+  integrations: [svelte(), tailwindcss(), react()],
   build: {
     inlineStylesheets: "always",
   },

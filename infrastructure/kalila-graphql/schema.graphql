@@ -91,6 +91,9 @@ type Mutation {
 
   deleteUnit(input: DeleteUnitInput!): String @source(value: mutation_lambda)
 
+  changeMediumEditor(mediumId: ID!, editor: String!): String
+    @source(value: mutation_lambda)
+
   updateCollationUnits(units: String!): String @source(value: collation_lambda)
   updateCollationSegments(segments: [String]!): String
     @source(value: collation_lambda)
