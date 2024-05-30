@@ -1,6 +1,33 @@
 import { WidgetType } from "@codemirror/view";
 import type { SegmentUnitConnection } from "kalila-graphql";
 
+export class UnitFromPrevPageWidget extends WidgetType {
+    private readonly content: string;
+    public readonly id: string;
+    constructor(readonly segment: SegmentUnitConnection) {
+        super();
+        this.content = ` /${segment.frame}${segment.order}...`;
+        this.id = segment.id;
+    }
+
+    toDOM() {
+        const span = document.createElement("span");
+        span.style.opacity = "0.7";
+
+        span.title = this.segment.title || "";
+        span.style.cursor = "default";
+        span.style.color = "white";
+        span.style.fontFamily = "Noto Sans Display, sans-serif";
+        span.style.backgroundColor = "#4d4d0a";
+        span.style.borderRadius = "5px";
+        span.style.marginLeft = "3px";
+        span.style.fontSize = "0.7em";
+        span.textContent = this.content;
+        return span;
+    }
+}
+
+
 export class UnitWidget extends WidgetType {
     protected readonly content: string;
     public readonly id: string;
@@ -33,17 +60,12 @@ export class UnitWidget extends WidgetType {
 
         span.addEventListener('mouseenter', () => {
             span.style.color = 'red';
-            const paddingLength = (this.content.length - 1) / 2;
-            const padding = ' '.repeat(paddingLength);
-            span.textContent = `${padding}X${padding}`;
-            if (this.content.length % 2 === 0) {
-                span.textContent += ' '; // Add an extra space for even length content to maintain the length
-            }
+            span.style.border = `3px dashed red`;
         });
 
         span.addEventListener('mouseleave', () => {
             span.style.color = this._color;
-            span.textContent = this.content;
+            span.style.border = `3px dashed ${this._color}`;
         });
 
         span.addEventListener('click', () => this.onDelete(this.id));

@@ -2,51 +2,16 @@
 import Layout from "@layouts/SiteLayout.astro";
 import BaseNav from "@components/BaseNav.astro";
 import Wrapper from "@client/collations/Wrapper.svelte";
+import StateControls from "@client/collations/StateControls.svelte";
 
 const { id } = Astro.params;
-const page = "0";
 ---
 
 <Layout title="Kalila">
   <BaseNav>
-    <a
-      href={`/collations/${id}/${parseInt(page) - 1}`}
-      class="p-2 bg-secondary-900 text-white rounded-full mr-2"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        class="h-6 w-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"></path>
-      </svg>
-    </a>
-    <a
-      href={`/collations/${id}/${parseInt(page) + 1}`}
-      class="p-2 bg-secondary-900 text-white rounded-full"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        class="h-6 w-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"></path>
-      </svg>
-    </a>
+    <StateControls client:only="svelte" />
   </BaseNav>
   <main class="w-[100vw] flex justify-center">
-    <Wrapper id={id!} page={0} client:only />
+    <Wrapper id={id!} client:only="svelte" />
   </main>
 </Layout>

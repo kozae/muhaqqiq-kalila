@@ -1,4 +1,3 @@
-import { Fn, Stack } from "aws-cdk-lib";
 import { parse, visit } from "graphql";
 import * as fs from "fs";
 import { ITable } from "aws-cdk-lib/aws-dynamodb";
@@ -30,7 +29,7 @@ export type KalilaTableConstructs = Record<keyof IKalilaTableInfo, ITable>;
 interface FieldWithSource {
   parent: string;
   name: string;
-  source: (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda" | "collation_lambda",
+  source: (keyof IKalilaTableInfo) | "mutation_lambda" | "search_lambda",
 }
 
 export function extractFieldsWithSource(

@@ -1,16 +1,18 @@
 export function getUnitStartLocation(position: number, doc: string) {
 
+
     const subDoc = doc.slice(0, position);
     const lines = subDoc.split('\n');
-    const tokens = lines[lines.length - 1].trim().split(' ');
+    const tokens = lines[lines.length - 1].trim().split(' ').filter((token) => token !== '');
 
-    return { line: lines.length - 1, token: tokens.length - 1 };
+    return { line: lines.length - 1, token: tokens.length };
 }
 export function getUnitEndLocation(position: number, doc: string) {
 
     const subDoc = doc.slice(0, position);
-    const lines = subDoc.split('\n');
-    const tokens = lines[lines.length - 1].trim().split(' ');
+    const lines = subDoc.split('\n').filter((line) => line !== '');
+    const tokens = lines[lines.length - 1].trim().split(' ').filter((token) => token !== '');
+
 
     return { line: lines.length - 1, token: tokens.length - 1 };
 }

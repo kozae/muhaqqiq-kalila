@@ -15,11 +15,13 @@
 {#if $storeRegions}
   <Layer config={{ listening: false }}>
     {#if !$hoveredRegion$ && $mode !== "edit"}
-      <AllRegions
-        regions={$mode === "review" && $previewRegions
-          ? $previewRegions
-          : $storeRegions}
-      />
+      {#key $mode}
+        <AllRegions
+          regions={$mode === "review" && $previewRegions
+            ? $previewRegions
+            : $storeRegions}
+        />
+      {/key}
     {/if}
     {#if $mode === "view" || $mode === "review"}
       {#key $mode}

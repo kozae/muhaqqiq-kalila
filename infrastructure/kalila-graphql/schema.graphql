@@ -49,6 +49,8 @@ type Query {
 
   # Segment
   getSegment(id: ID!): Segment @source(value: segments)
+  getManySegmentContents(ids: [ID!]): [SegmentContent]
+    @source(value: segmentContents)
   listMediumSegments(
     id: ID!
     limit: Int
@@ -62,6 +64,9 @@ type Query {
   getChapterCollation(id: ID!): ChapterCollation
     @source(value: chapterCollations)
   listChapterCollations: [ChapterCollation] @source(value: chapterCollations)
+
+  getChapterCollationSkeleton(id: ID!): ChapterCollationSkeleton
+    @source(value: mutation_lambda)
 
   # Line Detection Job
   listLineDetectionJobs: [LineDetectionJob] @source(value: lineDetectionJobs)
@@ -84,6 +89,7 @@ type Mutation {
     @source(value: lineDetectionJobs)
 
   updatePage(update: PageUpdateInput!): String @source(value: mutation_lambda)
+  updatePageTags(input: PageTagsInput!): String @source(value: mutation_lambda)
 
   createUnit(input: CreateUnitInput!): String @source(value: mutation_lambda)
 
@@ -94,9 +100,8 @@ type Mutation {
   changeMediumEditor(mediumId: ID!, editor: String!): String
     @source(value: mutation_lambda)
 
-  updateCollationUnits(units: String!): String @source(value: collation_lambda)
-  updateCollationSegments(segments: [String]!): String
-    @source(value: collation_lambda)
+  editMultiplePages(update: [PageUpdateTargetInput!]!): String
+    @source(value: mutation_lambda)
 }
 
 type Subscription {
@@ -153,6 +158,28 @@ type ChapterCollation {
   editor: String
   version: AWSTimestamp
 }
+
+type ChapterCollationSkeleton {
+  id: ID!
+  meta: ChapterCollation
+  rows: [ChapterCollationRow!]!
+  columns: [ChapterCollationColumn!]!
+}
+
+type ChapterCollationRow {
+  id: ID!
+  title: String!
+  order: Int!
+}
+
+type ChapterCollationColumn {
+  id: ID!
+  siglum: String!
+  order: Int!
+  cells: [Int!]!
+  cellIds: [String]!
+}
+
 type Unit {
   bookId: ID!
   id: ID!
@@ -196,6 +223,7 @@ type Segment {
 }
 
 type SegmentContent {
+  id: ID
   tokens: [[String]]
   lines: [Int]
   pages: [Int]
@@ -351,6 +379,12 @@ enum SortDirection {
 
 # input types
 
+input PageTagsInput {
+  mediumId: ID!
+  pageIds: [ID!]!
+  tags: [String!]
+}
+
 input CreateUnitInput {
   bookId: ID!
   id: ID!
@@ -489,4 +523,14 @@ input PageUpdateInput {
   marginLines: [LineInput!]
   segments: [SegmentInput!]
   version: AWSTimestamp!
+}
+
+input PageUpdateTargetInput {
+  mediumId: ID!
+  segmentId: ID!
+  pageNumber: Int!
+  lineNumber: Int!
+  original: String!
+  replacement: String!
+  lemmas: AWSJSON
 }

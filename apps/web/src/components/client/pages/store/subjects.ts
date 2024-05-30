@@ -27,7 +27,7 @@ export const source = {
   selectTranscriptionPanelData:
     createReplaySubject<"selectTranscriptionPanelData">(),
   selectUnits: createReplaySubject<"selectUnits">(),
-  selectSegementationData: createReplaySubject<"selectSegementationData">(),
+  selectLineIds: createReplaySubject<"selectLineIds">(),
   selectUpdatePayload: createReplaySubject<"selectUpdatePayload">(),
 };
 

@@ -1,21 +1,63 @@
 <script lang="ts">
-  // App.svelte
-  import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query";
   import Panel from "./Panel.svelte";
-  import { setContext } from "svelte";
+  import { setContext, onMount, onDestroy } from "svelte";
+  import { QueryClientProvider } from "@sveltestack/svelte-query";
+  import { queryClient } from "./queries";
 
-  const queryClient = new QueryClient();
   export let id: string;
-  export let page: number;
+
+  let dimensions: { width: number; height: number } | null = null;
 
   setContext("id", id);
-  setContext("page", page);
+
+  onMount(() => {
+    const wrapper = document.getElementById("collation-wrapper");
+    if (wrapper) {
+      const { width, height } = wrapper.getBoundingClientRect();
+      dimensions = { width, height };
+    }
+  });
+
+  // Function to update dimensions
+  function updateDimensions() {
+    const wrapper = document.getElementById("collation-wrapper");
+    if (wrapper) {
+      const { width, height } = wrapper.getBoundingClientRect();
+      dimensions = null;
+      dimensions = { width, height };
+    }
+  }
+
+  // Listen to window resize events
+  function handleResize() {
+    console.log("resizing");
+    updateDimensions();
+  }
+
+  onMount(() => {
+    // Initial dimensions set
+    updateDimensions();
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+  });
+
+  onDestroy(() => {
+    // Clean up event listener
+    window.removeEventListener("resize", handleResize);
+  });
 </script>
 
-<div
-  class="max-w-screen-2xl w-full overflow-auto flex flex-col justify-start items-start rounded-sm h-[calc(100vh-4rem)]"
->
-  <QueryClientProvider client={queryClient}>
-    <Panel />
-  </QueryClientProvider>
-</div>
+<QueryClientProvider client={queryClient}>
+  <div
+    id="collation-wrapper"
+    class="max-w-screen-2xl w-full overflow-auto flex flex-col justify-start items-start rounded-sm h-[calc(100vh-4rem)]"
+  >
+    {#if dimensions}
+      {#key dimensions.width}
+        {#key dimensions.height}
+          <Panel {dimensions} />
+        {/key}
+      {/key}
+    {/if}
+  </div>
+</QueryClientProvider>

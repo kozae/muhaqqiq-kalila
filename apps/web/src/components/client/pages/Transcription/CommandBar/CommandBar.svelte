@@ -113,7 +113,7 @@
   {/if}
 </CommandBarContainer>
 
-{#if previewEnabled}
+{#if previewEnabled && $el$}
   <div
     bind:this={previewTraget}
     class="fixed top-0 left-0 z-50 h-fit w-fit"

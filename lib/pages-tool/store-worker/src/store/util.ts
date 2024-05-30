@@ -26,42 +26,42 @@ export function determineTokenState(token: string): {
   if (token.startsWith("?") || token.endsWith("?"))
     return { token: token.replace("?", ""), state: "unintelligible" };
   if (token.startsWith("!") || token.endsWith("!"))
-    return { token: token.replace("!", ""), state: "lexical-error" };
+    return { token: token.replace("!", ""), state: "lexicalError" };
 
   if (token.startsWith("[[") && token.endsWith("]]"))
-    return { token: token.slice(2, -2), state: "cross-out" };
+    return { token: token.slice(2, -2), state: "crossOut" };
   if (token.startsWith("[[") || token.endsWith("[["))
-    return { token: token.replace("[[", ""), state: "cross-out_begin" };
+    return { token: token.replace("[[", ""), state: "crossOutBegin" };
   if (token.endsWith("]]") || token.startsWith("]]"))
-    return { token: token.replace("]]", ""), state: "cross-out_end" };
+    return { token: token.replace("]]", ""), state: "crossOutEnd" };
 
   if (token.startsWith("[") && token.endsWith("]"))
     return { token: token.slice(1, -1), state: "dittography" };
   if (token.startsWith("[") || token.endsWith("["))
-    return { token: token.replace("[", ""), state: "dittography_begin" };
+    return { token: token.replace("[", ""), state: "dittographyBegin" };
   if (token.endsWith("]") || token.startsWith("]"))
-    return { token: token.replace("]", ""), state: "dittography_end" };
+    return { token: token.replace("]", ""), state: "dittographyEnd" };
 
   if (token.startsWith("{") && token.endsWith("}"))
     return { token: token.slice(2, -2), state: "suppletion" };
   if (token.startsWith("{") || token.endsWith("{"))
-    return { token: token.replace("{", ""), state: "suppletion_begin" };
+    return { token: token.replace("{", ""), state: "suppletionBegin" };
   if (token.endsWith("}") || token.startsWith("}"))
-    return { token: token.replace("}", ""), state: "suppletion_end" };
+    return { token: token.replace("}", ""), state: "suppletionEnd" };
 
   if (token.startsWith("<") && token.endsWith(">"))
     return { token: token.slice(1, -1), state: "added" };
   if (token.startsWith("<") || token.endsWith("<"))
-    return { token: token.replace("<", ""), state: "added_begin" };
+    return { token: token.replace("<", ""), state: "addedBegin" };
   if (token.endsWith(">") || token.startsWith(">"))
-    return { token: token.replace(">", ""), state: "added_end" };
+    return { token: token.replace(">", ""), state: "addedEnd" };
 
   if (token.startsWith("(") && token.endsWith(")"))
     return { token: token.slice(1, -1), state: "title" };
   if (token.startsWith("(") || token.endsWith("("))
-    return { token: token.replace("(", ""), state: "title_begin" };
+    return { token: token.replace("(", ""), state: "titleBegin" };
   if (token.endsWith(")") || token.startsWith(")"))
-    return { token: token.replace(")", ""), state: "title_end" };
+    return { token: token.replace(")", ""), state: "titleEnd" };
 
   return { token, state: "sound" };
 }
@@ -74,37 +74,37 @@ export function formatTokenRev(token: string, state: string): string {
       return `${token}*`;
     case "unintelligible":
       return `${token}?`;
-    case "lexical-error":
+    case "lexicalError":
       return `${token}!`;
     case "dittography":
       return `[${token}]`;
-    case "dittography_end":
+    case "dittographyEnd":
       return `[${token}`;
-    case "dittography_begin":
+    case "dittographyBegin":
       return `${token}]`;
-    case "cross-out":
+    case "crossOut":
       return `[[${token}]]`;
-    case "cross-out_end":
+    case "crossOutEnd":
       return `[[${token}`;
-    case "cross-out_begin":
+    case "crossOutBegin":
       return `${token}]]`;
     case "suppletion":
       return `{${token}}`;
-    case "suppletion_end":
+    case "suppletionEnd":
       return `{${token}`;
-    case "suppletion_begin":
+    case "suppletionBegin":
       return `${token}}`;
     case "added":
       return `<${token}>`;
-    case "added_end":
+    case "addedEnd":
       return `<${token}`;
-    case "added_begin":
+    case "addedBegin":
       return `${token}>`;
     case "title":
       return `(${token})`;
-    case "title_end":
+    case "titleEnd":
       return `(${token}`;
-    case "title_begin":
+    case "titleBegin":
       return `${token})`;
     default:
       return token;
@@ -119,44 +119,47 @@ export function formatToken(token: string, state: string): string {
       return `*${token}`;
     case "unintelligible":
       return `?${token}`;
-    case "lexical-error":
+    case "lexicalError":
       return `!${token}`;
     case "dittography":
       return `[${token}]`;
-    case "dittography_end":
+    case "dittographyEnd":
       return `${token}]`;
-    case "dittography_begin":
+    case "dittographyBegin":
       return `[${token}`;
-    case "cross-out":
+    case "crossOut":
       return `[[${token}]]`;
-    case "cross-out_end":
+    case "crossOutEnd":
       return `${token}]]`;
-    case "cross-out_begin":
+    case "crossOutBegin":
       return `[[${token}`;
     case "suppletion":
       return `{${token}}`;
-    case "suppletion_end":
+    case "suppletionEnd":
       return `${token}}`;
-    case "suppletion_begin":
+    case "suppletionBegin":
       return `{${token}`;
     case "added":
       return `<${token}>`;
-    case "added_end":
+    case "addedEnd":
       return `${token}>`;
-    case "added_begin":
+    case "addedBegin":
       return `<${token}`;
     case "title":
       return `(${token})`;
-    case "title_end":
+    case "titleEnd":
       return `${token})`;
-    case "title_begin":
+    case "titleBegin":
       return `(${token}`;
     default:
       return token;
   }
 }
 
-export function formatTokens(tokens: string[], states: string[]) {
+export function formatTokens(tokens: string[] | undefined, states: string[] | undefined) {
+
+  if (!tokens || !states) return;
+
   return tokens.map((t, i) => formatToken(t, states[i]));
 }
 

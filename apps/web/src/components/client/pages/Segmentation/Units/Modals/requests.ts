@@ -16,6 +16,9 @@ const client = generateClient();
 
 
 export async function requestDelete(input: DeleteUnitInput) {
+
+  console.log({ input });
+
   await client.graphql<GraphQLQuery<DeleteUnitMutation>>({
     query: deleteUnit,
     variables: { input },
@@ -32,6 +35,8 @@ export async function requestCreate(input: CreateUnitInput) {
 }
 
 export async function requestUpdate(input: UpdateUnitInput) {
+
+  console.log({ input });
   await client.graphql<GraphQLQuery<UpdateUnitMutation>>({
     query: updateUnit,
     variables: { input },

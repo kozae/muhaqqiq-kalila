@@ -172,6 +172,7 @@ export const onCreateMedium = /* GraphQL */ `subscription OnCreateMedium($bookId
         tags
         type
         content {
+          id
           tokens
           lines
           pages

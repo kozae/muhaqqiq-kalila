@@ -18,8 +18,9 @@ export const updateSegmentation = createAsyncThunk<
   ThunkApi
 >("updateSegmentation", async ({ marks, doc }, { getState }) => {
   const state = getState();
-  const currSegments = createSgementByUnitIdMap(selectAllSegments(state.segments));
   const currOpenSegments = orderBy(selectAllOpenSegments(state.openSegments), 'startPage', 'asc');
+  const currSegments = createSgementByUnitIdMap([...currOpenSegments, ...selectAllSegments(state.segments)]);
+
   const segments: SegmentEntity[] = [];
   const openSegments: SegmentEntity[] = [];
 
@@ -49,6 +50,7 @@ export const updateSegmentation = createAsyncThunk<
       openSegments.push(openSegment);
     }
   });
+
 
 
   return { segments, openSegments };

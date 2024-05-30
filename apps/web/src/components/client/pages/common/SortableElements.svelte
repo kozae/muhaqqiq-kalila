@@ -14,6 +14,7 @@
   export let items: (TextEntity | ImageEntity | LineEntity)[] = [];
   export let canDelete: Record<string, boolean> = {};
   export let draggables: string[] | undefined = undefined;
+
   const dispatch = createEventDispatcher();
 
   let dragDisabled = true;

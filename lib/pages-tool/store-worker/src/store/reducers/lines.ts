@@ -9,11 +9,21 @@ export const updateLines = (
   const elements = action.payload;
   let elementId = elements[0].id;
   const lines: LineEntity[] = [];
-  for (let i = 1; i < elements.length; i++) {
+  let bodyLineOrder = 0;
+  let inMainBody = false;
+  for (let i = 0; i < elements.length; i++) {
     if (elements[i].position !== "line") {
       elementId = elements[i].id;
+      inMainBody = elements[i].position ? elements[i].position!.startsWith("main") : false;
     } else {
-      lines.push({ ...elements[i], elementId } as LineEntity);
+
+      if (inMainBody) {
+        lines.push({ ...elements[i], order: bodyLineOrder, elementId } as LineEntity);
+        bodyLineOrder += 1;
+      } else {
+        lines.push({ ...elements[i], elementId } as LineEntity);
+      }
+
     }
   }
   state.lines = linesAdapter.setAll(state.lines, lines);
@@ -37,27 +47,3 @@ export const assignDetectedRegions = (
   state.lastAction = "assignDetectedRegions";
 };
 
-export const updateTranscription = (
-  state: WritableState,
-  action: PayloadAction<{ doc: string; ids: string[] }>,
-) => {
-  const updates: Update<LineEntity>[] = [];
-  const text = action.payload.doc.split("\n");
-  text.forEach((line, index) => {
-    const processed = line
-      .trim()
-      .replace(/\s{2,}/g, " ")
-      .split(" ")
-      .map((token) => determineTokenState(token.trim()));
-    const tokens = processed.map((t) => t.token);
-    const states = processed.map((t) => t.state);
-    updates.push({
-      id: action.payload.ids[index],
-      changes: { tokens, states },
-    });
-  });
-  state.lines = linesAdapter.updateMany(state.lines, updates);
-  state.changed.lines = true;
-  state.stateId = Date.now();
-  state.lastAction = "updateTranscription";
-};

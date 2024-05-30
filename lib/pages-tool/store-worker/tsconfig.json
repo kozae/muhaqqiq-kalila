@@ -8,4 +8,8 @@
         "build",
         "node_modules"
     ],
+    "compilerOptions": {
+        "moduleResolution": "Node",
+        // other options
+    },
 }

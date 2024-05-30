@@ -20,9 +20,11 @@
     sub = [
       derived.ready.pipe(first((v) => v === id)).subscribe(() => {
         requestState("selectTranscriptionPanelData");
+        requestState("selectLineIds");
       }),
       discardFinished.subscribe(() => {
         requestState("selectTranscriptionPanelData");
+        requestState("selectLineIds");
       }),
     ];
   });

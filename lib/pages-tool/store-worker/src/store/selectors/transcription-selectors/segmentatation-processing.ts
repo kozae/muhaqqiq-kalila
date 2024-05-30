@@ -1,8 +1,9 @@
 import type { Segment } from "kalila-graphql";
 import { orderBy } from "lodash";
 import { type RootState } from "../..";
-import { selectAllLines, selectAllSegments, selectAllTextElements } from "../../base-selectors";
+import { selectAllLines, selectAllOpenSegments, selectAllSegments, selectAllTextElements } from "../../base-selectors";
 import { formatAndJoinTokens, groupLinesByElementId } from "./util";
+import lodash from 'lodash';
 
 
 
@@ -14,15 +15,16 @@ function prepareTokenAndLineLengthMaps(state: RootState) {
     const lineLens: Record<number, number> = {};
     const tokenLens: Record<number, number[]> = {};
     for (const el of textList) {
-        if (el?.position?.startsWith("main")) {
+        if (el?.position?.startsWith("main") && grouped[el.id]) {
+
             for (const line of grouped[el.id]) {
                 // prepare text
                 const lineText = formatAndJoinTokens(line);
 
 
                 // track lengths
-                lineLens[line.order] = lineText.length;
-                tokenLens[line.order] = line.tokens!.map((t) => t!.length);
+                lineLens[line.order] = lineText?.length ?? 0;
+                tokenLens[line.order] = line.tokens?.map((t) => t!.length) ?? [];
             }
         }
     }
@@ -35,11 +37,20 @@ function getSegmentFromPrevPage(segments: Segment[], currPageNumber: number) {
     return segments.find(seg => seg.startPage < currPageNumber && seg.endPage === currPageNumber);
 }
 
-function buildSegmentsWithStartPositions(pageSegments: Segment[], lineLens: Record<number, number>, tokenLens: Record<number, number[]>) {
+function getNearestSegmentFromPrevPage(segments: Segment[], currPageNumber: number) {
+    return lodash.chain(segments).filter(seg => seg.startPage < currPageNumber).sortBy(seg => seg.startPage).last().value();
+}
+
+
+function buildSegmentsWithStartPositions(pageSegments: Segment[], lineLens: Record<number, number>, tokenLens: Record<number, number[]>, pageNumber: number) {
 
     const segmenstWithPositions: (Segment & { position: number })[] = []
     for (const segment of pageSegments) {
         let position = 0;
+        if (segment.startPage < pageNumber) {
+            segmenstWithPositions.push({ ...segment, position });
+            continue;
+        }
         for (let lineOrder = 0; lineOrder < segment.startLine; lineOrder++) {
             position += lineLens[lineOrder] ?? 0;
             position += 1; // for the line break
@@ -67,6 +78,9 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
         }
         for (let tokenOrder = 0; tokenOrder <= endToken; tokenOrder++) {
             close += tokenLens[endLine][tokenOrder] ?? 0;
+            if (tokenOrder === endToken && endToken === tokenLens[endLine].length - 1) {
+                continue;
+            }
             close += 1; // for the space
         }
         return close;
@@ -85,12 +99,12 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
         if (nextSegment) {
             const isSameLine = segment.endLine === nextSegment.startLine;
             const isNextLine = segment.endLine + 1 === nextSegment.startLine && nextSegment.startToken === 0;
-            const isNonConsecutive = segment.endToken + 1 !== nextSegment.startToken;
-            if ((isSameLine && isNonConsecutive) || (isNextLine && !endTokenIsLastInLine)) {
+            const isConsecutive = segment.endToken + 1 === nextSegment.startToken;
+            if ((isSameLine && isConsecutive) || (isNextLine && !endTokenIsLastInLine)) {
+                segmenstWithPositionsAndCloseFlag.push({ ...segment, position: segment.position });
+            } else {
                 const close = calculateCloseFlag(segment.endLine, segment.endToken);
                 segmenstWithPositionsAndCloseFlag.push({ ...segment, position: segment.position, close });
-            } else {
-                segmenstWithPositionsAndCloseFlag.push({ ...segment, position: segment.position });
             }
         } else {
             if (segment.endPage === currPageNumber) {
@@ -110,14 +124,18 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
 export function buildSegmentationData(state: RootState) {
 
     const segments = selectAllSegments(state.segments);
-    const segFromPrevPage = getSegmentFromPrevPage(segments, state.info!.number);
-    const pageSegments = segments.filter(seg => seg.startPage === state.info!.number);
+    const openSegments = selectAllOpenSegments(state.openSegments);
+    const segFromPrevPage = getSegmentFromPrevPage(segments, state.info!.number) || getNearestSegmentFromPrevPage(openSegments, state.info!.number);
+    const pageSegments = [
+        ...segments.filter(seg => seg.startPage === state.info!.number),
+        ...[segFromPrevPage].filter(Boolean).map(seg => ({ ...seg, isStatic: true }))
+    ];
 
     const { lineLens, tokenLens } = prepareTokenAndLineLengthMaps(state);
 
-    const segmenstWithPositions = buildSegmentsWithStartPositions(pageSegments, lineLens, tokenLens);
+    const segmenstWithPositions = buildSegmentsWithStartPositions(pageSegments, lineLens, tokenLens, state.info!.number);
 
     const segmenstWithPositionsAndCloseFlag = buildSegmentsWithCloseFlag(segmenstWithPositions, state.info!.number, lineLens, tokenLens);
 
-    return { segFromPrevPage, segments: segmenstWithPositionsAndCloseFlag };
+    return { segments: segmenstWithPositionsAndCloseFlag };
 }

@@ -21,7 +21,7 @@ const ready = new Promise<void>((resolve) => {
 await ready;
 
 export function requestRegion(el: ILayoutElement, pageId: string, padding = 0) {
-  if (!el.region) return;
+  if (!el?.region) return;
   facsimileWorker.postMessage({
     type: FacsimileWorkerEvent.PREVIEW,
     payload: {

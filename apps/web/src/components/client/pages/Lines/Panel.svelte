@@ -54,7 +54,8 @@
           }))}
         pageNumber={$data.pageNumber}
         hasTextElementsRegions={$data.hasTextElementsRegions}
-        on:addLine={(e) => requestAction("addLine", e.detail)}
+        hasLines={$data.elements.some((el) => el.position === "line")}
+        on:addLines={(e) => requestAction("addLines", e.detail)}
         on:previewLines={(e) => {
           mode = "review-regions";
           detectedLines = EtlDetectedRegions(e.detail);
@@ -93,5 +94,10 @@
     {detectedLines}
     elements={$data.elements}
     on:reviewDone={handleReviewDone}
+    on:cancel={() => {
+      mode = "view";
+      facsimileMode.set("view");
+      detectedRegions$.next([]);
+    }}
   />
 {/if}

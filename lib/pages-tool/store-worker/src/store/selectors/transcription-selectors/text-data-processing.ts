@@ -16,10 +16,11 @@ function initTranscriptionData() {
 }
 
 function addLineDataToTranscriptionData(line: LineEntity, data: TranscriptionData | undefined = undefined): TranscriptionData {
-
+    const text = formatAndJoinTokens(line);
     if (!data) {
+
         return {
-            text: [formatAndJoinTokens(line)],
+            text: text ? [text] : [],
             colors: [line?.color ?? "#fff"],
             ids: [line?.id ?? ""],
             points: [(line?.region?.slice(0, -1) ?? []) as number[]],
@@ -28,7 +29,7 @@ function addLineDataToTranscriptionData(line: LineEntity, data: TranscriptionDat
     }
     return {
         ...data,
-        text: [...data.text, formatAndJoinTokens(line)],
+        text: text ? [...data.text, text] : data.text,
         colors: [...data.colors, line?.color ?? "#fff"],
         ids: [...data.ids, line?.id ?? ""],
         points: [...data.points, (line?.region?.slice(0, -1) ?? []) as number[]],
@@ -45,16 +46,18 @@ export function buildTranscriptionData(state: RootState) {
     let body = initTranscriptionData();
     const glosses: Record<string, TranscriptionData> = {};
     for (const el of textList) {
-        if (el?.position?.startsWith("main") && grouped[el.id]) {
-            for (const line of grouped[el.id]) {
-                body = addLineDataToTranscriptionData(line, body);
+        if (grouped[el.id]) {
+            if (el?.position?.startsWith("main")) {
+                for (const line of grouped[el.id]) {
+                    body = addLineDataToTranscriptionData(line, body);
+                }
+            } else {
+                let gloss = initTranscriptionData();
+                for (const line of grouped[el.id]) {
+                    gloss = addLineDataToTranscriptionData(line, gloss);
+                }
+                glosses[`${el?.order + 1}. ${toTitleCase(el?.position ?? "")}`] = gloss;
             }
-        } else {
-            let gloss = initTranscriptionData();
-            for (const line of grouped[el.id]) {
-                gloss = addLineDataToTranscriptionData(line, gloss);
-            }
-            glosses[`${el?.order + 1}. ${toTitleCase(el?.position ?? "")}`] = gloss;
         }
     }
 

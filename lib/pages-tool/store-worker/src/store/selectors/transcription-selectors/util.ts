@@ -5,7 +5,7 @@ export function formatAndJoinTokens(line: LineEntity) {
     return formatTokens(
         line.tokens as string[],
         line.states as string[],
-    ).join(" ");
+    )?.join(" ");
 }
 
 export function groupLinesByElementId(lines: LineEntity[]) {

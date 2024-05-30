@@ -17,7 +17,6 @@
   import { Subscription } from "rxjs";
   import type { Segment } from "kalila-graphql";
 
-  import { unitFromPreviousPageWidgetField } from "./prev-page-unit-widget";
   import { unitInsertionExtension } from "./unit-insertion-extension";
   import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
 
@@ -30,8 +29,11 @@
 
   export let segmentsEnabled = false;
   export let doc = "";
-  export let segFromPrevPage: Segment | undefined = undefined;
-  export let segments: (Segment & { position: number; close?: number })[] = [];
+  export let segments: (Segment & {
+    position: number;
+    close?: number;
+    isStatic?: boolean;
+  })[] = [];
   export let units: UnitEntity[] = [];
 
   let parent: HTMLDivElement;
@@ -73,9 +75,6 @@
     ];
 
     if (segmentsEnabled) {
-      if (segFromPrevPage) {
-        extensions.push(unitFromPreviousPageWidgetField(segFromPrevPage));
-      }
       extensions.push(
         unitsInTextFields(segments, (marks, doc) => {
           dispatch("segmentationChange", { marks, doc });
@@ -142,7 +141,6 @@
   });
 
   onDestroy(() => {
-    console.log("unmounting");
     view.destroy();
     if (sub) {
       sub.unsubscribe();

@@ -17,11 +17,12 @@ export function processMark(mark: UnitMark, index: number, marks: UnitMark[], do
     const isLastMark = index === marks.length - 1;
     const existingSegment = currSegments[mark.unit.id];
     const closingMark = hasAClosingMark(mark.unit.id, marks);
-    const { line: startLine, token: startToken } = getUnitStartLocation(mark.position, doc)
+
     let endLine: number | null | undefined = -1,
         endToken: number | null | undefined = -1,
         endPage = -1;
-    if (isLastMark && existingSegment) {
+    if (isLastMark && existingSegment && closingMark === undefined) {
+        console.log('retaining old end');
         endLine = existingSegment.endLine;
         endToken = existingSegment.endToken;
         endPage = existingSegment.endPage;
@@ -48,6 +49,18 @@ export function processMark(mark: UnitMark, index: number, marks: UnitMark[], do
         }
 
     }
+
+    if (existingSegment && existingSegment.startPage !== currPage) {
+        return {
+            ...existingSegment,
+            endLine,
+            endToken,
+            endPage,
+            version: Date.now(),
+        } as Segment;
+    }
+
+    const { line: startLine, token: startToken } = getUnitStartLocation(mark.position, doc)
 
     if (existingSegment) {
         return {

@@ -38,7 +38,7 @@ interface IKalilaApiStackProps extends StackProps {
 }
 
 type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
-type KalilaLamdas = Record<"mutationHandler" | 'searchHandler' | 'collationHandler', LambdaFunction>;
+type KalilaLamdas = Record<"mutationHandler" | 'searchHandler', LambdaFunction>;
 
 export class KalilaApiStack extends Stack {
   private readonly schemaPath: string;
@@ -61,7 +61,7 @@ export class KalilaApiStack extends Stack {
     );
 
     this.kalilaGraphQLApi = this.createApi(
-      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId),
+      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId), props.vars
     );
     this.tables = this.createTableConstructs(props.tableArns);
     this.dataSources = this.createDataSources();
@@ -77,10 +77,7 @@ export class KalilaApiStack extends Stack {
       this.lambdas.searchHandler,
     );
 
-    const collationLambdaDataSource = this.kalilaGraphQLApi.addLambdaDataSource(
-      "CollationHandler",
-      this.lambdas.collationHandler,
-    );
+
 
     for (const { parent, name, source } of extractFieldsWithSource(
       this.schemaPath,
@@ -89,8 +86,6 @@ export class KalilaApiStack extends Stack {
         this.createLambdaResolver(parent, name, mutationLambdaDataSource);
       } else if (source === 'search_lambda') {
         this.createLambdaResolver(parent, name, searchLambdaDataSource);
-      } else if (source === 'collation_lambda') {
-        this.createLambdaResolver(parent, name, collationLambdaDataSource);
       } else {
         this.createResolver(parent, name, this.dataSources[source]);
       }
@@ -101,7 +96,7 @@ export class KalilaApiStack extends Stack {
     });
   }
 
-  private createApi(userPool: IUserPool) {
+  private createApi(userPool: IUserPool, vars: Record<string, string>) {
     createSchemaFileWithoutSourceDirective(this.schemaPath, "schema.graphql");
     return new GraphqlApi(this, "KalilaApi", {
       name: `kalila-api_${this.stage}`,
@@ -117,6 +112,7 @@ export class KalilaApiStack extends Stack {
         },
       },
       xrayEnabled: true,
+      environmentVariables: { ...vars }
     });
   }
 
@@ -191,45 +187,7 @@ export class KalilaApiStack extends Stack {
 
     searchHandler.addToRolePolicy(parameterStorePolicy);
 
-    const collationHandler = this.createCollationContentUpdater(vars);
-    return { mutationHandler, searchHandler, collationHandler };
-  }
-
-  private createCollationContentUpdater(vars: Record<string, string>) {
-    const parameterStorePolicy = new PolicyStatement({
-      actions: ['ssm:GetParameter', 'ssm:GetParameters'],
-      resources: [
-        `arn:aws:ssm:${this.region}:${this.account}:parameter/kalila/${this.stage}/*`,
-      ],
-    });
-    const handler = new LambdaFunction(this, "KalilaCollationContentUpdater", {
-      code: LambdaCode.fromAsset("../../../kalila-rs/target/lambda/collation_content_updater"),
-      architecture: Architecture.ARM_64,
-      runtime: Runtime.PROVIDED_AL2,
-      timeout: Duration.seconds(10),
-      memorySize: 1024,
-      handler: "does_not_matter",
-      functionName: `kalila-collation-content-updater_${this.stage}`,
-      environment: { ...vars },
-    });
-
-    handler.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["s3:*"],
-        resources: ["arn:aws:s3:::*"],
-      }),
-    );
-
-    handler.addToRolePolicy(
-      new PolicyStatement({
-        actions: ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
-        resources: ["*"],
-      }),
-    );
-
-    handler.addToRolePolicy(parameterStorePolicy);
-
-    return handler;
+    return { mutationHandler, searchHandler };
   }
 
   private createDataSources() {

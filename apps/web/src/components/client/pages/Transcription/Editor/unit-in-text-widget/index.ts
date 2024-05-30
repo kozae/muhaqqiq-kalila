@@ -3,7 +3,7 @@ import { EditorView, Decoration } from "@codemirror/view";
 import type { Segment } from "kalila-graphql";
 import { sgementWidgetEvents } from "../../event-hubs";
 import { alertSubject } from "@client/Alert";
-import { UnitClosingWidget, UnitOpeningWidget } from "./widgets";
+import { UnitClosingWidget, UnitOpeningWidget, UnitFromPrevPageWidget } from "./widgets";
 import { addWidgetEffect, updateWidgetEffect, deleteWidgetEffect, dropInCloseWidgetEffect, deleteClosingWidgetEffect } from "./effects";
 import { findLast, orderBy } from "lodash";
 import type { UnitMark } from "pages-tool-store-worker";
@@ -12,11 +12,11 @@ import type { UnitMark } from "pages-tool-store-worker";
 const onDelete = (id: string) => { sgementWidgetEvents.next({ type: "delete", payload: { id } }); };
 const onDeleteEnd = (id: string) => { sgementWidgetEvents.next({ type: "deleteEnd", payload: { id } }); };
 
-function createInitialDecorations(segments: (Segment & { position: number, close?: number })[]) {
+function createInitialDecorations(segments: (Segment & { position: number, close?: number, isStatic?: boolean })[]) {
 
     const decorations = [];
     for (const segment of segments) {
-        const widget = new UnitOpeningWidget(segment.unit!, onDelete);
+        const widget = segment.isStatic ? new UnitFromPrevPageWidget(segment.unit!) : new UnitOpeningWidget(segment.unit!, onDelete);
         decorations.push(Decoration.widget({ widget: widget, side: -1, id: segment.id }).range(segment.position));
         if (segment.close !== undefined) {
             const widget = new UnitClosingWidget(segment.unit!, onDeleteEnd);
@@ -105,12 +105,12 @@ function applyDeleteClosingWidgetEffect(decorations: any[], effect: any) {
 function applyDropInCloseWidgetEffect(decorations: any[], effect: any) {
     let newDecorations = [...decorations];
     const { position } = effect.value;
-    const unitToClose = findLast(decorations, deco => deco.from < position && deco.value.spec.widget instanceof UnitOpeningWidget);
+    const unitToClose = findLast(decorations, deco => deco.from < position && (deco.value.spec.widget instanceof UnitOpeningWidget || deco.value.spec.widget instanceof UnitFromPrevPageWidget));
     if (unitToClose) {
         const widget = new UnitClosingWidget(unitToClose.value.spec.widget.segment, onDeleteEnd);
         newDecorations = [...decorations
             .filter(
-                deco => deco.value.spec.widget instanceof UnitOpeningWidget
+                deco => deco.value.spec.widget instanceof UnitOpeningWidget || deco.value.spec.widget instanceof UnitFromPrevPageWidget
                     || (deco.value.spec.widget instanceof UnitClosingWidget && deco.value.spec.widget.id !== unitToClose.value.spec.widget.id)
             ),
         Decoration.widget({ widget, side: -1 }).range(position)];
@@ -172,7 +172,7 @@ const unitsInTextFields = (segments: (Segment & { position: number, close?: numb
                     return {
                         unit: widget.segment,
                         position: deco.from,
-                        type: widget instanceof UnitOpeningWidget ? "open" : "close"
+                        type: widget instanceof UnitClosingWidget ? "close" : "open"
                     }
                 });
 

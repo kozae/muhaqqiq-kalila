@@ -76,7 +76,9 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
     for (const line of lines) {
       elements.push(line);
       canDelete[line.id] =
-        line?.tokens !== undefined && line?.tokens?.length === 0;
+        line?.tokens === null ||
+        line?.tokens === undefined ||
+        (line?.tokens !== undefined && line?.tokens?.length === 0);
     }
   }
 
@@ -86,7 +88,9 @@ export const selectLinePanelData = createSelector(rootSelector, (state) => {
     for (const line of lines) {
       elements.push(line);
       canDelete[line.id] =
-        line?.tokens !== undefined && line?.tokens?.length === 0;
+        line?.tokens === null ||
+        line?.tokens === undefined ||
+        (line?.tokens !== undefined && line?.tokens?.length === 0);
     }
   }
 

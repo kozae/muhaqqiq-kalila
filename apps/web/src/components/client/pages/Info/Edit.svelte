@@ -1,5 +1,6 @@
 <script lang="ts">
   import PanelContainer from "@client/pages/common/PanelContainer.svelte";
+  import tags from "@client/pages/common/tags";
   import { createForm } from "felte";
   import { validator } from "@felte/validator-zod";
 
@@ -34,38 +35,6 @@
   );
 
   $: initialValues = $editableValues$!;
-
-  const tags = [
-    "As",
-    "Lv",
-    "Sv",
-    "Im",
-    "Bu",
-    "Di",
-    "Ag",
-    "At",
-    "Aw",
-    "Df",
-    "Kb",
-    "Kd",
-    "Km",
-    "Ks",
-    "Kw",
-    "Lh",
-    "Lj",
-    "Lo",
-    "Mc",
-    "Oc",
-    "Rd",
-    "Tg",
-    "toc",
-    "colophon",
-    "explicit",
-    "incipit",
-    "many hands",
-    "no content",
-    "paratext",
-  ];
 
   const schema = zod.object({
     commentary: zod.string().optional(),

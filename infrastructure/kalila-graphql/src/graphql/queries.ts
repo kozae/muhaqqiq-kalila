@@ -214,6 +214,7 @@ export const getMedium = /* GraphQL */ `query GetMedium($id: ID!) {
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -425,6 +426,7 @@ export const getUnit = /* GraphQL */ `query GetUnit($id: ID!) {
       tags
       type
       content {
+        id
         tokens
         lines
         pages
@@ -537,6 +539,7 @@ export const listUnits = /* GraphQL */ `query ListUnits(
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -646,6 +649,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
       tags
       type
       content {
+        id
         tokens
         lines
         pages
@@ -684,6 +688,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
       tags
       type
       content {
+        id
         tokens
         lines
         pages
@@ -722,6 +727,7 @@ export const getPage = /* GraphQL */ `query GetPage($id: ID!) {
       tags
       type
       content {
+        id
         tokens
         lines
         pages
@@ -838,6 +844,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -876,6 +883,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -914,6 +922,7 @@ export const listMediumPages = /* GraphQL */ `query ListMediumPages(
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -970,6 +979,7 @@ export const getSegment = /* GraphQL */ `query GetSegment($id: ID!) {
     tags
     type
     content {
+      id
       tokens
       lines
       pages
@@ -984,6 +994,21 @@ export const getSegment = /* GraphQL */ `query GetSegment($id: ID!) {
 ` as GeneratedQuery<
   APITypes.GetSegmentQueryVariables,
   APITypes.GetSegmentQuery
+>;
+export const getManySegmentContents = /* GraphQL */ `query GetManySegmentContents($ids: [ID!]) {
+  getManySegmentContents(ids: $ids) {
+    id
+    tokens
+    lines
+    pages
+    breaks
+    regions
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetManySegmentContentsQueryVariables,
+  APITypes.GetManySegmentContentsQuery
 >;
 export const listMediumSegments = /* GraphQL */ `query ListMediumSegments(
   $id: ID!
@@ -1029,6 +1054,7 @@ export const listMediumSegments = /* GraphQL */ `query ListMediumSegments(
       tags
       type
       content {
+        id
         tokens
         lines
         pages
@@ -1076,6 +1102,39 @@ export const listChapterCollations = /* GraphQL */ `query ListChapterCollations 
 ` as GeneratedQuery<
   APITypes.ListChapterCollationsQueryVariables,
   APITypes.ListChapterCollationsQuery
+>;
+export const getChapterCollationSkeleton = /* GraphQL */ `query GetChapterCollationSkeleton($id: ID!) {
+  getChapterCollationSkeleton(id: $id) {
+    id
+    meta {
+      id
+      chapter
+      title
+      mediumIds
+      editor
+      version
+      __typename
+    }
+    rows {
+      id
+      title
+      order
+      __typename
+    }
+    columns {
+      id
+      siglum
+      order
+      cells
+      cellIds
+      __typename
+    }
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetChapterCollationSkeletonQueryVariables,
+  APITypes.GetChapterCollationSkeletonQuery
 >;
 export const listLineDetectionJobs = /* GraphQL */ `query ListLineDetectionJobs {
   listLineDetectionJobs {

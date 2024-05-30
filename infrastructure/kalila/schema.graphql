@@ -49,6 +49,8 @@ type Query {
 
   # Segment
   getSegment(id: ID!): Segment 
+  getManySegmentContents(ids: [ID!]): [SegmentContent]
+    
   listMediumSegments(
     id: ID!
     limit: Int
@@ -62,6 +64,9 @@ type Query {
   getChapterCollation(id: ID!): ChapterCollation
     
   listChapterCollations: [ChapterCollation] 
+
+  getChapterCollationSkeleton(id: ID!): ChapterCollationSkeleton
+    
 
   # Line Detection Job
   listLineDetectionJobs: [LineDetectionJob] 
@@ -84,6 +89,7 @@ type Mutation {
     
 
   updatePage(update: PageUpdateInput!): String 
+  updatePageTags(input: PageTagsInput!): String 
 
   createUnit(input: CreateUnitInput!): String 
 
@@ -94,8 +100,7 @@ type Mutation {
   changeMediumEditor(mediumId: ID!, editor: String!): String
     
 
-  updateCollationUnits(units: String!): String 
-  updateCollationSegments(segments: [String]!): String
+  editMultiplePages(update: [PageUpdateTargetInput!]!): String
     
 }
 
@@ -153,6 +158,28 @@ type ChapterCollation {
   editor: String
   version: AWSTimestamp
 }
+
+type ChapterCollationSkeleton {
+  id: ID!
+  meta: ChapterCollation
+  rows: [ChapterCollationRow!]!
+  columns: [ChapterCollationColumn!]!
+}
+
+type ChapterCollationRow {
+  id: ID!
+  title: String!
+  order: Int!
+}
+
+type ChapterCollationColumn {
+  id: ID!
+  siglum: String!
+  order: Int!
+  cells: [Int!]!
+  cellIds: [String]!
+}
+
 type Unit {
   bookId: ID!
   id: ID!
@@ -196,6 +223,7 @@ type Segment {
 }
 
 type SegmentContent {
+  id: ID
   tokens: [[String]]
   lines: [Int]
   pages: [Int]
@@ -351,6 +379,12 @@ enum SortDirection {
 
 # input types
 
+input PageTagsInput {
+  mediumId: ID!
+  pageIds: [ID!]!
+  tags: [String!]
+}
+
 input CreateUnitInput {
   bookId: ID!
   id: ID!
@@ -489,4 +523,14 @@ input PageUpdateInput {
   marginLines: [LineInput!]
   segments: [SegmentInput!]
   version: AWSTimestamp!
+}
+
+input PageUpdateTargetInput {
+  mediumId: ID!
+  segmentId: ID!
+  pageNumber: Int!
+  lineNumber: Int!
+  original: String!
+  replacement: String!
+  lemmas: AWSJSON
 }

@@ -1,15 +1,23 @@
 <script lang="ts">
   import Codemirror from "./CodeMirror.svelte";
-  import { requestAction, source } from "@client/pages/store";
-  import { combineLatest, filter, map, tap } from "rxjs";
-  import { getContext } from "svelte";
+  import { requestAction, requestState, source } from "@client/pages/store";
+  import {
+    Subject,
+    Subscription,
+    combineLatest,
+    debounceTime,
+    filter,
+    map,
+    tap,
+    withLatestFrom,
+  } from "rxjs";
+  import { getContext, onDestroy } from "svelte";
   import { selectedTextClass } from "../selected-text-class";
   import Loading from "@client/reusable/Loading.svelte";
   import { segmentsEnabledToggle } from "../segment-markers-toggle";
   import { locateSegments, segmentWatcher } from "../segment-watcher";
 
   const id = getContext("id");
-  let ids: string[] = [];
   let render = Date.now();
   const data = combineLatest([
     source.selectTranscriptionPanelData,
@@ -21,7 +29,6 @@
         ? {
             doc: data.body.text.join("\n"),
             ids: data.body.ids,
-            segFromPrevPage: data.segFromPrevPage,
             segments: data.segments,
           }
         : {
@@ -30,6 +37,8 @@
           },
     ),
   );
+  const changes = new Subject<string>();
+  const changeSub = Subscription.EMPTY;
 
   const units = source.selectUnits.pipe(
     tap(() => {
@@ -37,19 +46,35 @@
     }),
   );
 
+  const ids$ = combineLatest([source.selectLineIds, selectedTextClass]).pipe(
+    map(([ids, selected]) =>
+      selected === "Body" ? ids.body : ids.glosses[selected],
+    ),
+  );
+
   $: {
-    ids = $data?.ids;
     segmentWatcher.next(locateSegments($data?.segments ?? []));
     render = Date.now();
   }
 
-  const handleDocChanges = (e: any) => {
-    requestAction("updateTranscription", { doc: e.detail, ids });
-  };
+  changes
+    .pipe(
+      debounceTime(10),
+      withLatestFrom(ids$),
+      map(([doc, ids]) => ({ doc, ids })),
+    )
+    .subscribe(({ doc, ids }) => {
+      requestAction("updateTranscription", { doc, ids });
+      requestState("selectLineIds");
+    });
 
   const handleSegmentationChange = (e: any) => {
     requestAction("updateSegmentation", e.detail);
   };
+
+  onDestroy(() => {
+    changeSub.unsubscribe();
+  });
 </script>
 
 {#key render}
@@ -58,9 +83,8 @@
       <div class="editor-container">
         <Codemirror
           doc={$data.doc}
-          on:docChange={handleDocChanges}
+          on:docChange={(e) => changes.next(e.detail)}
           on:segmentationChange={handleSegmentationChange}
-          segFromPrevPage={$data.segFromPrevPage}
           segments={$data.segments}
           segmentsEnabled={$segmentsEnabledToggle}
           units={$units?.units.filter((u) => u.segment === undefined) ?? []}

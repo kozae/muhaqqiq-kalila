@@ -10,13 +10,13 @@ export function attachRemove(builder: ActionReducerMapBuilder<State>) {
   builder.addMatcher(isFulfilled(removeLine), (state, action) => {
     const lines = action.payload;
 
-    if (lines.length !== 0) {
-      linesAdapter.setAll(state.lines, lines);
-      state.changed.lines = true;
 
-      state.stateId = Date.now();
-      state.lastAction = 'removeLine';
-    }
+    linesAdapter.setAll(state.lines, lines);
+    state.changed.lines = true;
+
+    state.stateId = Date.now();
+    state.lastAction = 'removeLine';
+
   });
 
   builder.addMatcher(isRejected(removeLine), (state, action) => {

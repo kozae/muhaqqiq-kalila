@@ -1,0 +1,12 @@
+---
+import { getCollection } from "astro:content";
+
+const { mediumId, pageNumber } = Astro.params;
+const {
+  data: { pages },
+} = (await getCollection("media-pages")).find((p) => p.id === mediumId)!;
+
+const page = pages.find((p) => p.number === parseInt(pageNumber ?? "1"))!;
+
+return Astro.redirect(`/pages/${mediumId}/${page.id}/transcription`);
+---

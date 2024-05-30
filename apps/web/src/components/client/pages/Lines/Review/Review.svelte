@@ -15,7 +15,7 @@
   import { flip } from "svelte/animate";
   import ArrowsUpDownIcon from "@icons/ArrowsUpDownIcon.svelte";
   import { createEventDispatcher } from "svelte";
-
+  import { detectedRegions$ } from "@client/pages/facsimile-events";
   export let elements: (TextEntity | LineEntity)[] = [];
   export let detectedLines: ILayoutElement[] = [];
 
@@ -78,6 +78,13 @@
     }
   }
 
+  function handleDiscard(el: ILayoutElement) {
+    items = items.filter((item) => item.id !== el.id);
+    detectedRegions$.next(
+      items.filter((item) => item.id.startsWith("generated")),
+    );
+  }
+
   const dispatch = createEventDispatcher();
   function handleDone() {
     const assignedLines: LineEntity[] = [];
@@ -91,15 +98,23 @@
     });
     dispatch("reviewDone", assignedLines);
   }
+  function handleCancel() {
+    dispatch("cancel");
+  }
 </script>
 
 <CommandBarContainer>
-  <div class="w-full flex justify-start">
+  <div class="w-full flex justify-between items-center">
     <InfoAlert
       width="w-fit"
       message="Assign detected regions to sored lines."
     />
-    <SmallButton on:click={handleDone}>Done</SmallButton>
+    <div>
+      <SmallButton on:click={handleDone}>Done</SmallButton>
+      <SmallButton bgcolor="bg-red-100" on:click={handleCancel}>
+        Cancel
+      </SmallButton>
+    </div>
   </div>
 </CommandBarContainer>
 
@@ -127,7 +142,11 @@
       {#each items as el, index (el.id)}
         <div animate:flip={{ duration: flipDurationMs }}>
           {#if el.id.startsWith("generated")}
-            <DetectedLine {el} correspondsTo={elements[index]}>
+            <DetectedLine
+              {el}
+              correspondsTo={elements[index]}
+              on:discard={() => handleDiscard(el)}
+            >
               <svelte:fragment slot="dragHandle">
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

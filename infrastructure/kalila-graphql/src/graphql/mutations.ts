@@ -172,6 +172,7 @@ export const createMedium = /* GraphQL */ `mutation CreateMedium($input: CreateM
         tags
         type
         content {
+          id
           tokens
           lines
           pages
@@ -216,6 +217,13 @@ export const updatePage = /* GraphQL */ `mutation UpdatePage($update: PageUpdate
   APITypes.UpdatePageMutationVariables,
   APITypes.UpdatePageMutation
 >;
+export const updatePageTags = /* GraphQL */ `mutation UpdatePageTags($input: PageTagsInput!) {
+  updatePageTags(input: $input)
+}
+` as GeneratedMutation<
+  APITypes.UpdatePageTagsMutationVariables,
+  APITypes.UpdatePageTagsMutation
+>;
 export const createUnit = /* GraphQL */ `mutation CreateUnit($input: CreateUnitInput!) {
   createUnit(input: $input)
 }
@@ -244,17 +252,10 @@ export const changeMediumEditor = /* GraphQL */ `mutation ChangeMediumEditor($me
   APITypes.ChangeMediumEditorMutationVariables,
   APITypes.ChangeMediumEditorMutation
 >;
-export const updateCollationUnits = /* GraphQL */ `mutation UpdateCollationUnits($units: String!) {
-  updateCollationUnits(units: $units)
+export const editMultiplePages = /* GraphQL */ `mutation EditMultiplePages($update: [PageUpdateTargetInput!]!) {
+  editMultiplePages(update: $update)
 }
 ` as GeneratedMutation<
-  APITypes.UpdateCollationUnitsMutationVariables,
-  APITypes.UpdateCollationUnitsMutation
->;
-export const updateCollationSegments = /* GraphQL */ `mutation UpdateCollationSegments($segments: [String]!) {
-  updateCollationSegments(segments: $segments)
-}
-` as GeneratedMutation<
-  APITypes.UpdateCollationSegmentsMutationVariables,
-  APITypes.UpdateCollationSegmentsMutation
+  APITypes.EditMultiplePagesMutationVariables,
+  APITypes.EditMultiplePagesMutation
 >;

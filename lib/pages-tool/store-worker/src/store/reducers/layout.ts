@@ -22,7 +22,7 @@ export const addLayoutElement = (
   state: WritableState,
   action: PayloadAction<string>,
 ) => {
-  const order = state.text.ids.length + state.images.ids.length + 1;
+  const order = state.text.ids.length + state.images.ids.length;
   const color = highlightColors[order % 13];
   if (action.payload.includes("image") || action.payload === "blank") {
     imagesAdapter.addOne(state.images, {

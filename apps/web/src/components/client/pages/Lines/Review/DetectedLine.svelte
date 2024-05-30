@@ -8,7 +8,7 @@
   import ArrowLeftInBox from "@icons/ArrowLeftInBox.svelte";
   import { hoveredRegion$ } from "@client/pages/facsimile-events";
   import { regionUrl, requestRegion } from "@client/pages/facsimile-worker";
-  import { getContext } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { skipWhile, filter, map } from "rxjs";
   import TrashIcon from "@icons/TrashIcon.svelte";
 
@@ -36,6 +36,11 @@
   const backgroundColor = `rgba(${el?.color ?? "240,239,60"}, 0.3)`;
   const style = `border: solid 3px ${borderColor}; background-color: ${backgroundColor}`;
   const imageMask = ` rgba(${el?.color ?? "240,239,60"}, 0.5)`;
+
+  const dispatch = createEventDispatcher();
+  const handleDiscard = () => {
+    dispatch("discard");
+  };
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -52,8 +57,7 @@
     </div>
   {:else}
     <div class="flex items-center mr-4">
-      <TrashIcon className="w-6 h-6 text-primary-600 p-0" />
-      <h1 class="text-l">discard</h1>
+      <h1 class="text-l">(discard)</h1>
     </div>
   {/if}
 
@@ -71,5 +75,9 @@
         style={!$regionIshovered ? `background-color: ${imageMask}` : undefined}
       ></div>
     </div>
+  </div>
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div on:click={handleDiscard}>
+    <TrashIcon className="w-6 h-6 text-red-600 p-0 cursor-pointer" />
   </div>
 </div>
