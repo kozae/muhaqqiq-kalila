@@ -44,7 +44,6 @@
         divider,
         version: Date.now(),
       } as UpdateUnitInput;
-      console.log({ input });
       await requestUpdate(input);
       queryClient.invalidateQueries("units");
       showEditModal.set(false);

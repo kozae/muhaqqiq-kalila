@@ -29,7 +29,12 @@ export class KalilaDataAggregationStack extends Stack {
     super(scope, id, props);
     this.stage = props.stage;
     this.createDataTransformationTask(props.vars);
-    this.createEditionDataGithubPipeline();
+
+    if (this.stage === "prod") {
+      this.createEditionDataGithubPipeline();
+    }
+
+
   }
 
   private createEditionDataGithubPipeline() {
@@ -37,7 +42,7 @@ export class KalilaDataAggregationStack extends Stack {
 
     const sourceOutput = new codepipeline.Artifact();
     const sourceAction = new codepipeline_actions.GitHubSourceAction({
-      actionName: 'GitHub_Source',
+      actionName: `GitHub_Source-${this.stage}`,
       owner: 'kalila-and-dimna',
       repo: 'edition-data',
       oauthToken: SecretValue.unsafePlainText("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"),
@@ -56,8 +61,10 @@ export class KalilaDataAggregationStack extends Stack {
           },
           build: {
             commands: [
-              'aws s3 sync data s3://kalila-pages/public/data_dev/edition_data',
-              'aws s3 sync images s3://kalila-pages/public/data_dev/edition_data/images',
+              `aws s3 sync data s3://kalila-pages/public/data_dev/edition_data`,
+              `aws s3 sync data s3://kalila-pages/public/data_prod/edition_data`,
+              `aws s3 sync images s3://kalila-pages/public/data_dev/edition_data/images`,
+              `aws s3 sync images s3://kalila-pages/public/data_prod/edition_data/images`,
             ],
           },
         },
@@ -73,8 +80,8 @@ export class KalilaDataAggregationStack extends Stack {
       input: sourceOutput,
     });
 
-    new codepipeline.Pipeline(this, 'GitHubToS3Pipeline', {
-      pipelineName: 'GitHubToS3Pipeline',
+    new codepipeline.Pipeline(this, 'EditionDataToS3Pipeline', {
+      pipelineName: 'EditionDataToS3Pipeline',
       stages: [
         {
           stageName: 'Source',
@@ -159,7 +166,7 @@ export class KalilaDataAggregationStack extends Stack {
     taskDefinition.addContainer('KalilaDataTransformationTask', {
       image: ContainerImage.fromRegistry('557976691964.dkr.ecr.eu-central-1.amazonaws.com/edition_data_service-dev:latest'),
       logging,
-      environment: { ...vars, FILE_SYSTEM_PATH: "/usr/src/app" },
+      environment: { ...vars, FILE_SYSTEM_PATH: "/usr/src/app", S3_PREFIX: `kalila-pages/public/data_${this.stage}/edition_data` },
     });
 
 
@@ -180,7 +187,7 @@ export class KalilaDataAggregationStack extends Stack {
     });
 
     const securityGroup = new SecurityGroup(this, 'KalilaDataAggregationSecurityGroup', {
-      securityGroupName: 'KalilaDataTransformationTaskSecurityGroup',
+      securityGroupName: `KalilaDataTransformationTaskSecurityGroup-${this.stage}`,
       vpc,
       description: 'Allow all TCP connections',
       allowAllOutbound: true,
@@ -190,7 +197,7 @@ export class KalilaDataAggregationStack extends Stack {
 
     new CfnOutput(this, 'SecurityGroupArn', {
       value: securityGroup.securityGroupId,
-      exportName: 'KalilaDataAggregationSecurityGroupId',
+      exportName: `KalilaDataAggregationSecurityGroupId-${this.stage}`,
     });
 
   }

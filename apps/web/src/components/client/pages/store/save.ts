@@ -15,7 +15,8 @@ export const save = source.selectUpdatePayload.pipe(
 
     }),
     mergeMap(([payload, lemmas]) => {
-        return from(postPageUpdate({ ...payload, lemmas: lemmas?.filter(({ line }) => line >= 0) }))
+        const version = Date.now();
+        return from(postPageUpdate({ ...payload, lemmas: lemmas?.filter(({ line }) => line >= 0), version }))
     })
 
 )

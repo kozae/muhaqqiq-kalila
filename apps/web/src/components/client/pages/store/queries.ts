@@ -219,7 +219,7 @@ export async function postPageForLemmatization(data: any) {
 
 export async function postPageUpdate(update: PageUpdateInput) {
 
-  console.log(update);
+  console.log({ update });
 
   const response = await client.graphql<GraphQLQuery<UpdatePageMutation>>({
     query: updatePage,

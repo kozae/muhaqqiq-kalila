@@ -1,6 +1,6 @@
 import type { SSTConfig } from "sst";
 import { AstroSite, Api } from "sst/constructs";
-import { CachePolicy, FunctionCode, OriginAccessIdentity, ViewerProtocolPolicy, Function, FunctionEventType, type IFunction } from "aws-cdk-lib/aws-cloudfront";
+import { CachePolicy, FunctionCode, OriginAccessIdentity, ViewerProtocolPolicy, Function, FunctionEventType, type IFunction, CacheQueryStringBehavior } from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { aws_s3 as s3 } from "aws-cdk-lib";
@@ -31,6 +31,7 @@ export default {
           maxTtl: Duration.days(365),
           enableAcceptEncodingGzip: true,
           enableAcceptEncodingBrotli: true,
+          queryStringBehavior: CacheQueryStringBehavior.all()
         },
       );
       const noCachePolicy = new CachePolicy(
@@ -63,7 +64,7 @@ export default {
 
       const dataRemapFunction = new Function(stack, "DataRemapFunction", {
         code: FunctionCode.fromFile({
-          filePath: "functions/data-remap.function.js",
+          filePath: stack.stage === "prod" ? "functions/data-remap.function.js" : "functions/data-dev-remap.function.js",
         }),
       }) as IFunction;
 

@@ -36,6 +36,7 @@
       };
       try {
         const res = await postJob({ jobs: [job] });
+        console.log(res);
         dispatch("loadLines", res[id][pageId]);
       } catch (e) {
         console.error(e);

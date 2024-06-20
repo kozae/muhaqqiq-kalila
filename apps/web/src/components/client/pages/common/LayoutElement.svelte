@@ -73,6 +73,10 @@
   const style = idle
     ? "border: thick solid black"
     : `border: solid 3px ${borderColor}; background-color: ${backgroundColor}`;
+
+  function copyIdToClipboard() {
+    navigator.clipboard.writeText(el?.id ?? "");
+  }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -82,7 +86,8 @@
   on:mouseenter={() => !idle && toggleHighlightedRegion(el?.id)}
   on:mouseleave={() => !idle && toggleHighlightedRegion(undefined)}
 >
-  <div class="flex items-center">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="flex items-center" on:click={() => copyIdToClipboard()}>
     {#if el?.position?.startsWith("image")}
       <PhotoIcon className="text-primary-500 mr-2 h-8 w-8 rounded" />
     {:else}
