@@ -1,26 +1,19 @@
 {
-  "name": "pages-tool-transcription-panel-wasm",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "node tests",
-    "asbuild:debug": "asc assembly/index.ts --target debug",
-    "asbuild:release": "asc assembly/index.ts --target release",
-    "asbuild": "pnpm run asbuild:debug && pnpm run asbuild:release",
-    "start": "pnpm exec serve ."
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "assemblyscript": "^0.27.25"
-  },
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./build/release.js",
-      "types": "./build/release.d.ts"
-    }
-  }
+  "name": "parser-wasm",
+  "collaborators": [
+    "mahmoudkozae <mahmoud.kozae@fu-berlin.de>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "index_bg.wasm",
+    "index.js",
+    "index_bg.js",
+    "index.d.ts"
+  ],
+  "module": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": [
+    "./index.js",
+    "./snippets/*"
+  ]
 }

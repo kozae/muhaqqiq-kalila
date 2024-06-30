@@ -1,4 +1,4 @@
-import { findSyntaxErrors } from "pages-tool-transcription-panel-wasm";
+import { check_text } from "pages-tool-transcription-panel-wasm";
 import { TranscriptionWorkerEvent } from ".";
 import { Subject, debounceTime } from "rxjs";
 
@@ -16,11 +16,15 @@ lineWatcher.pipe(debounceTime(200)).subscribe((line) => {
 self.onmessage = async (e: MessageEvent<{ type: any; payload: any }>) => {
   switch (e.data.type) {
     case TranscriptionWorkerEvent.VALUE_CHANGE:
-      const error = findSyntaxErrors(e.data.payload);
+      const error = check_text(e.data.payload);
       if (error.length !== 0) {
         self.postMessage({
           type: TranscriptionWorkerEvent.ERROR,
-          payload: error,
+          payload: error.map((e) => ({
+            type: e.error_type,
+            string_error: e.string_error,
+            line: e.line,
+          })),
         });
       } else {
         self.postMessage({ type: TranscriptionWorkerEvent.NO_ERROR });

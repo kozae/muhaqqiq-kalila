@@ -15,7 +15,6 @@ export const updateTranscription = createAsyncThunk<
 >("updateTranscription", async ({ doc, ids }, { getState }) => {
     const lineUpdates: Update<LineEntity, string>[] = [];
     const text = doc.trim().split("\n").map((line) => line.trim()).filter((line) => line.length > 0);
-    console.log({ text });
     const newLines: LineEntity[] = [];
     if (text.length >= ids.length) {
         text.forEach((line, index) => {

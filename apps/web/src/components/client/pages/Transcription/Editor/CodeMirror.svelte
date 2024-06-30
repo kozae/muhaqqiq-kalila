@@ -138,6 +138,8 @@
         });
       }
     });
+
+    view.dispatch({ changes: { from: 0, to: 0, insert: "" } });
   });
 
   onDestroy(() => {
@@ -184,6 +186,12 @@
   }
   :global(.highlight-invalid) {
     color: red !important;
+    text-decoration: underline;
+  }
+
+  :global(.highlight-invalid.edition-symbol) {
+    color: red !important;
+    text-decoration: underline;
   }
 
   :global(.edition-symbol) {

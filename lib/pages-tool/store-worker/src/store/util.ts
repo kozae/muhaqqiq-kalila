@@ -23,7 +23,7 @@ export function determineTokenState(token: string): {
     return { token: token.replace("†", ""), state: "corrupt" };
   if (token.startsWith("*") || token.endsWith("*"))
     return { token: token.replace("*", ""), state: "emended" };
-  if (token.startsWith("?") || token.endsWith("?"))
+  if (token.startsWith("?") || token.endsWith("?") || token.startsWith("؟") || token.endsWith("؟"))
     return { token: token.replace("?", ""), state: "unintelligible" };
   if (token.startsWith("!") || token.endsWith("!"))
     return { token: token.replace("!", ""), state: "lexicalError" };

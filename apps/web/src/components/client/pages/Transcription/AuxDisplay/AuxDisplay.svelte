@@ -7,7 +7,6 @@
   import { combineLatest, filter, map } from "rxjs";
   import { getContext, onMount, onDestroy } from "svelte";
   import { selectedTextClass } from "../selected-text-class";
-
   let error: any[] = [];
 
   const id = getContext("id");
@@ -32,8 +31,15 @@
 
   const onMessage = (e: any) => {
     if (e.data.type === TranscriptionWorkerEvent.ERROR) {
-      error = e.data.payload;
+      error = e.data.payload as {
+        type: string;
+        string_error: string;
+        line: number;
+      }[];
     }
+
+    console.log({ error });
+
     if (e.data.type === TranscriptionWorkerEvent.NO_ERROR) {
       error = [];
     }
@@ -73,9 +79,15 @@
                 <li>
                   <p>
                     <strong class="font-extrabold">
-                      [Line: {item.line} | Words: {item.from}~{item.to}]&nbsp;
+                      [Line: {item.line}{item.string_error !== " "
+                        ? ` | Value: ${item.string_error}`
+                        : ""} &nbsp; ]
                     </strong>
-                    {item.message}.
+                    {item.type === 0
+                      ? "Wrong symbol use"
+                      : item.type === 1
+                        ? "Wrong character and symbol use"
+                        : "Unwanted characters or spaces"}.
                   </p>
                 </li>
               {/each}

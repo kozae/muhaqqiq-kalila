@@ -5,6 +5,11 @@ export interface IChapter {
 }
 export const CHAPTERS: IChapter[] = [
   {
+    abbr: "ToC",
+    name: "Table of Contents",
+    id: "9a66f66d-5b4e-4893-b294-4903e1e1c0be",
+  },
+  {
     abbr: "As",
     name: "Preface by ʿAlī b. ash-Shāh",
     id: "4d9b643e-2efe-4703-aaba-8eaf3bce10d0",

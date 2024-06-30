@@ -54,6 +54,11 @@
   const bookId = selector.pipe(map(({ bookId }) => bookId));
   const parentId = selector.pipe(map(({ parentId }) => parentId));
 
+  $: {
+    console.log($bookId);
+    console.log($parentId);
+  }
+
   const data = combineLatest([
     selector.pipe(filter((e) => e.chapter === currentChapter?.abbr)),
     unitFilter.pipe(startWith("")),
