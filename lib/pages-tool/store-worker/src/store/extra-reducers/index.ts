@@ -7,3 +7,4 @@ export * from "./attach-update-segmentation";
 export * from "./attach-change-element-position";
 export * from "./attach-update-layout-elements";
 export * from "./attach-update-transcription";
+export * from "./attach-redistribute-lines";

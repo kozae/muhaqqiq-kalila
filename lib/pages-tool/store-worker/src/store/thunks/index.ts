@@ -7,3 +7,4 @@ export * from "./change-element-position";
 export * from "./update-layout-elements";
 export * from "./update-segmentation";
 export * from "./update-transcription";
+export * from "./redistribute-lines";

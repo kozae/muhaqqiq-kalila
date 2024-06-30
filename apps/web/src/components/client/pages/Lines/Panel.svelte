@@ -56,6 +56,7 @@
         hasTextElementsRegions={$data.hasTextElementsRegions}
         hasLines={$data.elements.some((el) => el.position === "line")}
         on:addLines={(e) => requestAction("addLines", e.detail)}
+        on:redistributeLines={(e) => requestAction("redistributeLines", {})}
         on:previewLines={(e) => {
           mode = "review-regions";
           detectedLines = EtlDetectedRegions(e.detail);

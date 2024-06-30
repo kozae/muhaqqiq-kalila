@@ -4,6 +4,7 @@
   import SmallButton from "@client/reusable/SmallButton.svelte";
   import DocumentTextIcon from "@icons/DocumentTextIcon.svelte";
   import MagicIcon from "@icons/MagicIcon.svelte";
+  import TableCellsIcon from "@icons/TableCellsIcon.svelte";
   import ChevronDownIcon from "@icons/ChevronDownIcon.svelte";
   import { createEventDispatcher } from "svelte";
   import RunDetectionJob from "./RunDetectionJob.svelte";
@@ -57,6 +58,11 @@
     <SmallButton on:click={() => (showRunDetectionlModal = true)}>
       <MagicIcon className="text-primary-700 -ml-0.5 h-5 w-5" />
       Automated Detection
+    </SmallButton>
+
+    <SmallButton on:click={() => dispatch("redistributeLines")}>
+      <TableCellsIcon className="text-primary-700 -ml-0.5 h-5 w-5" />
+      Redisribute Lines
     </SmallButton>
 
     <RunDetectionJob
