@@ -5,11 +5,25 @@
   export let text: string;
 
   const OFFSET = 5; // Set the offset as required
-  const RADIAN_45_DEGREE = Math.PI / 4;
 
-  // Calculate the text position at 45 degrees to the right of the first point
-  let textX = (region[0] ?? 0) + OFFSET * Math.cos(RADIAN_45_DEGREE);
-  let textY = (region[1] ?? 0) + OFFSET * Math.sin(RADIAN_45_DEGREE);
+  // Extract the rotation value
+  const rotation = region[8] ?? 0;
+
+  // Calculate the text position based on the rotation value
+  let textX =
+    Math.min(
+      region[0] ?? Infinity,
+      region[2] ?? Infinity,
+      region[4] ?? Infinity,
+      region[6] ?? Infinity,
+    ) + OFFSET;
+  let textY =
+    Math.min(
+      region[1] ?? Infinity,
+      region[3] ?? Infinity,
+      region[5] ?? Infinity,
+      region[7] ?? Infinity,
+    ) + OFFSET;
 </script>
 
 <Group>
