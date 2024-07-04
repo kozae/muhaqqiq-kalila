@@ -5,7 +5,7 @@ import { postPageForLemmatization, postPageUpdate } from "./queries";
 export const save = source.selectUpdatePayload.pipe(
     mergeMap((payload) => {
         if (payload.bodyLines || payload.marginLines) {
-            const lines = [...(payload.bodyLines ?? []), ...(payload.marginLines ?? [])]
+            const lines = [...(payload.bodyLines ?? [])]
             return combineLatest(
                 [of(payload),
                 from(postPageForLemmatization({ page: { info: { id: payload.id }, lines } }))]);
