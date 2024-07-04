@@ -43,7 +43,7 @@ export function determineTokenState(token: string): {
     return { token: token.replace("]", ""), state: "dittographyEnd" };
 
   if (token.startsWith("{") && token.endsWith("}"))
-    return { token: token.slice(2, -2), state: "suppletion" };
+    return { token: token.slice(1, -1), state: "suppletion" };
   if (token.startsWith("{") || token.endsWith("{"))
     return { token: token.replace("{", ""), state: "suppletionBegin" };
   if (token.endsWith("}") || token.startsWith("}"))

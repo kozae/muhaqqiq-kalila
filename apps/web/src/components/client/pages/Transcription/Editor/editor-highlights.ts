@@ -44,7 +44,7 @@ export const editorHighlights = StateField.define<DecorationSet>({
       ranges: { from: number; to: number }[],
       className: string = "highlight-invalid",
     ) => {
-      console.log({ ranges });
+
       for (const range of ranges) {
         let from = range.from;
         let to = range.to + 1;

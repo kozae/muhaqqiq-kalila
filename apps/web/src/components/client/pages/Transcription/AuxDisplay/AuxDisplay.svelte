@@ -38,8 +38,6 @@
       }[];
     }
 
-    console.log({ error });
-
     if (e.data.type === TranscriptionWorkerEvent.NO_ERROR) {
       error = [];
     }
