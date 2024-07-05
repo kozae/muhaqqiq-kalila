@@ -100,7 +100,7 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
             const isSameLine = segment.endLine === nextSegment.startLine;
             const isNextLine = segment.endLine + 1 === nextSegment.startLine && nextSegment.startToken === 0;
             const isConsecutive = segment.endToken + 1 === nextSegment.startToken;
-            if ((isSameLine && isConsecutive) || (isNextLine && !endTokenIsLastInLine)) {
+            if ((isSameLine && isConsecutive) || (isNextLine && endTokenIsLastInLine)) {
                 segmenstWithPositionsAndCloseFlag.push({ ...segment, position: segment.position });
             } else {
                 const close = calculateCloseFlag(segment.endLine, segment.endToken);
