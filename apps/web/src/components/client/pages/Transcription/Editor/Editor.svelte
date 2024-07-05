@@ -65,7 +65,8 @@
     .subscribe(([[loaded, event], present]) => {
       if (
         present.chapter !== loaded.chapter ||
-        present.units[0]?.frame !== present.chapter
+        (present.units[0] !== undefined &&
+          present.units[0].frame !== present.chapter)
       ) {
         insertableUnitWatcher.next({
           chapter: loaded.chapter ?? "",
