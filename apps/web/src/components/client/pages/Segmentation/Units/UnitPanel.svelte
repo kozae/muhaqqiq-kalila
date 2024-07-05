@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IChapter } from "../chapters";
+  import { type IChapter, CHAPTERS } from "../chapters";
   import { useQuery } from "@sveltestack/svelte-query";
   import { listUnits, unitFilter } from "./queries";
   import { requestAction, requestState, source } from "@client/pages/store";
@@ -15,8 +15,16 @@
   import DeleteModal from "./Modals/DeleteUnit.svelte";
   import CreateUnit from "./Modals/CreateUnit.svelte";
   import UpdateUnit from "./Modals/UpdateUnit.svelte";
+  import { chapterParam$ } from "./chapter-in-url";
 
   let currentChapter: IChapter | undefined = undefined;
+
+  $: {
+    const abbr = $chapterParam$;
+    if (abbr) {
+      currentChapter = CHAPTERS.find((c) => c.abbr === abbr);
+    }
+  }
 
   const mediumId: string = getContext("mediumId");
   const selector = source.selectUnits;
@@ -53,11 +61,6 @@
   const page = selector.pipe(map(({ currentPage }) => currentPage));
   const bookId = selector.pipe(map(({ bookId }) => bookId));
   const parentId = selector.pipe(map(({ parentId }) => parentId));
-
-  $: {
-    console.log($bookId);
-    console.log($parentId);
-  }
 
   const data = combineLatest([
     selector.pipe(filter((e) => e.chapter === currentChapter?.abbr)),

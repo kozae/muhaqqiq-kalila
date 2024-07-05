@@ -1,10 +1,6 @@
 <script lang="ts">
   import UnitPanel from "./Units/UnitPanel.svelte";
   import { QueryClient, QueryClientProvider } from "@sveltestack/svelte-query";
-  import { source } from "@client/pages/store";
-  import { getContext } from "svelte";
-  import { filter } from "rxjs";
-  import Loading from "@client/reusable/Loading.svelte";
   import TranscriptionPanel from "../Transcription/Panel.svelte";
 
   const queryClient = new QueryClient();

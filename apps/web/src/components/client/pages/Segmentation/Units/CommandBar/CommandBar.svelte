@@ -6,10 +6,16 @@
   import { unitFilter } from "../queries";
   import type { IChapter } from "../../chapters";
   import { showCreateModal } from "../modal-states";
+  import { setQueryParam } from "../chapter-in-url";
 
   export let currentChapter: IChapter | undefined = undefined;
   function handleInput(e: any) {
     unitFilter.next(e.target?.value ?? "");
+  }
+
+  function onSelectedChapter(e: any) {
+    currentChapter = e.detail;
+    setQueryParam("chapter", e.detail.abbr);
   }
 </script>
 
@@ -18,7 +24,7 @@
     text={currentChapter
       ? `${currentChapter.abbr} - ${currentChapter.name}`
       : "Select Chapter"}
-    on:selected={(e) => (currentChapter = e.detail)}
+    on:selected={onSelectedChapter}
   />
   {#if currentChapter}
     <div>
