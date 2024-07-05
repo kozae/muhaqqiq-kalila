@@ -16,11 +16,8 @@
   import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
   import { Subscription } from "rxjs";
   import type { Segment } from "kalila-graphql";
-
   import { unitInsertionExtension } from "./unit-insertion-extension";
   import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
-
-  import type { UnitEntity } from "pages-tool-store-worker";
   import { cleanUpExtension } from "./cleanup-extension";
   import { deleteClosingWidgetEffect } from "./unit-in-text-widget/effects";
 
@@ -34,7 +31,6 @@
     close?: number;
     isStatic?: boolean;
   })[] = [];
-  export let units: UnitEntity[] = [];
 
   let parent: HTMLDivElement;
 
@@ -80,7 +76,7 @@
           dispatch("segmentationChange", { marks, doc });
         }),
       );
-      extensions.push(unitInsertionExtension(units));
+      extensions.push(unitInsertionExtension);
     }
 
     const state = EditorState.create({

@@ -10,7 +10,8 @@ export const actions = new Subject<{ type: string; payload?: any }>();
 export type WidgetEffect = { type: "update", payload: { id: string, update: Segment & { position: number } } }
     | { type: "add", payload: { segment: Segment, position: number } }
     | { type: "delete", payload: { id: string } }
-    | { type: "deleteEnd", payload: { id: string } };
+    | { type: "deleteEnd", payload: { id: string } }
+    | { type: "dummy", payload: {} };
 
 export const sgementWidgetEvents = new Subject<WidgetEffect>();
 

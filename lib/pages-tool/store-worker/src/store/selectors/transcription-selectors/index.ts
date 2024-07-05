@@ -17,7 +17,7 @@ export const selectTranscriptionPanelData = createSelector(
     const segmentationData = buildSegmentationData(state);
 
     return {
-      id: state.info!.id,
+      id: state.info?.id ?? "",
       ...transcriptionData,
       ...segmentationData,
     };

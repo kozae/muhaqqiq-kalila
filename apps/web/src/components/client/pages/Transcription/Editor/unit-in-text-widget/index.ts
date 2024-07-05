@@ -55,6 +55,7 @@ function applyAddWidgetEffect(decorations: any[], effect: StateEffect<any>) {
         if (!anotherUnitHere) {
             const widget = new UnitOpeningWidget(segment, onDelete);
             decorations = [...decorations, Decoration.widget({ widget, side: -1 }).range(position)];
+            sgementWidgetEvents.next({ type: "add", payload: { segment, position } });
             const firstTagAfter = decorations.find(deco => deco.from > position);
             if (firstTagAfter && firstTagAfter.value.spec.widget instanceof UnitClosingWidget) {
                 console.log(firstTagAfter);

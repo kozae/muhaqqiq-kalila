@@ -15,19 +15,17 @@
     },
   );
   setContext("worker", worker);
-  let sub: Subscription[] = [];
-  onMount(() => {
-    sub = [
-      derived.ready.pipe(first((v) => v === id)).subscribe(() => {
-        requestState("selectTranscriptionPanelData");
-        requestState("selectLineIds");
-      }),
-      discardFinished.subscribe(() => {
-        requestState("selectTranscriptionPanelData");
-        requestState("selectLineIds");
-      }),
-    ];
-  });
+  let sub = [
+    derived.ready.pipe(first((v) => v === id)).subscribe(() => {
+      requestState("selectTranscriptionPanelData");
+      requestState("selectLineIds");
+    }),
+    discardFinished.subscribe(() => {
+      requestState("selectTranscriptionPanelData");
+      requestState("selectLineIds");
+    }),
+  ];
+
   onDestroy(() => {
     sub.forEach((s) => s.unsubscribe());
   });

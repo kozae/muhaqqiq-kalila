@@ -125,17 +125,17 @@ export function buildSegmentationData(state: RootState) {
 
     const segments = selectAllSegments(state.segments);
     const openSegments = selectAllOpenSegments(state.openSegments);
-    const segFromPrevPage = getSegmentFromPrevPage(segments, state.info!.number) || getNearestSegmentFromPrevPage(openSegments, state.info!.number);
+    const segFromPrevPage = getSegmentFromPrevPage(segments, state.info?.number ?? 0) || getNearestSegmentFromPrevPage(openSegments, state.info?.number ?? 0);
     const pageSegments = [
-        ...segments.filter(seg => seg.startPage === state.info!.number),
+        ...segments.filter(seg => seg.startPage === state.info?.number ?? 0),
         ...[segFromPrevPage].filter(Boolean).map(seg => ({ ...seg, isStatic: true }))
     ];
 
     const { lineLens, tokenLens } = prepareTokenAndLineLengthMaps(state);
 
-    const segmenstWithPositions = buildSegmentsWithStartPositions(pageSegments, lineLens, tokenLens, state.info!.number);
+    const segmenstWithPositions = buildSegmentsWithStartPositions(pageSegments, lineLens, tokenLens, state.info?.number ?? 0);
 
-    const segmenstWithPositionsAndCloseFlag = buildSegmentsWithCloseFlag(segmenstWithPositions, state.info!.number, lineLens, tokenLens);
+    const segmenstWithPositionsAndCloseFlag = buildSegmentsWithCloseFlag(segmenstWithPositions, state.info?.number ?? 0, lineLens, tokenLens);
 
     return { segments: segmenstWithPositionsAndCloseFlag };
 }

@@ -22,7 +22,6 @@ export function processMark(mark: UnitMark, index: number, marks: UnitMark[], do
         endToken: number | null | undefined = -1,
         endPage = -1;
     if (isLastMark && existingSegment && closingMark === undefined) {
-        console.log('retaining old end');
         endLine = existingSegment.endLine;
         endToken = existingSegment.endToken;
         endPage = existingSegment.endPage;
