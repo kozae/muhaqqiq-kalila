@@ -1,0 +1,12 @@
+---
+import Layout from "@layouts/SiteLayout.astro";
+import BaseNav from "@components/BaseNav.astro";
+import Wrapper from "@client/cross-analysis/unit-selection/Wrapper.svelte";
+---
+
+<Layout title="Kalila">
+  <BaseNav />
+  <main class="w-[100vw] flex justify-center">
+    <Wrapper client:only="svelte" />
+  </main>
+</Layout>

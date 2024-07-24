@@ -4899,5 +4899,635 @@
     "OutputKey": "SecurityGroupArn",
     "OutputValue": "sg-0f3f6ddc0b345dcbb",
     "ExportName": "KalilaDataAggregationSecurityGroupId-dev"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://4sxrwzozw5bzrnie2xdna27vz4.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "3t69gtd7s718k5300n3j0u8umv"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_gU79wXRhZ"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_gU79wXRhZ",
+    "ExportName": "KalilaAuthStack-prod:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a778339c-a854-4e2e-868d-3840ca310da1"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-03f5a06ecc9cfe12a",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-prod"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://t2lactjjbfctbhdd4zfo5ajd5e.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "7fjdp9q38g8v5k3jgu459bt7t1"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_YkB2BvVhf"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_YkB2BvVhf",
+    "ExportName": "KalilaAuthStack-dev:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a9393bce-1b3b-47d8-a031-de0d01168b11"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-0f3f6ddc0b345dcbb",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-dev"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://4sxrwzozw5bzrnie2xdna27vz4.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "3t69gtd7s718k5300n3j0u8umv"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_gU79wXRhZ"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_gU79wXRhZ",
+    "ExportName": "KalilaAuthStack-prod:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a778339c-a854-4e2e-868d-3840ca310da1"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-03f5a06ecc9cfe12a",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-prod"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://t2lactjjbfctbhdd4zfo5ajd5e.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "7fjdp9q38g8v5k3jgu459bt7t1"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_YkB2BvVhf"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_YkB2BvVhf",
+    "ExportName": "KalilaAuthStack-dev:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a9393bce-1b3b-47d8-a031-de0d01168b11"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-0f3f6ddc0b345dcbb",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-dev"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_prod",
+    "ExportName": "KalilaDataManagementStack-prod:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://4sxrwzozw5bzrnie2xdna27vz4.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "3t69gtd7s718k5300n3j0u8umv"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_gU79wXRhZ"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_gU79wXRhZ",
+    "ExportName": "KalilaAuthStack-prod:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a778339c-a854-4e2e-868d-3840ca310da1"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-03f5a06ecc9cfe12a",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-prod"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttDepictionsTableArn5EA8F487",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Depictions_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttDepictionsTableArn5EA8F487"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttMediaTableArn2D2F6FCA",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Medium_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttMediaTableArn2D2F6FCA"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttUnitsTableArn6F732C64",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Unit_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttUnitsTableArn6F732C64"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentsTableArnAA6B9450",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Segment_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentsTableArnAA6B9450"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLinesTableArnCE3C78D2",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Line_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLinesTableArnCE3C78D2"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/LineDetectionJob_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLineDetectionJobsTable2ArnBF5A98D3"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttImageElementsTableArnDE2FE620",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ImageElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttImageElementsTableArnDE2FE620"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttItemCountsTableArn3812752F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ItemCount_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttItemCountsTableArn3812752F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttChapterCollationsTableArnC16C7978",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/ChapterCollation_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttChapterCollationsTableArnC16C7978"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttSegmentContentsTableArn20C8176F",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/SegmentContent_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttSegmentContentsTableArn20C8176F"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttInvertedLemmasTableArn97796663",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/InvertedLemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttInvertedLemmasTableArn97796663"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttBooksTableArnC6241908",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Book_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttBooksTableArnC6241908"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttPagesTableArn2E1E31F6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Page_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttPagesTableArn2E1E31F6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttTextElementsTableArnC76C8EA6",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/TextElement_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttTextElementsTableArnC76C8EA6"
+  },
+  {
+    "OutputKey": "ExportsOutputFnGetAttLemmassTableArn03752CFC",
+    "OutputValue": "arn:aws:dynamodb:eu-central-1:557976691964:table/Lemma_dev",
+    "ExportName": "KalilaDataManagementStack-dev:ExportsOutputFnGetAttLemmassTableArn03752CFC"
+  },
+  {
+    "OutputKey": "ApiUrl",
+    "OutputValue": "https://t2lactjjbfctbhdd4zfo5ajd5e.appsync-api.eu-central-1.amazonaws.com/graphql"
+  },
+  {
+    "OutputKey": "UserPoolClientId",
+    "OutputValue": "7fjdp9q38g8v5k3jgu459bt7t1"
+  },
+  {
+    "OutputKey": "UserPoolId",
+    "OutputValue": "eu-central-1_YkB2BvVhf"
+  },
+  {
+    "OutputKey": "ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E",
+    "OutputValue": "eu-central-1_YkB2BvVhf",
+    "ExportName": "KalilaAuthStack-dev:ExportsOutputRefKalilaUserPool5DE247DF96BDCF1E"
+  },
+  {
+    "OutputKey": "IdentityPoolId",
+    "OutputValue": "eu-central-1:a9393bce-1b3b-47d8-a031-de0d01168b11"
+  },
+  {
+    "OutputKey": "StorageBucketName",
+    "OutputValue": "kalila-pages"
+  },
+  {
+    "OutputKey": "SecurityGroupArn",
+    "OutputValue": "sg-0f3f6ddc0b345dcbb",
+    "ExportName": "KalilaDataAggregationSecurityGroupId-dev"
   }
 ]

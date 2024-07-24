@@ -95,7 +95,7 @@ function buildSegmentsWithCloseFlag(segmenstWithStartPositions: (Segment & { pos
 
         const nextSegment = array[index + 1];
 
-        const endTokenIsLastInLine = segment.endToken === tokenLens[segment.endLine].length - 1;
+        const endTokenIsLastInLine = segment.endToken === (tokenLens[segment.endLine]?.length ?? 0) - 1; // TODO check if this is correct
         if (nextSegment) {
             const isSameLine = segment.endLine === nextSegment.startLine;
             const isNextLine = segment.endLine + 1 === nextSegment.startLine && nextSegment.startToken === 0;

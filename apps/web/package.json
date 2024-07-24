@@ -51,6 +51,7 @@
     "aws-amplify": "^6.0.20",
     "aws-sdk": "^2.1579.0",
     "codemirror": "^6.0.1",
+    "d3": "^7.9.0",
     "felte": "^1.2.14",
     "frontend-util": "workspace:*",
     "install": "^0.13.0",
@@ -80,6 +81,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/react": "^18.3.2",
     "@types/sharedworker": "^0.0.113",
     "@types/sortablejs": "^1.15.8",

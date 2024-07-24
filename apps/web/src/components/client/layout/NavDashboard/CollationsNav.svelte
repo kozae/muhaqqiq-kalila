@@ -22,6 +22,11 @@
 
 {#if $queryResult.data}
   <div class="flex flex-col">
+    <a
+      href="/cross-analysis"
+      class="text-secondary-900 hover:text-secondary-800 font-bold p-4"
+      >Cross Analysis</a
+    >
     {#each $queryResult.data as item}
       <a
         href="/collations/{item?.id}"
