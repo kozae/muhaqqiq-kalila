@@ -55,4 +55,3 @@ const unitCompletionSource: CompletionSource = (context) => {
 export const unitInsertionExtension = autocompletion({
     override: [unitCompletionSource]
 })
-

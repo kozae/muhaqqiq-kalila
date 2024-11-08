@@ -14,9 +14,10 @@
   import EyeSlashIcon from "@icons/EyeSlashIcon.svelte";
   import SmallButton from "@client/reusable/SmallButton.svelte";
   import { selectedTextClass } from "../selected-text-class";
-  import { editorStats, actions } from "../event-hubs";
+  import { editorStats, editorActions } from "../event-hubs";
   import Menu from "@client/reusable/Menu.svelte";
   import { segmentsEnabledToggle } from "../segment-markers-toggle";
+  import { requestAction } from "@client/pages/store";
 
   export let segmentsChangable = true;
   export let withMarginalia = true;
@@ -63,6 +64,10 @@
     filter((data) => data.id === id),
     map((data) => Object.keys(data.glosses)),
   );
+
+  function parseTags() {
+    editorActions.next({ type: "parseTags" });
+  }
 </script>
 
 <CommandBarContainer>
@@ -93,7 +98,7 @@
   <div class="flex items-center">
     <EditionSymbolsDropdownMenu />
     <SmallButton
-      on:click={() => actions.next({ type: "remove" })}
+      on:click={() => editorActions.next({ type: "remove" })}
       disabled={!$editorStats?.selectedText}
       className={!$editorStats?.selectedText ? "opacity-50" : ""}
       >Remove symbols</SmallButton
@@ -110,6 +115,10 @@
       <EyeSlashIcon slot="disabled" className="h-4 w-4 text-gray-500" />
       <EyeIcon slot="enabled" className="h-4 w-4 text-primary-600" />
     </Switch>
+  {/if}
+
+  {#if !segmentsChangable}
+    <SmallButton on:click={parseTags}>Parse tags</SmallButton>
   {/if}
 </CommandBarContainer>
 

@@ -25,7 +25,7 @@
     <a
       href="/cross-analysis"
       class="text-secondary-900 hover:text-secondary-800 font-bold p-4"
-      >Cross Analysis</a
+      >Cross Analysis 0.5.0beta</a
     >
     {#each $queryResult.data as item}
       <a

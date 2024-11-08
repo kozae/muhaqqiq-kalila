@@ -76,7 +76,7 @@ export const colorMap: { [name: string]: string } = {
     'Platinum': '#E5E4E2',
     // Others
     'Brass': '#B5A642',
-    'Pink': '#E38EEA',
+    'Pink': '#E0B0FF',
     'Lilac': '#C8A2C8',
     'Dull Purple': '#7F525D',
 
@@ -210,16 +210,17 @@ export const crossAnalysisColors = [
     { "name": "Granite", "hex": "#837E7C" }
 ]
 
-const groupedColors = {
+export const groupedColors = {
     "Paris": [
         { "name": "Pastel Blue", "hex": "#B4CFEC" },
         { "name": "Light Sky Blue", "hex": "#82CAFA" },
         { "name": "Lavender", "hex": "#E6E6FA" },
-        { "name": "Silk Blue", "hex": "#488AC7" },
+        { "name": "Steel Blue", "hex": "#4682B4" }, // Replaced Silk Blue
         { "name": "Powder Blue", "hex": "#B0E0E6" },
-        { "name": "Crystal Blue", "hex": "#5CB3FF" },
+        { "name": "Cornflower Blue", "hex": "#6495ED" }, // Replaced Crystal Blue
         { "name": "Cobalt Blue", "hex": "#0020C2" },
-        { "name": "Windows Blue", "hex": "#357EC7" }
+        { "name": "Royal Blue", "hex": "#4169E1" }, // Replaced Windows Blue
+        { "name": "Light Cyan", "hex": "#E0FFFF" },
     ],
     "London": [
         { "name": "Clover Green", "hex": "#3EA055" },
@@ -230,9 +231,10 @@ const groupedColors = {
         { "name": "Salad Green", "hex": "#A1C935" }
     ],
     "Mixed": [
-        { "name": "Light Salmon", "hex": "#F9966B" },
+        { "name": "Terracotta", "hex": "#E2725B" },
         { "name": "Peach", "hex": "#FFE5B4" },
-        { "name": "Light Coral", "hex": "#E77471" },
+        { "name": "Dusty Rose", "hex": "#DCAE96" },
+        { "name": "Coffee", "hex": "#6F4E37" },
         { "name": "Platinum", "hex": "#E5E4E2" },
         { "name": "Blush Red", "hex": "#E56E94" },
         { "name": "Burgundy", "hex": "#8C001A" },
@@ -241,11 +243,18 @@ const groupedColors = {
         { "name": "Caramel", "hex": "#C68E17" },
         { "name": "Thistle", "hex": "#D8BFD8" },
         { "name": "Cantaloupe", "hex": "#FFA62F" },
-        { "name": "Light Cyan", "hex": "#E0FFFF" },
         { "name": "Valentine Red", "hex": "#E55451" },
-        { "name": "Basketball Orange", "hex": "#F88158" },
+        { "name": "Tangerine", "hex": "#FFA07A" },
         { "name": "Goldenrod", "hex": "#EDDA74" },
-        { "name": "Granite", "hex": "#837E7C" }
+        { "name": "Granite", "hex": "#837E7C" },
+        { "name": "Wood", "hex": "#966F33" },
+        { "name": "Brass", "hex": "#B5A642" },
+        { "name": "Mahogany", "hex": "#C04000" },
+        { "name": "Maroon", "hex": "#800000" },
+        { "name": "Plum", "hex": "#8E4585" },
+        { "name": "Pumpkin", "hex": "#FF7518" },
+        { "name": "Sienna", "hex": "#A0522D" },
+        { "name": "Copper", "hex": "#B87333" }
     ]
 }
 
@@ -286,3 +295,19 @@ export function getCrossAnalysisColors() {
         textColor: determineTextColor(item.hex)
     }));
 }
+
+// const parisColors = groupedColors["Paris"].map((item) => ({
+//   ...item,
+//   color: item.hex,
+//   textColor: determineTextColor(item.hex),
+// }));
+// const londonColors = groupedColors["London"].map((item) => ({
+//   ...item,
+//   color: item.hex,
+//   textColor: determineTextColor(item.hex),
+// }));
+// const mixedColors = groupedColors["Mixed"].map((item) => ({
+//   ...item,
+//   color: item.hex,
+//   textColor: determineTextColor(item.hex),
+// }));

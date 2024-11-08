@@ -15,7 +15,7 @@ export function cleanUpExtension(): Extension {
             let pos = from;
             for (let char of line) {
                 const isArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFBC1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFD\uFE70-\uFEFC]/.test(char);
-                const isAllowedChar = /[\.\*\[\](){}?!†\s\n]/.test(char);
+                const isAllowedChar = /[\.\*\[\](){}?!†\s\n|#]/.test(char);
                 if (!isArabic && !isAllowedChar) {
                     changes.push({ from: pos, to: pos + 1 });
                 }

@@ -58,7 +58,6 @@ function applyAddWidgetEffect(decorations: any[], effect: StateEffect<any>) {
             sgementWidgetEvents.next({ type: "add", payload: { segment, position } });
             const firstTagAfter = decorations.find(deco => deco.from > position);
             if (firstTagAfter && firstTagAfter.value.spec.widget instanceof UnitClosingWidget) {
-                console.log(firstTagAfter);
                 const closingWidget = new UnitClosingWidget(segment, onDeleteEnd);
 
                 decorations = [...decorations, Decoration.widget({ widget: closingWidget, side: -1 }).range(firstTagAfter.from)]
@@ -168,6 +167,7 @@ const unitsInTextFields = (segments: (Segment & { position: number, close?: numb
 
             if (tr.docChanged || hasWidgetEffects(tr)) {
 
+
                 const marks: UnitMark[] = decorations.map(deco => {
                     const widget = deco.value.spec.widget;
                     return {
@@ -183,7 +183,9 @@ const unitsInTextFields = (segments: (Segment & { position: number, close?: numb
             }
             return deco;
         },
-        provide: f => EditorView.decorations.from(f)
+        provide: f => [
+            EditorView.decorations.from(f),
+        ]
     });
 }
 

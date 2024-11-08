@@ -1,11 +1,8 @@
 <script lang="ts">
-  import Menu from "@client/reusable/SelectIdMenu.svelte";
-  import EllipsisVerticalIcon from "@icons/EllipsisVerticalIcon.svelte";
   import FunnelIcon from "@icons/FunnelIcon.svelte";
   import ChapterSelector from "./ChapterSelector.svelte";
   import { unitFilter } from "../queries";
   import type { IChapter } from "../../chapters";
-  import { showCreateModal } from "../modal-states";
   import { setQueryParam } from "../chapter-in-url";
 
   export let currentChapter: IChapter | undefined = undefined;
@@ -44,21 +41,5 @@
         />
       </div>
     </div>
-    <Menu
-      iconButton
-      origin="origin-top-left -translate-x-2/4"
-      width="w-[130px]"
-      bg="bg-secondary-50"
-      on:itemClick={(e) => {
-        if (e.detail === "create") {
-          showCreateModal.set(true);
-        } else {
-          console.log(e.detail);
-        }
-      }}
-      items={[{ id: "create", display: "Create Unit ..." }]}
-    >
-      <EllipsisVerticalIcon slot="icon" />
-    </Menu>
   {/if}
 </div>

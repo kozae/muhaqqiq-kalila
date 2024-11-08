@@ -97,8 +97,8 @@ export async function getSigla(mediaIds: string[]) {
 
 }
 
-export async function getCrossAnalysis(data: { key: string, passages: Record<string, string> }) {
-    const url = 'https://cross-analysis-api.kozae.de/analyze';
+export async function runCrossAnalysis(data: { key: string, passages: Record<string, string> }, version: string) {
+    const url = `https://cross-analysis-api.kozae.de/${version}/analyze`;
     const payload = { ...data, password: "T<'<^]4|uto<maKr49S`GAK>O4Q'f|WSP:s81!TX[0:/Mr-g9" }
     const response = await fetch(url, {
         method: 'POST',
@@ -106,15 +106,27 @@ export async function getCrossAnalysis(data: { key: string, passages: Record<str
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload),
-        // mode: 'no-cors'
     });
 
     return await response.json();
 }
 
 export async function getSiglaOrder(chapter: string) {
-    console.log(chapter);
     const url = `https://cross-analysis-api.kozae.de/sigla/${chapter}`;
+    const response = await fetch(url);
+
+    return await response.json();
+}
+
+export async function listCachedVersions(key: string) {
+    const url = `https://cross-analysis-api.kozae.de/list-cached/${key}`;
+    const response = await fetch(url);
+
+    return await response.json();
+}
+
+export async function loadCachedFile(key: string, version: string, timestamp: string) {
+    const url = `https://cross-analysis-api.kozae.de/get_cached/${version}/${key}/${timestamp}`;
     const response = await fetch(url);
 
     return await response.json();

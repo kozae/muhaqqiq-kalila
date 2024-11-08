@@ -5,6 +5,35 @@ import { selectAllLines, selectAllOpenSegments, selectAllSegments, selectAllText
 import { formatAndJoinTokens, groupLinesByElementId } from "./util";
 import lodash from 'lodash';
 
+function getSymbolLength(state: string) {
+    switch (state) {
+        case "corrupt":
+        case "emended":
+        case "unintelligible":
+        case "lexicalError":
+        case "dittographyEnd":
+        case "dittographyBegin":
+        case "suppletionEnd":
+        case "suppletionBegin":
+        case "addedEnd":
+        case "addedBegin":
+        case "titleEnd":
+        case "titleBegin":
+            return 1;
+        case "dittography":
+        case "suppletion":
+        case "added":
+        case "title":
+            return 2;
+        case "crossOutEnd":
+        case "crossOutBegin":
+            return 2;
+        case "crossOut":
+            return 4;
+        default:
+            return 0;
+    }
+}
 
 
 function prepareTokenAndLineLengthMaps(state: RootState) {
@@ -24,7 +53,7 @@ function prepareTokenAndLineLengthMaps(state: RootState) {
 
                 // track lengths
                 lineLens[line.order] = lineText?.length ?? 0;
-                tokenLens[line.order] = line.tokens?.map((t) => t!.length) ?? [];
+                tokenLens[line.order] = line.tokens?.map((t, i) => t!.length + getSymbolLength(line.states?.[i] ?? "sound")) ?? [];
             }
         }
     }

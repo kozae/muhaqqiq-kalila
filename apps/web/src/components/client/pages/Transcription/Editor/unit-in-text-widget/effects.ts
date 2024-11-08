@@ -7,3 +7,4 @@ export const deleteWidgetEffect = StateEffect.define<{ id: string }>();
 export const deleteClosingWidgetEffect = StateEffect.define<{ id: string }>();
 export const dropInCloseWidgetEffect = StateEffect.define<{ position: number }>();
 
+export const parseTagsEffect = StateEffect.define();

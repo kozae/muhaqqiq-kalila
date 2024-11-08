@@ -1,8 +1,6 @@
 <script lang="ts">
-  import Chart from "./Chart.svelte";
-  import type { ColoredPassages } from "./model";
+  import { coloredPassages } from "./store";
 
-  export let coloredPassages: ColoredPassages;
   export let sigla: string[];
 
   const cellWidth = 150;
@@ -21,12 +19,12 @@
           {siglum}
         </p>
       </div>
-      {#if coloredPassages[siglum]}
+      {#if $coloredPassages[siglum]}
         <div
           class="font-arabicnoto text-justify text-md px-2 leading-loose"
           dir="rtl"
         >
-          {#each coloredPassages[siglum] as fragment}
+          {#each $coloredPassages[siglum] as fragment}
             <span
               style="background-color: {fragment.bgcolor}; color: {fragment.textColor}"
               >{fragment.text + " "}</span

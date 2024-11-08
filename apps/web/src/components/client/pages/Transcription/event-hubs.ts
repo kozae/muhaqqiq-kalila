@@ -4,7 +4,7 @@ import type { Segment } from "kalila-graphql";
 
 export const editorStats = new ReplaySubject<Statistics>(1);
 
-export const actions = new Subject<{ type: string; payload?: any }>();
+export const editorActions = new Subject<{ type: string; payload?: any }>();
 
 
 export type WidgetEffect = { type: "update", payload: { id: string, update: Segment & { position: number } } }

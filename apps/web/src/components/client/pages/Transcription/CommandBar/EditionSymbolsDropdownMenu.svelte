@@ -3,7 +3,7 @@
   import PlusIcon from "@icons/PlusIcon.svelte";
   import SymbolGroup from "./SymbolGroup.svelte";
   import { slide } from "svelte/transition";
-  import { editorStats, actions } from "../event-hubs";
+  import { editorStats, editorActions } from "../event-hubs";
   import { map } from "rxjs";
 
   const disabled = editorStats.pipe(
@@ -90,7 +90,7 @@
   let open = false;
   const handleItemSelected = (e: any) => {
     open = false;
-    actions.next({
+    editorActions.next({
       type: "insert",
       payload: e.detail,
     });

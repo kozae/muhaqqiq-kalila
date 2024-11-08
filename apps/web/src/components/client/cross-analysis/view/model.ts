@@ -1,3 +1,4 @@
+import { groups } from "d3";
 import { colorMap, crossAnalysisColors, determineTextColor, getNextColor } from "./colors";
 
 export interface Fragment {
@@ -22,6 +23,11 @@ export interface UniqueFragment {
 }
 
 export interface Analysis {
+    timestamp?: string;
+    name?: string;
+    settings?: {
+        [key: string]: string;
+    };
     groups: Group[];
     unique_fragments: UniqueFragment;
 }
@@ -30,7 +36,7 @@ export type ColoredPassages = Record<string, { bgcolor?: string; text: string; t
 
 
 const londonRepresentatives = new Set(["L4044", "A4095", "L8751"])
-const parisRepresentatives = new Set(["P3465", "P3466", "L8751", "P3473", "BWII672"])
+const parisRepresentatives = new Set(["P3465", "P3466", "P3473", "BWII672"])
 
 
 function determineGroup(sources: string[]) {
@@ -68,73 +74,82 @@ export function assignColorsToAnalysis(analysis: Analysis): Analysis {
 }
 
 
-export function assignColorsToText(analysis: Analysis, passages: Record<string, string>): ColoredPassages {
+export function initializeColoredPassages(passages: Record<string, string[]>): ColoredPassages {
+    const coloredPassages: ColoredPassages = {};
+    for (const [key, tokens] of Object.entries(passages)) {
+        coloredPassages[key] = [{
+            text: tokens.join(" "),
+            bgcolor: undefined,
+            textColor: undefined,
+            colorName: undefined
+        }];
+    }
+    return coloredPassages;
+}
+
+export function assignColorsToText(analysis: Analysis, passages: Record<string, string[]>): ColoredPassages {
     const uniqueFragmentColor = colorMap["Pink"];
     const coloredPassages: ColoredPassages = {};
 
-    // Initialize coloredPassages with empty arrays
-    for (const key in passages) {
-        coloredPassages[key] = [];
+    // Initialize coloredPassages with full text as a single fragment
+    for (const [key, tokens] of Object.entries(passages)) {
+        coloredPassages[key] = [{
+            text: tokens.join(" "),
+            bgcolor: undefined,
+            textColor: undefined,
+            colorName: undefined
+        }];
     }
 
-    // Helper function to add text fragments in order
-    function addTextFragment(key: string, start: number, end: number, color?: string, textColor?: string, colorName?: string) {
+    // Helper function to split a fragment at given indices
+    function splitFragment(fragment: ColoredPassages[string][number], start: number, end: number, color?: string, textColor?: string, colorName?: string) {
+        const tokens = fragment.text.split(" ");
+        const before = tokens.slice(0, start).join(" ");
+        const middle = tokens.slice(start, end).join(" ");
+        const after = tokens.slice(end).join(" ");
 
-        if (start < end) {
-            coloredPassages[key].push({ bgcolor: color, text: passages[key].substring(start, end), textColor: textColor, colorName: colorName });
+        const result = [];
+        if (before) result.push({ ...fragment, text: before });
+        result.push({ text: middle, bgcolor: color, textColor, colorName });
+        if (after) result.push({ ...fragment, text: after });
+
+        return result;
+    }
+
+    // Process groups
+    for (const group of analysis.groups) {
+        for (const source of group.sources) {
+
+            if (!coloredPassages[source]) continue;
+
+            for (const rangeGroup of group.ranges) {
+                const [start, end] = rangeGroup[source];
+                if (start === -1) continue;
+
+                coloredPassages[source] = coloredPassages[source].flatMap(fragment => {
+                    const fragmentStart = fragment.text.split(" ").indexOf(passages[source][start]);
+                    if (fragmentStart === -1) return [fragment];
+
+                    const fragmentEnd = fragmentStart + (end - start) + 1;
+                    return splitFragment(fragment, fragmentStart, fragmentEnd, group.bgcolor, group.textColor, group.colorName);
+                });
+            }
         }
     }
 
     // Process unique fragments
     for (const [key, fragments] of Object.entries(analysis.unique_fragments)) {
-        for (const [text, [start, end]] of fragments) {
+        if (!coloredPassages[key]) continue;
+        for (const [, [start, end]] of fragments) {
             if (start === -1) continue;
-            addTextFragment(key, start, end, uniqueFragmentColor, "black", "Pink");
-        }
-    }
 
-    // Process groups
-    for (const group of analysis.groups) {
-        if (group.sources.length === Object.keys(passages).length) {
-            continue;
-        }
+            coloredPassages[key] = coloredPassages[key].flatMap(fragment => {
+                const fragmentStart = fragment.text.split(" ").indexOf(passages[key][start]);
+                if (fragmentStart === -1) return [fragment];
 
-
-
-
-        for (const source of group.sources) {
-            for (const rangeGroup of group.ranges) {
-                const range = rangeGroup[source];
-                if (range[0] === -1) continue;
-                addTextFragment(source, range[0], range[1], group.bgcolor, group.textColor, group.colorName);
-            }
-        }
-    }
-
-    // Add remaining text fragments that are not part of any group or unique fragment
-    for (const key in passages) {
-        const fragments = coloredPassages[key];
-        let lastIndex = 0;
-
-        const sortedFragments = fragments.sort((a, b) => {
-            const startA = passages[key].indexOf(a.text);
-            const startB = passages[key].indexOf(b.text);
-            return startA - startB;
-        });
-
-        coloredPassages[key] = [];
-
-        for (const fragment of sortedFragments) {
-            const start = passages[key].indexOf(fragment.text, lastIndex);
-            if (start > lastIndex) {
-                addTextFragment(key, lastIndex, start);
-            }
-            addTextFragment(key, start, start + fragment.text.length, fragment.bgcolor, fragment.textColor, fragment.colorName);
-            lastIndex = start + fragment.text.length;
-        }
-
-        if (lastIndex < passages[key].length) {
-            addTextFragment(key, lastIndex, passages[key].length);
+                const fragmentEnd = fragmentStart + (end - start) + 1;
+                return splitFragment(fragment, fragmentStart, fragmentEnd, uniqueFragmentColor, "black", "Pink");
+            });
         }
     }
 

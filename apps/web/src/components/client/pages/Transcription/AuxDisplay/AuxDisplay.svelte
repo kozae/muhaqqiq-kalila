@@ -77,15 +77,8 @@
                 <li>
                   <p>
                     <strong class="font-extrabold">
-                      [Line: {item.line}{item.string_error !== " "
-                        ? ` | Value: ${item.string_error}`
-                        : ""} &nbsp; ]
+                      Line: {item.line} | {item.string_error}
                     </strong>
-                    {item.type === 0
-                      ? "Wrong symbol use"
-                      : item.type === 1
-                        ? "Wrong character and symbol use"
-                        : "Unwanted characters or spaces"}.
                   </p>
                 </li>
               {/each}

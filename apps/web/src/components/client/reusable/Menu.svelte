@@ -13,6 +13,7 @@
   export let origin = "origin-top-right";
   export let position = "relative";
   export let iconButton = false;
+  export let displayFunction: (item: string) => string = (item) => item;
 
   let showMenu = false;
 
@@ -71,7 +72,7 @@
           on:click={() => handleItemClick(item)}
           class="group flex w-full items-center px-4 py-2 text-sm hover:bg-secondary-100"
         >
-          {item}
+          {displayFunction(item)}
         </button>
       {/each}
     </div>

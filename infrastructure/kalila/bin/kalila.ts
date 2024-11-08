@@ -8,6 +8,7 @@ import { KalilaAuthStack } from "../lib/kalila-auth-stack";
 import { KalilaDataStorageStack } from "../lib/kalila-data-storage-stack";
 import { KalilaDataAggregationStack } from "../lib/kalila-data-aggregation-stack";
 import { createCommonEnvironmentVariablesRecord } from "../lib/utils";
+import { KalilaCrossAnalysisStack } from "../lib/kalila-cross-analysis-stack";
 
 const environments: Record<string, { account: string; region: string }> = {
   dev: {
@@ -68,3 +69,8 @@ new KalilaDataAggregationStack(
   },
 );
 
+new KalilaCrossAnalysisStack(app, `KalilaCrossAnalysisStack-${environment}`, {
+  env,
+  stage: environment,
+  vars: envVariables,
+});

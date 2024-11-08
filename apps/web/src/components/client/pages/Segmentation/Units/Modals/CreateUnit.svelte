@@ -43,7 +43,6 @@
         id: v4(),
         version: Date.now(),
       } as CreateUnitInput;
-      console.log(input);
       await requestCreate(input);
       queryClient.invalidateQueries("units");
       showCreateModal.set(false);

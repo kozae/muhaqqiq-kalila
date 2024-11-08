@@ -12,14 +12,22 @@
   import { editorKeymap } from "./editor-keymap";
   import { editorHighlights } from "./editor-highlights";
   import { getStatistics } from "../utils";
-  import { actions, editorStats, sgementWidgetEvents } from "../event-hubs";
+  import {
+    editorActions,
+    editorStats,
+    sgementWidgetEvents,
+  } from "../event-hubs";
   import { TranscriptionWorkerEvent } from "pages-tool-transcription-panel-worker";
   import { Subscription } from "rxjs";
   import type { Segment } from "kalila-graphql";
   import { unitInsertionExtension } from "./unit-insertion-extension";
   import { deleteWidgetEffect, unitsInTextFields } from "./unit-in-text-widget";
   import { cleanUpExtension } from "./cleanup-extension";
-  import { deleteClosingWidgetEffect } from "./unit-in-text-widget/effects";
+  import {
+    addWidgetEffect,
+    deleteClosingWidgetEffect,
+  } from "./unit-in-text-widget/effects";
+  import { handleParsing } from "./unit-parsing";
 
   let klass = "";
   export { klass as class };
@@ -113,25 +121,43 @@
       });
     }
 
-    sub = actions.subscribe((a) => {
-      if (a.type === "insert") {
-        view.dispatch({
-          changes: {
-            from: view.state.selection.main.from,
-            insert: a.payload,
-          },
-        });
-      } else {
-        const selectedText = view.state.selection.ranges.map((r) =>
-          state.sliceDoc(r.from, r.to),
-        );
-        view.dispatch({
-          changes: {
-            from: view.state.selection.main.from,
-            to: view.state.selection.main.to,
-            insert: selectedText[0].replace(/[^ \n\u0600-\u06FF]/g, ""),
-          },
-        });
+    sub = editorActions.subscribe((a) => {
+      switch (a.type) {
+        case "insert":
+          view.dispatch({
+            changes: {
+              from: view.state.selection.main.from,
+              insert: a.payload,
+            },
+          });
+          break;
+        case "remove": {
+          const selectedText = view.state.selection.ranges.map((r) =>
+            state.sliceDoc(r.from, r.to),
+          );
+          view.dispatch({
+            changes: {
+              from: view.state.selection.main.from,
+              to: view.state.selection.main.to,
+              insert: selectedText[0].replace(/[^ \n\u0600-\u06FF]/g, ""),
+            },
+          });
+        }
+        case "parseTags": {
+          const doc = view.state.doc.toString();
+          const { segments, changes } = handleParsing(doc);
+          view.dispatch({
+            changes,
+          });
+          for (const segment of segments) {
+            const { position, ...data } = segment;
+            view.dispatch({
+              effects: addWidgetEffect.of({ segment: data, position }),
+            });
+          }
+        }
+        default:
+          break;
       }
     });
 

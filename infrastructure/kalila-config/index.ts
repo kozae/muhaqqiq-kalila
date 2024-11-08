@@ -1,9 +1,9 @@
 export const awsConfig = {
   "Auth": {
     "Cognito": {
-      "userPoolId": "eu-central-1_YkB2BvVhf",
-      "userPoolClientId": "7fjdp9q38g8v5k3jgu459bt7t1",
-      "identityPoolId": "eu-central-1:a9393bce-1b3b-47d8-a031-de0d01168b11"
+      "userPoolId": "eu-central-1_gU79wXRhZ",
+      "userPoolClientId": "3t69gtd7s718k5300n3j0u8umv",
+      "identityPoolId": "eu-central-1:a778339c-a854-4e2e-868d-3840ca310da1"
     }
   },
   "Storage": {
@@ -16,7 +16,7 @@ export const awsConfig = {
     "GraphQL": {
       "region": "eu-central-1",
       "defaultAuthMode": "userPool",
-      "endpoint": "https://t2lactjjbfctbhdd4zfo5ajd5e.appsync-api.eu-central-1.amazonaws.com/graphql"
+      "endpoint": "https://4sxrwzozw5bzrnie2xdna27vz4.appsync-api.eu-central-1.amazonaws.com/graphql"
     }
   }
 };

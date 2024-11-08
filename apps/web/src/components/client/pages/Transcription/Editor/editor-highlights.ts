@@ -1,6 +1,11 @@
 import { StateField, Range } from "@codemirror/state";
 import { type DecorationSet, Decoration, EditorView } from "@codemirror/view";
-import { check_text } from "pages-tool-transcription-panel-wasm";
+import { tokenize } from "pages-tool-transcription-panel-wasm";
+import { baseParserConfig } from "./base-parser-confug";
+
+
+
+
 
 export const editorHighlights = StateField.define<DecorationSet>({
   create: () => Decoration.none,
@@ -28,17 +33,6 @@ export const editorHighlights = StateField.define<DecorationSet>({
       }
     };
 
-    const pushDecorationFromIndexes = (
-      indexes: number[],
-      className: string = "highlight-invalid",
-    ) => {
-      for (const index of indexes) {
-        let from = index;
-        let to = index + 1;
-        let decoration = Decoration.mark({ class: className });
-        newDecorations.push({ from, to, value: decoration });
-      }
-    };
 
     const pushDecorationFromRanges = (
       ranges: { from: number; to: number }[],
@@ -53,10 +47,9 @@ export const editorHighlights = StateField.define<DecorationSet>({
       }
     };
 
+    const { errors, tokens } = tokenize(docContent, baseParserConfig);
 
-
-    const invalid = check_text(docContent);
-    const errorRanges = invalid.map((e) => ({ from: e.from, to: e.to }));
+    const errorRanges = errors.map((e: number) => ({ from: tokens[e].Error.span[0], to: tokens[e].Error.span[1] }));
     pushDecorationFromRanges(errorRanges, "highlight-invalid");
 
     checkAndPushDecoration(editionSymbols, "edition-symbol", errorRanges);

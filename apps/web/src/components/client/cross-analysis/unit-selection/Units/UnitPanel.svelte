@@ -2,14 +2,12 @@
   import { type IChapter, CHAPTERS } from "../chapters";
   import { useQuery } from "@sveltestack/svelte-query";
   import { listUnits, unitFilter } from "./queries";
-  import { combineLatest, filter, map, startWith, Subject } from "rxjs";
   import Loading from "@client/reusable/Loading.svelte";
   import InfoAlert from "@client/reusable/InfoAlert.svelte";
   import UnitList from "./UnitList/UnitList.svelte";
   import { getContext } from "svelte";
   import CommandBar from "./CommandBar/CommandBar.svelte";
   import { chapterParam$ } from "./chapter-in-url";
-  import type { UnitEntity } from "pages-tool-store-worker";
 
   let currentChapter: IChapter | undefined = undefined;
 

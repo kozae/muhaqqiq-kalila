@@ -45,7 +45,7 @@ export class KalilaDataAggregationStack extends Stack {
       actionName: `GitHub_Source-${this.stage}`,
       owner: 'kalila-and-dimna',
       repo: 'edition-data',
-      oauthToken: SecretValue.unsafePlainText("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"),
+      oauthToken: SecretValue.unsafePlainText("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"),
       output: sourceOutput,
       branch: 'main',
     });
