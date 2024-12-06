@@ -1,2 +1,4 @@
 lib/infrastructre/src/models
 lib/infrastructure/aws-backend/src/models
+
+amplify-codegen-temp/models

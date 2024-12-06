@@ -2,13 +2,18 @@ module.exports = {
   content: [
     "../../lib/client-components/**/*.tsx",
     "./**/*.tsx",
+    "./**/*.astro",
+    "./**/*.svelte",
     "./**/*.html",
   ],
   theme: {
     extend: {
       fontFamily: {
+        sansSerif: ["Noto Sans Display"],
         arabicnoto: ["'Noto Naskh Arabic'", "serif"],
-        arabicamiri: ["'Amiri'", "serif"],
+      },
+      maxWidth: {
+        hd: "1800px",
       },
       colors: {
         primary: {

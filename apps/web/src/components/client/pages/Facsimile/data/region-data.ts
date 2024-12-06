@@ -1,0 +1,25 @@
+import activeTool$ from "@client/pages/active-tool";
+import imageData$ from "./image-data";
+import { source } from "@client/pages/store";
+import { combineLatest, map } from "rxjs";
+import { getScale } from "../../math-helpers/scale";
+
+const regions$ = combineLatest([
+  source.selectLayout,
+  activeTool$,
+  imageData$,
+]).pipe(
+  map(([data, tool, imageData]) => {
+    if (!imageData) return [];
+    const scale = getScale(imageData.scaleRatio);
+    if (tool === "layout") {
+      return scale(data.elements);
+    }
+    if (tool === "lines" || tool === "transcription") {
+      return scale(data.lines);
+    }
+    return [];
+  }),
+);
+
+export default regions$;

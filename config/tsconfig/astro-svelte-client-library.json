@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Astro Svelte Library",
+  "extends": "astro/tsconfigs/strict",
+  "exclude": ["dist/*", "build/*", "tmp/*", "node_modules/*"],
+  "include": ["**/*.ts"]
+}

@@ -1,0 +1,11 @@
+---
+import Layout from "@layouts/PagesOuterLayout.astro";
+
+import Summary from "@client/pages/Summary";
+
+const { mediumId } = Astro.params;
+---
+
+<Layout mediumId={mediumId!}>
+  <Summary mediumId={mediumId!} client:only="react" />
+</Layout>

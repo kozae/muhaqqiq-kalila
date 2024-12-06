@@ -1,0 +1,30 @@
+---
+import BaseNav from "@components/BaseNav.astro";
+import Dashboard from "@components/Dashboard.astro";
+import PageWrapper from "@components/PageWrapper.astro";
+import Layout from "@layouts/SiteLayout.astro";
+---
+
+<Layout title="Kalila">
+  <BaseNav />
+  <PageWrapper>
+    <div class="flex h-full flex-col lg:flex-row">
+      <div class="grow h-full px-4 pt-16">
+        <div class="flex w-full flex-col justify-center px-4 align-middle">
+          <div class="flex w-full justify-center px-4 align-middle">
+            <img class="h-[200px] w-auto" src="/logo_512.png" alt="" />
+          </div>
+          <h1
+            class="text-primary-500 mx-auto pt-4 text-6xl font-bold lg:text-8xl"
+          >
+            Muḥaqqiq
+          </h1>
+          <h1 class="text-secondary-900 mx-auto pt-4 text-2xl lg:text-4xl">
+            Textual Scholarship Toolkit
+          </h1>
+        </div>
+      </div>
+      <Dashboard />
+    </div>
+  </PageWrapper>
+</Layout>

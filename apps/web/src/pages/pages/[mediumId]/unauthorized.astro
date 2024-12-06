@@ -1,0 +1,21 @@
+---
+import UnauthorizedAlert from "@client/pages/common/UnauthorizedAlert.svelte";
+import Layout from "@layouts/PagesOuterLayout.astro";
+
+const { mediumId } = Astro.params;
+const editor = Astro.url.searchParams.get("editor") || "";
+const user = Astro.url.searchParams.get("user") || "";
+const siglum = Astro.url.searchParams.get("siglum") || "";
+const pageId = Astro.url.searchParams.get("pageId") || "";
+---
+
+<Layout mediumId={mediumId!}>
+  <UnauthorizedAlert
+    user={user}
+    mediumId={mediumId!}
+    siglum={siglum}
+    pageId={pageId}
+    editor={editor}
+    client:only="svelte"
+  />
+</Layout>

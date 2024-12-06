@@ -1,0 +1,82 @@
+---
+import { getPageButtons } from "./PaginatorComponents/get-page-buttons";
+import ChevronUpIcon from "./PaginatorComponents/ChevronUpIcon.astro";
+import ChevronDownIcon from "./PaginatorComponents/ChevronDownIcon.astro";
+import ActivePrevLink from "./PaginatorComponents/ActivePrevLink.astro";
+import DisabledPrevLink from "./PaginatorComponents/DisabledPrevLink.astro";
+import CurrentLink from "./PaginatorComponents/CurrentLink.astro";
+import PageLink from "./PaginatorComponents/PageLink.astro";
+import ActiveNextLink from "./PaginatorComponents/ActiveNextLink.astro";
+import DisabledNextLink from "./PaginatorComponents/DisabledNextLink.astro";
+
+interface Props {
+  pages: number;
+  current?: number;
+  baseHref: string;
+  hrefSuffix: string;
+  ids: string[];
+}
+
+const { pages, current, ids, hrefSuffix, baseHref } = Astro.props;
+const buttons = getPageButtons(pages, current ? current + 1 : 1);
+---
+
+<div
+  class="isolate mt-2 inline-flex flex-col -space-x-px rounded-md shadow-sm"
+  aria-label="Pagination"
+>
+  {
+    current !== undefined && current > 0 ? (
+      <ActivePrevLink to={`${baseHref}${ids[current - 1]}/${hrefSuffix}`}>
+        <span class="sr-only">Previous</span>
+        <ChevronUpIcon class="h-5 w-5" aria-hidden="true" />
+      </ActivePrevLink>
+    ) : null
+  }
+  {
+    current === 0 || current === undefined ? (
+      <DisabledPrevLink>
+        <span class="sr-only">Previous</span>
+        <ChevronUpIcon class="h-5 w-5" aria-hidden="true" />
+      </DisabledPrevLink>
+    ) : null
+  }
+  {
+    buttons.map((value, index) => {
+      if (current !== undefined && value === current + 1)
+        return (
+          <CurrentLink key={value} aria-current="page">
+            {value}
+          </CurrentLink>
+        );
+      if (value === -1) {
+        return (
+          <span class="relative inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
+            ...
+          </span>
+        );
+      }
+      return (
+        <PageLink to={`${baseHref}${ids[value - 1]}/${hrefSuffix}`}>
+          {value}
+        </PageLink>
+      );
+    })
+  }
+  {
+    current !== undefined && current < pages - 1 ? (
+      <ActiveNextLink to={`${baseHref}${ids[current + 1]}/${hrefSuffix}`}>
+        <span class="sr-only">Next</span>
+        <ChevronDownIcon class="h-5 w-5" aria-hidden="true" />
+      </ActiveNextLink>
+    ) : null
+  }
+  {
+    current === pages - 1 ? (
+      <DisabledNextLink>
+        <span class="sr-only">Next</span>
+        <ChevronDownIcon class="h-5 w-5" aria-hidden="true" />
+      </DisabledNextLink>
+    ) : null
+  }
+</div>

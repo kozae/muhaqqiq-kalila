@@ -1,0 +1,11 @@
+{
+    "extends": "tsconfig/astro-svelte-client-library.json",
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
+}

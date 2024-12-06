@@ -1,0 +1,21 @@
+{
+  "name": "kalila-appsync-code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "bundle": "esbuild src/resolvers/**/*.ts  --bundle --sourcemap=inline --sources-content=false --platform=node   --target=esnext   --format=esm  --external:@aws-appsync/utils --out-extension:.js=.mjs --outdir=dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@aws-appsync/eslint-plugin": "^1.6.0",
+    "@aws-appsync/utils": "^1.7.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.57.0",
+    "kalila-graphql": "workspace:*",
+    "typescript": "^5.4.2"
+  }
+}

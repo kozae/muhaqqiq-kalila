@@ -1,0 +1,19 @@
+{
+  "name": "kalila-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "aws-amplify": "^6.0.20"
+  }
+}

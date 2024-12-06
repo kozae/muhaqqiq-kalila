@@ -1,0 +1,24 @@
+---
+import { TopNav } from "@client/layout";
+---
+
+<div
+  class="flex h-[64px] items-center justify-between rounded w-full max-w-hd mx-auto"
+>
+  <div class="flex">
+    <div class="flex flex-shrink-0 items-center ml-3">
+      <div class="h-content w-content block lg:hidden">
+        <a href="/">
+          <img class="h-[35px] w-auto" src="/logo_512.png" alt="" />
+        </a>
+      </div>
+      <div class="h-content w-content hidden lg:block">
+        <a href="/">
+          <img class="h-[35px] w-auto" src="/logo_512.png" alt="" />
+        </a>
+      </div>
+    </div>
+  </div>
+  <slot />
+  <TopNav client:only="svelte" />
+</div>

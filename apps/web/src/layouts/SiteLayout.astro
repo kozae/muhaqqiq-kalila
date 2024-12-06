@@ -1,0 +1,68 @@
+---
+import "@fontsource/noto-naskh-arabic/arabic-400.css";
+import "@fontsource/noto-naskh-arabic/arabic-700.css";
+import "@fontsource/noto-sans-display/latin-ext-400.css";
+import "@fontsource/noto-sans-display/latin-ext-700.css";
+import "@fontsource/noto-sans-display/latin-400.css";
+import "@fontsource/noto-sans-display/latin-700.css";
+import { ViewTransitions } from "astro:transitions";
+import Alerts from "@client/Alert";
+
+interface Props {
+  title: string;
+  transitions?: boolean;
+}
+
+const { title, transitions } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {transitions && <ViewTransitions />}
+    <script is:inline>
+      globalThis.global = globalThis;
+    </script>
+    <script src="../scripts/index.ts"></script>
+  </head>
+
+  <body class="bg-secondary-50 flex min-h-screen flex-col overflow-hidden">
+    <slot />
+
+    <Alerts client:load />
+    <style is:global>
+      @import "animate.css";
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+      @layer base {
+        html {
+          font-family: "Noto Sans Display", sans-serif;
+        }
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .animate-fade-in {
+        animation-name: fade-in;
+        animation-duration: 1s;
+        animation-fill-mode: forwards;
+      }
+    </style>
+  </body>
+</html>

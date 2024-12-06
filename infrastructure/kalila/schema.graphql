@@ -1,0 +1,536 @@
+# base
+
+# directive @aws_subscribe(mutations: [String]) on FIELD_DEFINITION
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  # Count
+  getItemCount(table: Sources!): ItemCount 
+
+  # Book
+  getBook(id: ID!): Book 
+  listBooks: [Book] 
+
+  # Medium
+  getMedium(id: ID!): Medium 
+  listBookMedia(
+    id: ID!
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+  ): MediumList 
+
+  # Unit
+  getUnit(id: ID!): Unit 
+  listUnits(
+    parentId: ID!
+    limit: Int
+    orderGt: Int
+    orderLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): UnitList 
+
+  # Page
+  getPage(id: ID!): Page 
+  listMediumPages(
+    id: ID!
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList 
+
+  # Segment
+  getSegment(id: ID!): Segment 
+  getManySegmentContents(ids: [ID!]): [SegmentContent]
+    
+  listMediumSegments(
+    id: ID!
+    limit: Int
+    startPageGt: Int
+    startPageLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): SegmentList 
+
+  # Chapter Collation
+  getChapterCollation(id: ID!): ChapterCollation
+    
+  listChapterCollations: [ChapterCollation] 
+
+  getChapterCollationSkeleton(id: ID!): ChapterCollationSkeleton
+    
+
+  # Line Detection Job
+  listLineDetectionJobs: [LineDetectionJob] 
+  getLineDetectionJob(manuscriptId: ID!, state: Int!): LineDetectionJob
+    
+
+  # Lemma Locations
+  searchByLemma(
+    phrase: [String!]!
+    pageIds: [ID]
+    mediumIds: [ID]
+  ): [SearchResult] 
+}
+
+type Mutation {
+  createBook(input: CreateBookInput!): Book 
+  createMedium(input: CreateMediumInput!): Medium 
+
+  createLineDetectionJob(input: LineDetectionJobInput!): LineDetectionJob
+    
+
+  updatePage(update: PageUpdateInput!): String 
+  updatePageTags(input: PageTagsInput!): String 
+
+  createUnit(input: CreateUnitInput!): String 
+
+  updateUnit(input: UpdateUnitInput!): String 
+
+  deleteUnit(input: DeleteUnitInput!): String 
+
+  changeMediumEditor(mediumId: ID!, editor: String!): String
+    
+
+  editMultiplePages(update: [PageUpdateTargetInput!]!): String
+    
+}
+
+type Subscription {
+  onCreateBook: Book @aws_subscribe(mutations: ["createBook"])
+  onCreateMedium(bookId: String!): Medium
+    @aws_subscribe(mutations: ["createMedium"])
+}
+
+# Main Types
+type ItemCount {
+  table: String!
+  count: Int!
+}
+
+type Book {
+  id: ID!
+  siglum: String!
+  title: String
+  author: String
+  authorDeathYear: Int
+  media(limit: Int, nextToken: String, sort: SortDirection): MediumList
+    
+  editor: String
+  version: AWSTimestamp
+}
+
+type Medium {
+  id: ID!
+  bookId: ID!
+  siglum: String!
+  format: MediaFormat
+  pages(
+    limit: Int
+    numberGt: Int
+    numberLt: Int
+    nextToken: String
+    sort: SortDirection
+  ): PageList 
+  segments(
+    limit: Int
+    nextToken: String
+    startPageGt: Int
+    startPageLt: Int
+    sort: SortDirection
+  ): SegmentList 
+  editor: String
+  version: AWSTimestamp
+}
+type ChapterCollation {
+  id: ID!
+  chapter: String!
+  title: String
+  mediumIds: [String]
+  editor: String
+  version: AWSTimestamp
+}
+
+type ChapterCollationSkeleton {
+  id: ID!
+  meta: ChapterCollation
+  rows: [ChapterCollationRow!]!
+  columns: [ChapterCollationColumn!]!
+}
+
+type ChapterCollationRow {
+  id: ID!
+  title: String!
+  order: Int!
+}
+
+type ChapterCollationColumn {
+  id: ID!
+  siglum: String!
+  order: Int!
+  cells: [Int!]!
+  cellIds: [String]!
+}
+
+type Unit {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  images: [Image] 
+  children(
+    limit: Int
+    nextToken: String
+    sort: SortDirection
+    orderGt: Int
+    orderLt: Int
+  ): UnitList 
+  segments(mediumIds: [ID]): [Segment] 
+  version: AWSTimestamp
+}
+
+type Segment {
+  id: ID!
+  mediumId: ID!
+  unitId: ID!
+  unit: SegmentUnitConnection 
+  startPage: Int!
+  startLine: Int!
+  startToken: Int!
+  endPage: Int!
+  endLine: Int
+  endToken: Int
+  lacuna: Boolean
+  tags: [String]
+  type: String
+  content: SegmentContent 
+  version: AWSTimestamp
+}
+
+type SegmentContent {
+  id: ID
+  tokens: [[String]]
+  lines: [Int]
+  pages: [Int]
+  breaks: [Boolean]
+  regions: [[Int]]
+}
+
+type SegmentUnitConnection {
+  bookId: ID!
+  id: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: AWSTimestamp
+}
+
+type Page {
+  id: ID!
+  mediumId: ID!
+  number: Int!
+  image: String
+  commentary: [String]
+  foliation: String
+  pagination: Int
+  tags: [String]
+  images: [Image] 
+  text: [TextElement] 
+  segments: [Segment] 
+  openSegments: [Segment] 
+  endingSegments: [Segment] 
+  editor: String
+  bodyElements: Int
+  marginElements: Int
+  imageElements: Int
+  lineCount: Int
+  tokenCount: Int
+  version: AWSTimestamp
+}
+
+type TextElement {
+  id: ID!
+  pageId: ID!
+  order: Int!
+  position: String
+  region: [Int]
+  lines: [Line] 
+  version: AWSTimestamp
+}
+
+type Line {
+  id: ID!
+  elementId: ID!
+  order: Int!
+  region: [Int]
+  states: [String]
+  tokens: [String]
+  lemmas: [String]
+  version: AWSTimestamp
+}
+
+type Image {
+  id: ID!
+  pageId: ID!
+  legendId: ID
+  legend: TextElement 
+  location: [Int]
+  motifs: [String]
+  order: Int!
+  position: String
+  region: [Int]
+  style: [String]
+  version: AWSTimestamp
+}
+
+type LineDetectionJob {
+  id: ID!
+  manuscriptId: String!
+  state: Int!
+  pages: [Int]
+  finishedOn: Int
+  parameters: AWSJSON
+}
+
+type SearchResult {
+  mediumId: ID!
+  start: Location
+  end: Location
+}
+
+type Location {
+  pageId: ID!
+  line: Int
+  token: Int
+}
+
+# list types
+
+type MediumList {
+  items: [Medium]!
+  nextToken: String
+}
+
+type UnitList {
+  items: [Unit]!
+  nextToken: String
+}
+
+type PageList {
+  items: [Page]!
+  nextToken: String
+}
+
+type SegmentList {
+  items: [Segment]!
+  nextToken: String
+}
+
+# enums
+
+enum Sources {
+  books
+  media
+  itemCounts
+  units
+  pages
+  segments
+  segmentContents
+  images
+  textElements
+  lines
+  chapterCollations
+  lineDetectionJobs
+  lemmas
+  mutation_lambda
+  search_lambda
+  collation_lambda
+}
+enum MediaFormat {
+  DIGITAL
+  MANUSCRIPT
+  PRINT
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+# input types
+
+input PageTagsInput {
+  mediumId: ID!
+  pageIds: [ID!]!
+  tags: [String!]
+}
+
+input CreateUnitInput {
+  bookId: ID!
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  order: Int!
+  title: String!
+  topics: [String]
+  variant: String
+  version: AWSTimestamp
+}
+
+input UpdateUnitInput {
+  id: ID!
+  parentId: ID!
+  commentary: String
+  divider: Boolean
+  frame: String
+  motifs: [String]
+  newOrder: Int!
+  oldOrder: Int!
+  title: String
+  topics: [String]
+  variant: String
+  version: AWSTimestamp
+}
+
+input DeleteUnitInput {
+  id: ID!
+  parentId: ID!
+  order: Int!
+}
+
+input CreateBookInput {
+  author: String
+  authorDeathYear: Int
+  editor: String
+  id: ID
+  siglum: String!
+  title: String
+}
+
+input CreateMediumInput {
+  bookId: ID!
+  editor: String
+  format: MediaFormat
+  id: ID
+  siglum: String!
+}
+
+input LineDetectionJobInput {
+  id: ID!
+  manuscriptId: ID!
+  pages: [Int!]!
+  parameters: AWSJSON
+  state: Int!
+}
+
+# page update
+
+input PageInfoUpdateInput {
+  foliation: String
+  pagination: Int
+  tags: [String]
+  commentary: [String]
+  image: String
+}
+
+input LemmaData {
+  id: ID!
+  lemmas: [String!]!
+  line: Int!
+}
+
+input TextConnectionInput {
+  withElement: String!
+  atLine: Int!
+  atToken: Int!
+}
+
+input TextElementInput {
+  id: ID!
+  order: Int!
+  position: String!
+  region: [Int!]
+  nested: TextConnectionInput
+}
+
+input LineInput {
+  id: ID!
+  elementId: ID!
+  order: Int!
+  region: [Int!]
+  states: [String!]
+  tokens: [String!]
+}
+
+input ImageInput {
+  id: ID!
+  legendId: ID
+  legend: String
+  location: [Int!]
+  motifs: [String]
+  order: Int!
+  position: String!
+  region: [Int!]
+  style: [String]
+}
+
+input SegmentInput {
+  id: ID!
+  unitId: ID!
+  startPage: Int!
+  startLine: Int!
+  startToken: Int!
+  endPage: Int!
+  endLine: Int
+  endToken: Int
+  lacuna: Boolean!
+  tags: [String]
+  type: String!
+}
+
+input PageUpdateInput {
+  id: ID!
+  mediumId: ID!
+  number: Int!
+  info: PageInfoUpdateInput
+  lemmas: [LemmaData!]
+  text: [TextElementInput!]
+  images: [ImageInput!]
+  bodyLines: [LineInput!]
+  marginLines: [LineInput!]
+  segments: [SegmentInput!]
+  version: AWSTimestamp!
+}
+
+input PageUpdateTargetInput {
+  mediumId: ID!
+  segmentId: ID!
+  pageNumber: Int!
+  lineNumber: Int!
+  original: String!
+  replacement: String!
+  lemmas: AWSJSON
+}

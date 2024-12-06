@@ -57,3 +57,9 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+mk_pass.txt
+aws_cred.txt
+
+.sst/
+.idea

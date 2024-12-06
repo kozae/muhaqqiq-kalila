@@ -1,5 +1,8 @@
 packages:
   - "apps/*"
+  - "tests/*"
   - "config/*"
-  - "lib/client-components/*"
-  - "lib/infrastructure/*"
+  - "lib/common/*"
+  - "lib/forked/*"
+  - "lib/pages-tool/*"
+  - "infrastructure/*"

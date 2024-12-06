@@ -1,0 +1,17 @@
+---
+import Layout from "@layouts/SiteLayout.astro";
+import BaseNav from "@components/BaseNav.astro";
+import Wrapper from "@client/collations/Wrapper.svelte";
+import StateControls from "@client/collations/StateControls.svelte";
+
+const { id } = Astro.params;
+---
+
+<Layout title="Kalila">
+  <BaseNav>
+    <StateControls client:only="svelte" />
+  </BaseNav>
+  <main class="w-[100vw] flex justify-center">
+    <Wrapper id={id!} client:only="svelte" />
+  </main>
+</Layout>

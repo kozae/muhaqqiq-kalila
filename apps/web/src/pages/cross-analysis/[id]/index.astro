@@ -1,0 +1,23 @@
+---
+import Layout from "@layouts/SiteLayout.astro";
+import BaseNav from "@components/BaseNav.astro";
+import Wrapper from "@client/cross-analysis/view/Wrapper.svelte";
+
+const { id = "" } = Astro.params;
+---
+
+<Layout title="Kalila">
+  <BaseNav>
+    <div class="flex w-8/12 justify-between">
+      <h1>Cross Analysis 0.5.0beta</h1>
+      <a class="bg-primary-500 text-white p-2 rounded-md" href="/cross-analysis"
+        >Select another unit</a
+      >
+    </div>
+  </BaseNav>
+  <main
+    class="w-[100vw] h-[calc(100vh-64px)] overflow-y-auto flex justify-center"
+  >
+    <Wrapper id={id} client:only="svelte" />
+  </main>
+</Layout>

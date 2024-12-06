@@ -1,0 +1,12 @@
+---
+import SignInForm from "@client/SignInForm.svelte";
+import PageWrapper from "@components/PageWrapper.astro";
+
+import Layout from "@layouts/SiteLayout.astro";
+---
+
+<Layout title="Sign In">
+  <PageWrapper>
+    <SignInForm client:only="svelte" />
+  </PageWrapper>
+</Layout>
