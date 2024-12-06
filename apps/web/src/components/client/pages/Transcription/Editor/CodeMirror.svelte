@@ -52,6 +52,7 @@
       const doc = vu.state.doc;
       const value = doc.toString();
       dispatch("docChange", value);
+      console.log("docChange", value);
       worker.postMessage({
         type: TranscriptionWorkerEvent.VALUE_CHANGE,
         payload: value,

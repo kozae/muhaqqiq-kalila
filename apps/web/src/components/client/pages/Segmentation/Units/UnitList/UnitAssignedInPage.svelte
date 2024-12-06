@@ -2,22 +2,19 @@
   import IconButton from "@client/reusable/IconButton.svelte";
   import PencilSquareIcon from "@icons/PencilSquareIcon.svelte";
   import ArrowLeftFromBox from "@icons/ArrowLeftFromBox.svelte";
-  import CircleSlashIcon from "@icons/CircleSlashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
   import { selectedUnit, showEditModal } from "../modal-states";
-  import { insertSegment } from "../../../Transcription/segment-watcher";
+  import { sgementWidgetEvents } from "@client/pages/Transcription/event-hubs";
 
   export let unit: UnitEntity;
-  export let hasEnd: boolean = false;
+  export const hasEnd: boolean = false;
   function handleEdit() {
     selectedUnit.set(unit);
     showEditModal.set(true);
   }
-  function handleClose() {
-    insertSegment.next({ operation: "close", unit });
-  }
+
   function handleRemove() {
-    insertSegment.next({ operation: "remove", unit });
+    sgementWidgetEvents.next({ type: "delete", payload: { id: unit.id } });
   }
 </script>
 

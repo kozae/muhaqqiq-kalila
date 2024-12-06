@@ -6,10 +6,6 @@ export const segmentWatcher = new ReplaySubject<
   Record<string, UnitSegmentInfo>
 >(1);
 
-export const insertSegment = new Subject<{
-  operation: string;
-  unit: UnitEntity;
-}>();
 
 
 export function locateSegments(segments: Segment[]): Record<string, UnitSegmentInfo> {

@@ -38,7 +38,7 @@ interface IKalilaApiStackProps extends StackProps {
 }
 
 type KalilaDataSources = Record<keyof IKalilaTableInfo, DynamoDbDataSource>;
-type KalilaLamdas = Record<"mutationHandler" | 'searchHandler', LambdaFunction>;
+type KalilaLamdas = Record<"mutationHandler" | "searchHandler", LambdaFunction>;
 
 export class KalilaApiStack extends Stack {
   private readonly schemaPath: string;
@@ -61,7 +61,8 @@ export class KalilaApiStack extends Stack {
     );
 
     this.kalilaGraphQLApi = this.createApi(
-      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId), props.vars
+      UserPool.fromUserPoolId(this, "KalilaApiUserPool", props.userPoolId),
+      props.vars,
     );
     this.tables = this.createTableConstructs(props.tableArns);
     this.dataSources = this.createDataSources();
@@ -77,14 +78,12 @@ export class KalilaApiStack extends Stack {
       this.lambdas.searchHandler,
     );
 
-
-
     for (const { parent, name, source } of extractFieldsWithSource(
       this.schemaPath,
     )) {
-      if (source === 'mutation_lambda') {
+      if (source === "mutation_lambda") {
         this.createLambdaResolver(parent, name, mutationLambdaDataSource);
-      } else if (source === 'search_lambda') {
+      } else if (source === "search_lambda") {
         this.createLambdaResolver(parent, name, searchLambdaDataSource);
       } else {
         this.createResolver(parent, name, this.dataSources[source]);
@@ -112,7 +111,7 @@ export class KalilaApiStack extends Stack {
         },
       },
       xrayEnabled: true,
-      environmentVariables: { ...vars }
+      environmentVariables: { ...vars },
     });
   }
 
@@ -131,9 +130,8 @@ export class KalilaApiStack extends Stack {
   }
 
   private createLambdas(vars: Record<string, string>) {
-
     const parameterStorePolicy = new PolicyStatement({
-      actions: ['ssm:GetParameter', 'ssm:GetParameters'],
+      actions: ["ssm:GetParameter", "ssm:GetParameters"],
       resources: [
         `arn:aws:ssm:${this.region}:${this.account}:parameter/kalila/${this.stage}/*`,
       ],

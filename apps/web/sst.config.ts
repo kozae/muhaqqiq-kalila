@@ -1,12 +1,19 @@
 import type { SSTConfig } from "sst";
 import { AstroSite, Api } from "sst/constructs";
-import { CachePolicy, FunctionCode, OriginAccessIdentity, ViewerProtocolPolicy, Function, FunctionEventType, type IFunction, CacheQueryStringBehavior } from "aws-cdk-lib/aws-cloudfront";
+import {
+  CachePolicy,
+  FunctionCode,
+  OriginAccessIdentity,
+  ViewerProtocolPolicy,
+  Function,
+  FunctionEventType,
+  type IFunction,
+  CacheQueryStringBehavior,
+} from "aws-cdk-lib/aws-cloudfront";
 import { Duration } from "aws-cdk-lib/core";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { aws_s3 as s3 } from "aws-cdk-lib";
 import * as iam from "aws-cdk-lib/aws-iam";
-
-
 
 export default {
   config(_input) {
@@ -16,10 +23,12 @@ export default {
     };
   },
   stacks(app) {
-
     app.stack(function Site({ stack }) {
-
-      const bucket = s3.Bucket.fromBucketName(stack, "KalilaAssetsBucket", "kalila-pages");
+      const bucket = s3.Bucket.fromBucketName(
+        stack,
+        "KalilaAssetsBucket",
+        "kalila-pages",
+      );
       const longTermCachePolicy = new CachePolicy(
         stack,
         "KalilaFrontendCachePolicy",
@@ -31,19 +40,15 @@ export default {
           maxTtl: Duration.days(365),
           enableAcceptEncodingGzip: true,
           enableAcceptEncodingBrotli: true,
-          queryStringBehavior: CacheQueryStringBehavior.all()
+          queryStringBehavior: CacheQueryStringBehavior.all(),
         },
       );
-      const noCachePolicy = new CachePolicy(
-        stack,
-        "KalilaNoCachePolicy",
-        {
-          comment: "Custom cache policy for never caching any items",
-          defaultTtl: Duration.seconds(0),
-          minTtl: Duration.seconds(0),
-          maxTtl: Duration.seconds(0),
-        },
-      );
+      const noCachePolicy = new CachePolicy(stack, "KalilaNoCachePolicy", {
+        comment: "Custom cache policy for never caching any items",
+        defaultTtl: Duration.seconds(0),
+        minTtl: Duration.seconds(0),
+        maxTtl: Duration.seconds(0),
+      });
       const api = new Api(stack, "api", {
         defaults: {
           function: {
@@ -60,11 +65,16 @@ export default {
         },
       });
 
-      const originAccessIdentity = new OriginAccessIdentity(stack, "OAI", { comment: "Kalila Frontend Assets Access Identity" });
+      const originAccessIdentity = new OriginAccessIdentity(stack, "OAI", {
+        comment: "Kalila Frontend Assets Access Identity",
+      });
 
       const dataRemapFunction = new Function(stack, "DataRemapFunction", {
         code: FunctionCode.fromFile({
-          filePath: stack.stage === "prod" ? "functions/data-remap.function.js" : "functions/data-dev-remap.function.js",
+          filePath:
+            stack.stage === "prod"
+              ? "functions/data-remap.function.js"
+              : "functions/data-dev-remap.function.js",
         }),
       }) as IFunction;
 
@@ -74,7 +84,11 @@ export default {
         }),
       }) as IFunction;
 
-
+      const pageEbRemapFunction = new Function(stack, "PageEbFunction", {
+        code: FunctionCode.fromFile({
+          filePath: "functions/page-webp-remap.function.js",
+        }),
+      }) as IFunction;
 
       const site = new AstroSite(stack, "site", {
         cdk: {
@@ -102,9 +116,20 @@ export default {
                   },
                 ],
                 cachePolicy: longTermCachePolicy,
-              }
-            }
-          }
+              },
+              "/srv/page_eb/*": {
+                origin: new S3Origin(bucket, { originAccessIdentity }),
+                viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                functionAssociations: [
+                  {
+                    eventType: FunctionEventType.VIEWER_REQUEST,
+                    function: pageEbRemapFunction,
+                  },
+                ],
+                cachePolicy: longTermCachePolicy,
+              },
+            },
+          },
         },
         permissions: [
           new iam.PolicyStatement({
@@ -112,7 +137,12 @@ export default {
             resources: ["arn:aws:s3:::*"],
           }),
           new iam.PolicyStatement({
-            actions: ["dynamodb:Scan", "dynamodb:Query", "dynamodb:GetItem", "dynamodb:BatchGetItem"],
+            actions: [
+              "dynamodb:Scan",
+              "dynamodb:Query",
+              "dynamodb:GetItem",
+              "dynamodb:BatchGetItem",
+            ],
             resources: [
               "arn:aws:dynamodb:*:*:table/*",
               "arn:aws:dynamodb:*:*:table/*/index/*",
@@ -125,7 +155,6 @@ export default {
         },
       });
 
-
       const fn = api.getFunction("POST /")!;
       fn.addEnvironment(
         "DISTRIBUTION_ID",
@@ -135,7 +164,6 @@ export default {
       site.cdk?.distribution.grantCreateInvalidation(fn.grantPrincipal);
 
       bucket.grantRead(originAccessIdentity.grantPrincipal);
-
 
       stack.addOutputs({
         url: site.url,

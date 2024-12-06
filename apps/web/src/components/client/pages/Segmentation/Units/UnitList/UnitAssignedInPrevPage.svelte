@@ -4,7 +4,6 @@
   import CircleSlashIcon from "@icons/CircleSlashIcon.svelte";
   import type { UnitEntity } from "pages-tool-store-worker";
   import { selectedUnit, showEditModal } from "../modal-states";
-  import { insertSegment } from "../../../Transcription/segment-watcher";
 
   export let unit: UnitEntity;
   export let hasEnd: boolean = false;
@@ -12,9 +11,7 @@
     selectedUnit.set(unit);
     showEditModal.set(true);
   }
-  function handleClose() {
-    insertSegment.next({ operation: "close", unit });
-  }
+  function handleClose() {}
 </script>
 
 <div
